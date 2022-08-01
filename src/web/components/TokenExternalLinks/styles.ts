@@ -1,4 +1,3 @@
-import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
 import SvgIcon from '../SvgIcon'
@@ -12,22 +11,18 @@ export const Container = styled.div`
 
 export const Anchor = styled.a`
   cursor: pointer;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
   height: 24px;
 `
 
 export const Icon = styled(SvgIcon)`
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  margin: 0 5px;
-  background: ${COLORS.primary};
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 60%,
-    rgba(101, 28, 228, 1) 61%,
-    rgba(101, 28, 228, 1) 100%
-  );
+  margin: 0;
   border-radius: 50%;
 `
 
@@ -45,7 +40,9 @@ export const IconsInner = styled.div`
 export const Wrap = styled.div`
   background: ${(props) => props.theme.colors.white4};
   position: absolute;
-  left: 3px;
+  top: 16px;
+  right: 0;
+  transform: translateX(25%);
   z-index: 1000;
   border-radius: 2rem;
   width: 29px;
@@ -60,8 +57,11 @@ export const Wrap = styled.div`
 export const IconsContainer = styled.div`
   position: relative;
   cursor: pointer;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 24px;
+  width: 24px;
 
   ${Anchor} {
     background: ${(props) => props.theme.colors.white5};

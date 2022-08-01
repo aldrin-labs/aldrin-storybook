@@ -25,7 +25,7 @@ export const sendSignedTransactions = async (
   connection: AldrinConnection,
   params: TransactionParams & NotificationParams = {}
 ) => {
-  const { successMessage } = params
+  const { successMessage, onStatusChange } = params
 
   for (let i = 0; i < transactions.length; i += 1) {
     const signedTransaction = transactions[i]
@@ -37,6 +37,7 @@ export const sendSignedTransactions = async (
       timeout: 30_000,
       successMessage: isLastTransaction ? successMessage : '',
       connection,
+      onStatusChange: (transaction) => onStatusChange(transaction, i),
     })
 
     if (result.status !== SendTransactionStatus.CONFIRMED) {

@@ -168,7 +168,7 @@ export const TerminalModeButton = styled(
   font-weight: normal;
   letter-spacing: 0.05rem;
   width: 12.5%;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
   background-color: ${(props) => props.theme.colors.white6};
   border-right: ${(props) => props.theme.colors.white4};
   border-left: ${(props) => props.borderLeft || 'none'};

@@ -1,68 +1,66 @@
-import { RouteInfo, TransactionFeeInfo } from '@jup-ag/core'
-import { TokenInfo } from '@solana/spl-token-registry'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
+import { AmmLabel, SwapRoute, SwapStep } from '@likbes_/swap-hook'
 import React from 'react'
 
-import { Loading } from '@sb/components'
-import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { SvgIcon } from '@sb/components'
+import { Text } from '@sb/components/Typography'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { removeDecimals } from '@core/utils/helpers'
+import SwapArrowsIcon from '@icons/swap-arrows.svg'
 
 export const getSwapButtonText = ({
   isTokenABalanceInsufficient,
   isLoadingSwapRoute,
   baseSymbol,
-  minInputAmount,
-  isTooSmallInputAmount,
   isSwapRouteExists,
-  needEnterAmount,
-  isSwapInProgress,
+  isEmptyInputAmount,
+  pricesDiffPct,
+  swapStatus,
 }: {
   isTokenABalanceInsufficient: boolean
   isLoadingSwapRoute: boolean
   baseSymbol: string
-  minInputAmount: number
-  isTooSmallInputAmount: boolean
   isSwapRouteExists: boolean
-  needEnterAmount: boolean
+  isEmptyInputAmount: boolean
   isSwapInProgress: boolean
+  pricesDiffPct: number
+  swapStatus: string | null
 }) => {
-  if (isSwapInProgress) {
-    return (
-      <>
-        <Loading
-          size="1em"
-          color={COLORS.white}
-          margin="0 0.6em 0 0"
-          style={{ display: 'flex' }}
-        />{' '}
-        <span>Swapping</span>
-      </>
-    )
+  if (swapStatus === 'initializing-transaction') {
+    return 'Initializing transaction...'
+  }
+  if (swapStatus === 'pending-confirmation') {
+    return 'Transaction pending confirmation in the wallet...'
+  }
+  if (swapStatus === 'initialize') {
+    return 'Swapping...'
   }
 
-  if (needEnterAmount) {
-    return 'Enter amount'
+  switch (true) {
+    case isEmptyInputAmount:
+      return 'Enter amount'
+    case isLoadingSwapRoute:
+      return 'Searching the best route...'
+    case isTokenABalanceInsufficient:
+      return `Insufficient ${baseSymbol} Balance`
+    case !isSwapRouteExists:
+      return 'No route for swap'
+    default:
+      return pricesDiffPct < -1 ? (
+        <Row direction="column">
+          <Text margin="0" weight={600} size="es" color="red1">
+            {Math.abs(pricesDiffPct)}% more expensive than CoinGecko price
+          </Text>
+          <Text margin="0" weight={600} size="md" color="red1">
+            Swap Anyway
+          </Text>
+        </Row>
+      ) : (
+        <Row align="center">
+          <SvgIcon src={SwapArrowsIcon} width="1em" height="1em" />
+          <Row margin="0 0 0 0.3em">Swap</Row>
+        </Row>
+      )
   }
-
-  if (isTooSmallInputAmount) {
-    return `Min. input amount: ${minInputAmount} ${baseSymbol}`
-  }
-
-  if (isLoadingSwapRoute) {
-    return 'Searching the best route...'
-  }
-
-  if (isTokenABalanceInsufficient) {
-    return `Insufficient ${baseSymbol} Balance`
-  }
-
-  if (!isSwapRouteExists) {
-    return 'No route for swap'
-  }
-
-  return 'Swap'
 }
 
 export const getEstimatedPrice = ({
@@ -97,76 +95,29 @@ export const getEstimatedPrice = ({
   return 0
 }
 
-export const getFeeFromSwapRoute = ({
-  route,
-  tokenInfos,
-  pricesMap,
-}: {
-  route?: RouteInfo | null
-  tokenInfos: Map<string, TokenInfo>
-  pricesMap: Map<string, number>
-}) => {
-  if (!route) {
-    return 0
-  }
-
-  return route.marketInfos.reduce((totalFeeUSD, marketInfo) => {
-    const { label } = marketInfo.marketMeta.amm
-
-    if (label === 'Serum') {
-      // charge extra fees
-    }
-
-    const { mint, amount } = marketInfo.lpFee
-    const { decimals, symbol } = tokenInfos.get(mint) || {
-      decimals: 0,
-      symbol: '',
-    }
-
-    const price = pricesMap.get(symbol) || 0
-
-    const amountWithoutDecimals = removeDecimals(amount, decimals)
-    const amountUSD = amountWithoutDecimals * price
-
-    return totalFeeUSD + amountUSD
-  }, 0)
+const marketTypeFromAmm: { [key in AmmLabel]: number } = {
+  Serum: 0,
+  Aldrin: 2,
 }
 
-export const getRouteMintsPath = (swapRoute: RouteInfo | null) => {
-  if (!swapRoute || !swapRoute.marketInfos) return []
-  return swapRoute.marketInfos.reduce<string[]>((acc, marketInfo, index) => {
-    if (index === 0) {
-      acc.push(
-        marketInfo.inputMint.toString(),
-        marketInfo.outputMint.toString()
-      )
-    } else {
-      acc.push(marketInfo.outputMint.toString())
-    }
+export const getOHLCVMarketTypeFromSwapRoute = (swapRoute: SwapRoute) => {
+  if (swapRoute.steps.length > 0) {
+    return marketTypeFromAmm[swapRoute.steps[0].ammLabel]
+  }
 
-    return acc
-  }, [])
+  // as default
+  return marketTypeFromAmm.Aldrin
 }
 
-export const getSwapNetworkFee = ({
-  swapRoute,
-  depositAndFee,
-}: {
-  swapRoute: RouteInfo | null
-  depositAndFee: TransactionFeeInfo | null | undefined
-}) => {
-  if (!swapRoute) {
-    return 0
+export const getOHLCVSymbols = (swapSteps: SwapStep[]) => {
+  if (swapSteps.length > 1) {
+    return [swapSteps[0].inputMint, swapSteps[swapSteps.length - 1].outputMint]
   }
 
-  if (depositAndFee) {
-    return (
-      (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
-        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
-        depositAndFee.signatureFee) /
-      LAMPORTS_PER_SOL
-    )
+  if (swapSteps.length === 1) {
+    const { isSwapBaseToQuote, inputMint, outputMint } = swapSteps[0]
+    return isSwapBaseToQuote ? [inputMint, outputMint] : [outputMint, inputMint]
   }
 
-  return swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
+  return [null, null]
 }

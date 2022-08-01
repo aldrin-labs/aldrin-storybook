@@ -118,6 +118,8 @@ const VARIANTS = {
     background: ${COLORS.hint};
     border-color: ${COLORS.hint};
   `,
+
+  none: css``,
 }
 
 export const PADDINGS = {

@@ -4,6 +4,7 @@ import { useTheme } from 'styled-components'
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
+import { socialLinks } from '@sb/compositions/Homepage/SocialsLinksComponents'
 
 import {
   PoolProcessingBlock,
@@ -11,8 +12,8 @@ import {
   PoolProcessingContent,
   Title,
 } from '../Popups/CreatePool/styles'
-import { FarmingProcessingModalProps } from './types'
 import { Link } from './styles'
+import { FarmingProcessingModalProps } from './types'
 
 const PROCESSING_STATUSES = new Set(['preparing', 'signing', 'sending'])
 const OK_STATUSES = new Set([...PROCESSING_STATUSES.values(), 'success'])
@@ -93,7 +94,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
               <Text size="sm">
                 Please check your transaction or contact us via{' '}
                 <Link
-                  href="https://t.me/Aldrin_Exchange"
+                  href={socialLinks.telegram}
                   target="_blank"
                   rel="noreferrer"
                 >

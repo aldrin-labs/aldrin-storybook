@@ -5,6 +5,8 @@ import {
   FONT_SIZES,
   TRANSITION,
   UCOLORS,
+  FONTS,
+  SIZE,
 } from '@variables/variables'
 import { rgba, em } from 'polished'
 import { NavLink as RouterNavLink } from 'react-router-dom'
@@ -13,12 +15,18 @@ import styled from 'styled-components'
 // TODO: remove dat
 
 import { Button } from '../Button'
+import { Row } from '../Layout'
 import { Text } from '../Typography'
 
-export const HeaderWrap = styled.header`
+export const Wrapper = styled.header`
+  font-family: ${FONTS.main};
+  font-size: ${SIZE.fontSize};
+`
+
+export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: 96px;
+  height: 76px;
   background: ${(props) => props.theme.colors.header};
   padding: 0 24px;
   border-bottom-width: 1px;
@@ -230,6 +238,9 @@ export const DropdownInner = styled.div`
 `
 
 export const WalletButton = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: ${em('14px')};
   width: ${em('144px', '14px')};
   background-color: ${(props) => props.theme.colors.white6};
@@ -338,8 +349,6 @@ export const BalanceTitle = styled.span`
   }
 `
 
-export const Wrap = styled.div``
-
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
   height: 100%;
@@ -359,4 +368,18 @@ export const ArrowDownIconContainer = styled.div`
   display: flex;
   align-items: center;
   margin-left: 0.5em;
+`
+
+export const Left = styled.div`
+  display: flex;
+  flex: 1;
+`
+
+export const Right = styled.div`
+  display: flex;
+`
+
+export const WalletIconContainer = styled(Row)`
+  margin-right: 0.3em;
+  align-items: center;
 `
