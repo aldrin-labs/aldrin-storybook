@@ -1,4 +1,4 @@
-import { SendTransactionStatus, signTransactions } from '@core/solana'
+import { SendTransactionStatus, signTransactions, WithStatusChange } from "@core/solana"
 
 import { sendSignedTransactions } from '.'
 import { getNotifier } from './notifier'
@@ -12,7 +12,7 @@ const defaultMessages = {
 }
 
 export const signAndSendTransactions = async (
-  params: SendTransactionsParams
+  params: SendTransactionsParams & WithStatusChange
 ) => {
   const {
     transactionsAndSigners,
@@ -23,7 +23,7 @@ export const signAndSendTransactions = async (
     commitment,
     swapStatus, // @todo temp
     setSwapStatus,
-    onStatusChange,
+    onStatusChange = () => {},
   } = params
 
   try {
@@ -42,7 +42,9 @@ export const signAndSendTransactions = async (
       wallet
     )
 
-    setSwapStatus('initialize')
+    if (setSwapStatus) {
+      setSwapStatus('initialize')
+    }
 
     if (clearPendingSignNotification) {
       await clearPendingSignNotification()
