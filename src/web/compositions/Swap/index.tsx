@@ -82,6 +82,7 @@ import {
   LeftColumn,
   RightColumn,
   ChartContainer,
+  TextButton,
 } from './styles'
 import { getSwapButtonText } from './utils'
 
@@ -110,6 +111,13 @@ const SwapPage = ({
     getTradingVolumeForAllPoolsQuery || { getTradingVolumeForAllPools: [] }
 
   // separate getting top pools
+
+  useEffect(() => {
+    document.title = 'Aldrin | Do It Different'
+    return () => {
+      document.title = 'Aldrin'
+    }
+  }, [])
 
   const topPoolsByTradingVolume = [...poolsTradingVolume]
     .sort((a, b) => b.tradingVolume - a.tradingVolume)
@@ -498,8 +506,18 @@ const SwapPage = ({
                   segments: swapRoute.steps.length + 1,
                   value: swapRoute.steps.length + 1,
                 }}
-                title="Swap operation failed"
-                description="Please, try to increase slippage."
+                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                description={
+                  <RowContainer justify="space-between">
+                    <span>Failed.</span>
+                    <Row justify="space-between" width="40%">
+                      <TextButton color="white3">Cancel</TextButton>
+                      <TextButton onClick={() => makeTransaction()}>
+                        Try again
+                      </TextButton>
+                    </Row>
+                  </RowContainer>
+                }
               />
             ),
             options: { autoClose: 3000 },
@@ -538,7 +556,7 @@ const SwapPage = ({
                 value: swapRoute.steps.length + 1,
               }}
               title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
-              description="Swapped"
+              description="Swapped successfully"
             />
           ),
           options: { autoClose: 3000 },
