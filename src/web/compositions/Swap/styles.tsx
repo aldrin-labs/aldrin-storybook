@@ -320,3 +320,12 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
     font-size: 20px;
   }
 `
+export const TextButton = styled(Button)`
+  background: none;
+  color: ${(props) => props.theme.colors[props.color || 'green3']};
+  border: 0;
+  padding: 0;
+  font-weight: 600;
+  width: auto;
+  min-width: 0;
+`
