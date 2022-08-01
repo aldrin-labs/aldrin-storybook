@@ -23,7 +23,7 @@ export const signAndSendTransactions = async (
     commitment,
     swapStatus, // @todo temp
     setSwapStatus,
-    onStatusChange = () => {},
+    onStatusChange,
   } = params
 
   try {
