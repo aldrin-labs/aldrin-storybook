@@ -1,5 +1,7 @@
 import { Transaction } from '@solana/web3.js'
 
+import { WithStatusChange } from '@core/solana/transactions/types.ts'
+
 import {
   AldrinConnection,
   SendTransactionStatus,
@@ -23,7 +25,7 @@ const resposneToStatus = (
 export const sendSignedTransactions = async (
   transactions: Transaction[],
   connection: AldrinConnection,
-  params: TransactionParams & NotificationParams = {}
+  params: TransactionParams & WithStatusChange & NotificationParams = {}
 ) => {
   const { successMessage, onStatusChange } = params
 
@@ -37,7 +39,7 @@ export const sendSignedTransactions = async (
       timeout: 30_000,
       successMessage: isLastTransaction ? successMessage : '',
       connection,
-      onStatusChange: (transaction) => onStatusChange(transaction, i),
+      onStatusChange,
     })
 
     if (result.status !== SendTransactionStatus.CONFIRMED) {

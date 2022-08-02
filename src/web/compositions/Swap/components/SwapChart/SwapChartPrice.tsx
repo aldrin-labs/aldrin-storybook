@@ -10,7 +10,11 @@ import { stripByAmount } from '@core/utils/numberUtils'
 import HalfArrowsIcon from '@icons/halfArrows.svg'
 
 import { getEstimatedPrice } from '../../utils'
-import { PricesSymbolsContainer, SymbolText, TokenIconsContainer } from './styles'
+import {
+  PricesSymbolsContainer,
+  SymbolText,
+  TokenIconsContainer,
+} from './styles'
 
 interface SwapChartPriceProps {
   inputSymbol: string
@@ -70,7 +74,7 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
         <InlineText color="white2" size="md" weight={500}>
           {isInputPriceShowField ? inputSymbol : outputSymbol}
         </InlineText>
-        <Row margin="0 0.5em">
+        <Row style={{ margin: '0 0.5em' }}>
           <InlineText color="white3" size="md" weight={500}>
             /
           </InlineText>
@@ -88,8 +92,7 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
           {isInputPriceShowField ? outputSymbol : inputSymbol}
         </InlineText>
         <Row
-          margin="0 0 0 0.5em"
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', margin: '0 1em 0 0.5em' }}
           onClick={() =>
             setPriceShowField(isInputPriceShowField ? 'output' : 'input')
           }

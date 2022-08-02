@@ -1,4 +1,4 @@
-import { BREAKPOINTS, FONTS } from "@variables/variables"
+import { BREAKPOINTS, FONTS } from '@variables/variables'
 import { ToastContainer } from 'react-toastify'
 import styled from 'styled-components'
 
@@ -42,9 +42,9 @@ export const AppInnerContainer = styled.div<AppContainerProps>`
   //min-height: calc(100vh - 160px); /* header + footer*/
   flex: 1 0 auto;
 
-  @media (max-width: ${BREAKPOINTS.xxxl}) {
-    ${(props) => props.isSwapPage && `height: calc(100vh - 76px)`};
-  }
+  // @media (max-width: ${BREAKPOINTS.xxxl}) {
+  //   ${(props) => props.isSwapPage && `height: calc(100vh - 76px)`};
+  // }
 
   @media (max-width: ${BREAKPOINTS.sm}) {
     ${(props) => props.isSwapPage && `height:100%`};
@@ -60,6 +60,8 @@ export const StyledToastContainer = styled(ToastContainer).attrs({
   font-size: 1.5em;
 
   --toastify-font-family: ${FONTS.main};
+
+  --toastify-toast-width: 360px;
 
   .toast {
     background-color: ${(props) => props.theme.colors.white6};

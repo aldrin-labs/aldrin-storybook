@@ -19,8 +19,18 @@ const ButtonLink = styled.a`
   text-decoration: none;
 `
 
+const Title = styled.h3`
+  font-family: 'DM Sans';
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: ${(props) => props.theme.colors.white1};
+  margin-top: 5rem;
+  text-align: center;
+`
+
 const TechIssues = () => {
   const theme = useTheme()
+
   return (
     <div
       style={{
@@ -32,17 +42,9 @@ const TechIssues = () => {
       }}
     >
       <SvgIcon src={TechSvg} width="6rem" height="6rem" />
-      <h3
-        style={{
-          fontFamily: 'DM Sans',
-          fontWeight: 'bold',
-          fontSize: '2.5rem',
-          color: theme.colors.white1,
-          marginTop: '5rem',
-        }}
-      >
+      <Title>
         Sorry, we support only Chrome and Chrome Canary browsers for now
-      </h3>
+      </Title>
       <div
         style={{
           display: 'flex',

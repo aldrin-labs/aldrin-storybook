@@ -50,13 +50,13 @@ export const ChartContainer = styled(Row)`
 
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
-  height: calc(100% - 160px);
-  margin: 80px 0;
+  margin: 3em 0;
+
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
-    overflow-y: auto;
     height: 100%;
-    margin: 20px 0;
+    margin: 0;
+    justify-content: flex-start;
   }
 
   ${LeftColumn} + ${RightColumn} {
@@ -174,7 +174,7 @@ export const SwapButton = styled(Button)`
   color: ${(props: { isHighPriceDiff: boolean }) =>
     props.isHighPriceDiff
       ? props.theme.colors.red1
-      : props.theme.colors.green2};
+      : props.theme.colors.green3};
 
   background: ${(props: { isHighPriceDiff: boolean }) =>
     props.isHighPriceDiff
@@ -191,8 +191,22 @@ export const SwapButton = styled(Button)`
   }
 
   &:disabled {
-    color: ${(props) => props.theme.colors.green1};
-    background: ${(props) => rgba(props.theme.colors.green1, 0.15)};
+    color: ${(props) => props.theme.colors.white3};
+    background: ${(props) => rgba(props.theme.colors.white3, 0.15)};
+  }
+
+  &:hover {
+    background: ${(props: { isHighPriceDiff: boolean }) =>
+      props.isHighPriceDiff
+        ? rgba(props.theme.colors.red0, 0.2)
+        : rgba(props.theme.colors.green2, 0.2)};
+  }
+
+  &:active {
+    background: ${(props: { isHighPriceDiff: boolean }) =>
+      props.isHighPriceDiff
+        ? rgba(props.theme.colors.red0, 0.25)
+        : rgba(props.theme.colors.green2, 0.25)};
   }
 `
 
@@ -229,7 +243,7 @@ export const ReverseTokensContainer = styled(
   }
 
   svg {
-    width: 1.2em;
+    width: 0.8em;
     height: auto;
     path {
       fill: ${(props) => props.theme.colors.white1};
@@ -239,7 +253,6 @@ export const ReverseTokensContainer = styled(
 
 export const SwapPageLayout = styled(Page)`
   font-size: 13px;
-  height: calc(100vh - 76px);
 
   @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
@@ -261,7 +274,6 @@ export const SwapContentContainer = styled(Row)`
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     width: 100%;
-    margin: ${em('24px', '14px')};
   }
 
   @media (min-width: ${BREAKPOINTS.xxl}) {
@@ -270,13 +282,12 @@ export const SwapContentContainer = styled(Row)`
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
-  box-shadow: 0 0 48px #000;
   background: ${({ theme }) => theme.colors.white6};
   padding: 1em 1em;
   z-index: 10;
   flex-direction: column;
   justify-content: space-between;
-  //min-height: 27em;
+  min-height: 27em;
 
   .timer {
     &:hover {
@@ -306,4 +317,13 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
   @media (min-width: ${BREAKPOINTS.xxl}) {
     font-size: 20px;
   }
+`
+export const TextButton = styled(Button)`
+  background: none;
+  color: ${(props) => props.theme.colors[props.color || 'green3']};
+  border: 0;
+  padding: 0;
+  font-weight: 600;
+  width: auto;
+  min-width: 0;
 `

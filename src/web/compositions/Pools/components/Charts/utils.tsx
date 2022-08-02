@@ -197,7 +197,7 @@ const createTotalVolumeLockedChart = ({
     try {
       chart?.update()
     } catch (e) {
-      // console.warn('Unable to update chart:', e)
+      console.warn('Unable to update chart:', e)
     }
   }) // TODO: Remove after flickering issue
   return chart
@@ -269,7 +269,7 @@ const createTradingVolumeChart = ({
     try {
       chart?.update()
     } catch (e) {
-      // console.warn('Unable to update chart:', e)
+      console.warn('Unable to update chart:', e)
     }
   }) // TODO: Remove after flickering issue
 

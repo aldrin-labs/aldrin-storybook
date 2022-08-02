@@ -11,14 +11,15 @@ export const callToast = (toastId, { render, options = {} }) => {
     toast.update(toastId, {
       render,
       position: toast.POSITION.BOTTOM_LEFT,
-      autoClose: false,
+      autoClose: 3000,
       ...options,
     })
   } else {
     toast(render, {
       toastId,
       position: toast.POSITION.BOTTOM_LEFT,
-      autoClose: false,
+      hideProgressBar: true,
+      autoClose: 3000,
       ...options,
     })
   }
