@@ -1,4 +1,4 @@
-import { useOpenOrdersMap } from '@likbes_/swap-hook'
+import { useOpenOrdersMap } from '@aldrin_exchange/swap_hook'
 import { OpenOrders } from '@project-serum/serum/lib/market'
 import { Connection } from '@solana/web3.js'
 import React, { useState, useEffect, useCallback } from 'react'

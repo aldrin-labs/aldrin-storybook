@@ -1,4 +1,4 @@
-import { AmmLabel, SwapRoute, SwapStep } from '@likbes_/swap-hook'
+import { AmmLabel, SwapRoute, SwapStep } from '@aldrin_exchange/swap_hook'
 import React from 'react'
 
 import { SvgIcon } from '@sb/components'

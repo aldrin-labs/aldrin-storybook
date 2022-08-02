@@ -1,4 +1,4 @@
-import { useSwapRoute } from '@likbes_/swap-hook'
+import { useSwapRoute } from '@aldrin_exchange/swap_hook'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
