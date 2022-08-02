@@ -50,7 +50,7 @@ export const ChartContainer = styled(Row)`
 
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
-  margin: 3em 0;
+  margin: 80px 0;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
@@ -128,11 +128,6 @@ export const InfoIconContainer = styled.span<InfoIconContainerProps>`
     props.isHighPriceDiff
       ? props.theme.colors.red1
       : props.theme.colors.green3};
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
 `
 
 export const BlackRow = styled((props) => (
@@ -287,7 +282,7 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
   z-index: 10;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 27em;
+  min-height: 25em;
 
   .timer {
     &:hover {
@@ -326,4 +321,10 @@ export const TextButton = styled(Button)`
   font-weight: 600;
   width: auto;
   min-width: 0;
+`
+
+export const FailedButtonsRow = styled(Row)`
+  ${TextButton} + ${TextButton} {
+    margin-left: 1.2em;
+  }
 `

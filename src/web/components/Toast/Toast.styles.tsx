@@ -9,13 +9,14 @@ export const Title = styled.div`
 
 export const Description = styled.div`
   color: ${(props) => props.theme.colors.white2};
+  margin-top: 0.3em;
 `
 
-export const DescriptionSuccess = styled.div`
+export const DescriptionSuccess = styled(Description)`
   color: ${(props) => props.theme.colors.green2};
 `
 
-export const DescriptionError = styled.div`
+export const DescriptionError = styled(Description)`
   color: ${(props) => props.theme.colors.red1};
 `
 

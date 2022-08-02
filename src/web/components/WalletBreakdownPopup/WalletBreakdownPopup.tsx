@@ -104,7 +104,7 @@ const WalletBreakdownPopup = ({
   const { enqueueSnackbar } = useSnackbar()
   const isMobile = useMobileSize()
   const tokenMap = useTokenInfos()
-  const [openOrders] = useCurrentUserOpenOrders()
+  const [openOrders, refreshOpenOrders] = useCurrentUserOpenOrders()
 
   const FREE_SLOT_BITS_MAX = new BN('f'.repeat(32), 16) // https://doc.rust-lang.org/std/u128/constant.MAX.html
 
@@ -179,6 +179,7 @@ const WalletBreakdownPopup = ({
     })
 
     await refreshUserTokenList()
+    await refreshOpenOrders()
   }
 
   return (
