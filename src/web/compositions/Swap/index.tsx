@@ -214,7 +214,6 @@ const SwapPage = ({
   } = useSwapRoute({
     wallet,
     connection: connection.getConnection(),
-    pools: [],
     inputMint: inputTokenMintAddress,
     outputMint: outputTokenMintAddress,
     selectedInputTokenAddressFromSeveral: selectedInputTokenAddressFromSeveral
