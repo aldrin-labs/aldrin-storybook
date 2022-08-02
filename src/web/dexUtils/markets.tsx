@@ -10,11 +10,13 @@ import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import tokensList from 'aldrin-registry/src/tokens.json'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { OrderWithMarket } from '@sb/dexUtils/send'
 
+import { toMap } from '@core/collection'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { AWESOME_MARKETS } from '@core/utils/awesomeMarkets/dictionaries'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
 
@@ -35,6 +37,12 @@ import {
 import { getTokenAccountInfo } from './tokens'
 import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
+
+export const tokensMap = toMap(tokensList, (token) => token.address)
+export const aldrinTokensMapBySymbol = toMap(
+  tokensList,
+  (token) => token.symbol
+)
 
 export const ALL_TOKENS_MINTS = tokensList.map((el) => {
   return { ...el, address: new PublicKey(el.address) }
@@ -77,7 +85,7 @@ export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
 
 const _IGNORE_DEPRECATED = false
 
-const USE_MARKETS = _IGNORE_DEPRECATED
+export const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
       {
@@ -90,6 +98,10 @@ const USE_MARKETS = _IGNORE_DEPRECATED
       },
     ].concat(MARKETS)
 // : MARKETS
+
+export const marketsMap = toMap(AWESOME_MARKETS.concat(USE_MARKETS), (market) =>
+  market.name.replace('/', '_')
+)
 
 export interface RawMarketData {
   name: string
@@ -185,71 +197,6 @@ export function useCustomMarkets() {
   )
 
   return { customMarkets, setCustomMarkets }
-}
-
-export function useAllMarkets() {
-  const connection = useConnection()
-  const { customMarkets } = useCustomMarkets()
-  const marketInfos = getMarketInfos(customMarkets)
-
-  const getAllMarkets = async () => {
-    const i = 0
-    const markets: Array<{
-      market: Market
-      marketName: string
-      programId: PublicKey
-    } | null> =
-      // .slice(0, 2)
-      marketInfos.map(async (marketInfo) => {
-        try {
-          // console.log('marketInfo.address', marketInfo.address, ++i)
-          const market = await Market.load(
-            connection,
-            marketInfo.address,
-            {},
-            marketInfo.programId
-          )
-
-          const asks = await market.loadAsks(connection)
-          const bids = await market.loadBids(connection)
-
-          return {
-            market,
-            marketName: marketInfo.name,
-            programId: marketInfo.programId,
-            asks,
-            bids,
-          }
-        } catch (e) {
-          notify({
-            message: 'Error loading all market',
-            description: e.message,
-            type: 'error',
-          })
-          return null
-        }
-      })
-
-    return markets.filter(
-      (m): m is { market: Market; marketName: string; programId: PublicKey } =>
-        !!m
-    )
-  }
-
-  const memoizedGetAllMarkets = useMemo(
-    () => getAllMarkets,
-    [JSON.stringify(customMarkets)]
-  )
-
-  // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
-
-  const getAllMarketsResult = useAsyncData(
-    memoizedGetAllMarkets,
-    tuple('getAllMarkets', customMarkets.length, connection),
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
-  )
-
-  return getAllMarketsResult
 }
 
 export function useUnmigratedOpenOrdersAccounts() {
@@ -620,7 +567,7 @@ export const useOpenOrdersPubkeys = (): string[] => {
 
 // Want the balances table to be fast-updating, dont want open orders to flicker
 // TODO: Update to use websocket
-export function useOpenOrdersAccounts(fast = false) {
+export function useOpenOrdersAccounts() {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
@@ -718,8 +665,8 @@ export function useAllOpenOrdersAccounts() {
   )
 }
 
-export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts] = useOpenOrdersAccounts(fast)
+export function useSelectedOpenOrdersAccount() {
+  const [accounts] = useOpenOrdersAccounts()
 
   if (!accounts) {
     return null
@@ -976,7 +923,7 @@ export function useSelectedBaseCurrencyBalances() {
 
 export function useOpenOrders(): OrderWithMarket[] | null {
   const { market, marketName } = useMarket()
-  const [openOrdersAccounts] = useOpenOrdersAccounts(false)
+  const [openOrdersAccounts] = useOpenOrdersAccounts()
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   if (!market || !openOrdersAccounts || !bidOrderbook || !askOrderbook) {
     return null
@@ -1092,142 +1039,6 @@ export function useBalances() {
   ]
 }
 
-export function useWalletBalancesForAllMarkets() {
-  const { connected, wallet } = useWallet()
-
-  const connection = useConnection()
-  const allMarkets = useAllMarkets()
-
-  async function getWalletBalancesForAllMarkets() {
-    const balances = []
-    if (!connected) {
-      return balances
-    }
-
-    let marketData
-    for (marketData of allMarkets) {
-      const { market, marketName } = marketData
-      if (!market) {
-        return balances
-      }
-      const baseCurrency = marketName.includes('/') && marketName.split('/')[0]
-      if (!balances.find((balance) => balance.coin === baseCurrency)) {
-        const baseBalance = await getCurrencyBalance(
-          market,
-          connection,
-          wallet,
-          true
-        )
-        balances.push({
-          key: baseCurrency,
-          coin: baseCurrency,
-          wallet: baseBalance,
-        })
-      }
-      const quoteCurrency = marketName.includes('/') && marketName.split('/')[1]
-      if (!balances.find((balance) => balance.coin === quoteCurrency)) {
-        const quoteBalance = await getCurrencyBalance(
-          market,
-          connection,
-          wallet,
-          false
-        )
-        balances.push({
-          key: quoteCurrency,
-          coin: quoteCurrency,
-          wallet: quoteBalance,
-        })
-      }
-    }
-
-    return balances
-  }
-
-  return useAsyncData(
-    getWalletBalancesForAllMarkets,
-    tuple(
-      'getWalletBalancesForAllMarkets',
-      connected,
-      connection,
-      wallet,
-      allMarkets
-    ),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
-  )
-}
-
-async function getCurrencyBalance(market, connection, wallet, base = true) {
-  const currencyAccounts = base
-    ? await market.findBaseTokenAccountsForOwner(connection, wallet.publicKey)
-    : await market.findQuoteTokenAccountsForOwner(connection, wallet.publicKey)
-  const currencyAccount = currencyAccounts && currencyAccounts[0]
-  const tokenAccountBalances = await connection.getTokenAccountBalance(
-    currencyAccount.pubkey
-  )
-  return tokenAccountBalances?.value?.uiAmount
-}
-
-export function useUnmigratedDeprecatedMarkets() {
-  const connection = useConnection()
-  const { accounts } = useUnmigratedOpenOrdersAccounts()
-  const marketsList =
-    accounts &&
-    Array.from(new Set(accounts.map((openOrders) => openOrders.market)))
-  const deps = marketsList && marketsList.map((m) => m.toBase58())
-
-  const useUnmigratedDeprecatedMarketsInner = async () => {
-    if (!marketsList) {
-      return null
-    }
-    const getMarket = async (address) => {
-      const marketInfo = USE_MARKETS.find((market) =>
-        market.address.equals(address)
-      )
-      try {
-        console.log('Loading market', marketInfo.name)
-        // NOTE: Should this just be cached by (connection, marketInfo.address, marketInfo.programId)?
-        return await Market.load(
-          connection,
-          marketInfo.address,
-          {},
-          marketInfo.programId
-        )
-      } catch (e) {
-        console.log('Failed loading market', marketInfo.name, e)
-        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
-        Metrics.sendMetrics({
-          metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch`,
-        })
-        notify({
-          message: 'Error loading market',
-          description: e.message,
-          type: 'error',
-        })
-        return null
-      }
-    }
-    return (await Promise.all(marketsList.map(getMarket))).filter((x) => x)
-  }
-  const [markets] = useAsyncData(
-    useUnmigratedDeprecatedMarketsInner,
-    tuple(
-      'useUnmigratedDeprecatedMarketsInner',
-      connection,
-      deps && deps.toString()
-    ),
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
-  )
-  if (!markets) {
-    return null
-  }
-  return markets.map((market) => ({
-    market,
-    openOrdersList: accounts.filter((openOrders) =>
-      openOrders.market.equals(market.address)
-    ),
-  }))
-}
-
 export function getMarketInfos(customMarkets) {
   const serumMarkets = useMarketsList()
   const customMarketsInfo = customMarkets.map((m) => ({
@@ -1280,8 +1091,7 @@ export const getTokenName = ({
     return '--'
   }
 
-  const tokenName =
+  return (
     tokensInfoMap.get(address)?.symbol || getTokenNameByMintAddress(address)
-
-  return tokenName
+  )
 }

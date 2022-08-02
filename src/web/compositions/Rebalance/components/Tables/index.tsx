@@ -210,10 +210,7 @@ export const TableMainRow = ({
 }) => {
   const theme = useTheme()
   const handleSliderChange = (e, value) => {
-    // console.log('value: ', value)
     const token = tokensMap[el.symbol]
-
-    // console.log('token: ', token)
 
     const oldTargetPercentage = token.targetPercentage
     const oldTargetTokenValue = token.targetTokenValue

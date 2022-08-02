@@ -1,3 +1,5 @@
+import { useOpenOrdersMap } from '@aldrin_exchange/swap_hook'
+import { OpenOrders } from '@project-serum/serum/lib/market'
 import { Connection } from '@solana/web3.js'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTheme } from 'styled-components'
@@ -81,6 +83,11 @@ export const RebalancePopup = ({
   >([])
 
   const allMarketsMap = useAllMarketsList()
+  const { loading: isLoadingOpenOrdersMap, openOrdersMap } = useOpenOrdersMap({
+    ownerAddress: wallet.publicKey,
+    connection,
+  })
+
   const showConfirmTradeButton = isWebWallet(wallet?._providerUrl?.origin)
 
   const updateTransactionsList = useCallback(
@@ -89,11 +96,13 @@ export const RebalancePopup = ({
       connection,
       tokensMap,
       allMarketsMap,
+      openOrdersMap,
     }: {
       wallet: WalletAdapter
       connection: Connection
       tokensMap: TokensMapType
       allMarketsMap: MarketsMap
+      openOrdersMap: Map<string, OpenOrders>
     }) => {
       // transactions with all prices
       const rebalanceAllTransactionsListWithPrices =
@@ -102,7 +111,7 @@ export const RebalancePopup = ({
           connection,
           tokensMap,
           allMarketsMap,
-          allMarketsMapById,
+          openOrdersMap,
         })
 
       setRebalanceTransactionsList(rebalanceAllTransactionsListWithPrices)
@@ -158,6 +167,7 @@ export const RebalancePopup = ({
       connection,
       tokensMap,
       allMarketsMap,
+      openOrdersMap,
     })
   }, [])
 
@@ -194,7 +204,8 @@ export const RebalancePopup = ({
   const isDisabled =
     !rebalanceTransactionsLoaded ||
     isNotEnoughSOL ||
-    rebalanceTransactionsList.length === 0
+    rebalanceTransactionsList.length === 0 ||
+    isLoadingOpenOrdersMap
 
   return (
     <DialogWrapper
@@ -230,6 +241,7 @@ export const RebalancePopup = ({
                   connection,
                   tokensMap,
                   allMarketsMap,
+                  openOrdersMap,
                 })
               }}
             />

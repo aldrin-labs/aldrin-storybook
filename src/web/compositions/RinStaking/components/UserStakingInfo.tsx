@@ -72,7 +72,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     stakingPool,
     currentFarmingState,
     getDexTokensPricesQuery,
-    treasuryDailyRewards,
   } = props
   const theme = useTheme()
 

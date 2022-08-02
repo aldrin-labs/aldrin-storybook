@@ -7,13 +7,13 @@ import CoinGecko from '@icons/coingecko.svg'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import Inform from '@icons/inform.svg'
 import Nomics from '@icons/nomics.svg'
-import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 import SvgIcon from '../SvgIcon'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
 import SolanaFm from './assets/solanafm.png'
 import SolanaFmDark from './assets/solanafmdark.png'
 import Solscan from './assets/solscan.png'
+import { SolanaExplorerLink } from './solanaExplorer'
 import {
   Container,
   Anchor,
@@ -32,6 +32,7 @@ interface TokenExternalLinksProps {
 
 interface SolExplorerLinkProps {
   mint: string
+  color?: string
 }
 
 const resolveExplorerIcon = (link: string) => {
@@ -49,7 +50,7 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
   const { data: theme } = useSWR('theme')
   return (
     <IconsContainer>
-      <Icon alt="View on Solana explorer" src={SolanaExplorerIcon} />
+      <SolanaExplorerLink color={props.color} />
       <IconsInner>
         <Wrap>
           <Anchor

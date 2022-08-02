@@ -33,6 +33,7 @@ const modalContentStyle = {
 
 const modalRootStyle = {
   backdropFilter: 'none',
+  justifyContent: 'flex-start',
 }
 
 const ConnectWalletPopup = ({
@@ -48,12 +49,14 @@ const ConnectWalletPopup = ({
 
   const modalBodyStyle = isMobile
     ? {
-        maxHeight: '65vh',
+        height: '100%',
+        width: '100%',
       }
     : {
         alignSelf: 'flex-end',
         marginTop: '75px',
         marginRight: '24px',
+        maxHeight: '80vh',
       }
 
   const walletProviders = WALLET_PROVIDERS.map((item) => {
@@ -91,9 +94,9 @@ const ConnectWalletPopup = ({
           let meta
 
           if (provider.status === WalletReadyState.Installed) {
-            meta = 'Connected'
-          } else {
-            meta = 'Not Connected'
+            meta = 'Installed'
+          } else if (provider.isExtension) {
+            meta = 'Not Installed'
           }
 
           if (provider.sysName === ALDRIN_WALLET_SYSNAME) {

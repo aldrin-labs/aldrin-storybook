@@ -152,7 +152,7 @@ export const SingleChart = (props: SingleChartProps) => {
       <iframe
         allowFullScreen
         style={{ borderWidth: 0 }}
-        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}&isMobile=${isMobile}${
+        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=serum-${themeMode}&isMobile=${isMobile}${
           wallet.connected ? `&user_id=${wallet.publicKey}` : ''
         }`}
         height="100%"

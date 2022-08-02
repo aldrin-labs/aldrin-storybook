@@ -4,6 +4,7 @@ import { useTheme } from 'styled-components'
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
+import { socialLinks } from '@sb/compositions/Homepage/SocialsLinksComponents'
 
 import {
   Link,
@@ -50,8 +51,6 @@ export enum POOL_ERRORS {
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
   props
 ) => {
-  const theme = useTheme()
-
   const { step, onSuccess, onError, status, error, txId } = props
 
   return (
@@ -88,7 +87,7 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
               <Text size="sm">
                 If you have any questions, contact us via{' '}
                 <Link
-                  href="https://t.me/Aldrin_Exchange"
+                  href={socialLinks.telegram}
                   target="_blank"
                   rel="noreferrer"
                 >
