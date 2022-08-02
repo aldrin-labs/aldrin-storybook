@@ -1,4 +1,4 @@
-import { DexInstructions, TokenInstructions } from '@project-serum/serum'
+import { DexInstructions } from '@project-serum/serum'
 import { Transaction } from '@solana/web3.js'
 import useMobileSize from '@webhooks/useMobileSize'
 import BN from 'bn.js'
@@ -93,8 +93,6 @@ type WalletBreakdownPopupProps = {
 
 const OPEN_ORDER_ACCOUNT_SOL_COST = 0.024
 
-const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
-
 const WalletBreakdownPopup = ({
   onClose,
   open,
@@ -107,7 +105,6 @@ const WalletBreakdownPopup = ({
   const isMobile = useMobileSize()
   const tokenMap = useTokenInfos()
   const [openOrders] = useCurrentUserOpenOrders()
-  const solWallet = useAssociatedTokenAccount(SOL_MINT)
 
   const FREE_SLOT_BITS_MAX = new BN('f'.repeat(32), 16) // https://doc.rust-lang.org/std/u128/constant.MAX.html
 
@@ -175,7 +172,7 @@ const WalletBreakdownPopup = ({
       )
     })
 
-    const txResult = await signAndSendSingleTransaction({
+    await signAndSendSingleTransaction({
       wallet: walletWithPk,
       connection,
       transaction,
@@ -204,7 +201,11 @@ const WalletBreakdownPopup = ({
         <PrimaryCardTop>
           <PrimaryCardTopLeft>
             <Wallet>
-              <SvgIcon src={wallet.icon} width="1em" height="100%" />
+              <SvgIcon
+                src={wallet.customIcon || wallet.icon}
+                width="1em"
+                height="100%"
+              />
               <WalletName>
                 {formatSymbol({ symbol: wallet.publicKey.toString() })}
               </WalletName>
