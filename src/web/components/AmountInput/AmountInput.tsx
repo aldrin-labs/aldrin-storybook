@@ -65,7 +65,9 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
           <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
             <MaxValue color="green7" weight={600}>
-              {amount > 0.000001 ? formatNumberWithSpaces(amount) : 0}
+              {amount > 0.000001
+                ? formatNumberWithSpaces(stripByAmountAndFormat(amount))
+                : 0}
             </MaxValue>
             {(showButtons || Number.isFinite(usdValue)) && (
               <ButtonsContainer>
