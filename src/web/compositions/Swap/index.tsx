@@ -25,6 +25,7 @@ import {
   USE_MARKETS,
 } from '@sb/dexUtils/markets'
 import { callToast } from '@sb/dexUtils/notifications'
+import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -381,7 +382,8 @@ const SwapPage = ({
         (pool?.tokenA === inputTokenMintAddress ||
           pool?.tokenA === outputTokenMintAddress) &&
         (pool?.tokenB === inputTokenMintAddress ||
-          pool?.tokenB === outputTokenMintAddress)
+          pool?.tokenB === outputTokenMintAddress) &&
+        !checkIsPoolStable(pool)
     )
   }
 
