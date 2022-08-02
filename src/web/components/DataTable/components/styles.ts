@@ -8,12 +8,12 @@ export const TooltipText = styled.div`
   left: -125px;
   text-align: left;
   display: none;
-  background: ${(props) => props.theme.colors.white3};
+  background: ${(props) => props.theme.colors.white6};
   font-family: ${FONTS.main};
   font-size: 1em;
   letter-spacing: -0.523077px;
   border-radius: ${BORDER_RADIUS.md};
-  color: ${(props) => props.theme.colors.white3};
+  color: ${(props) => props.theme.colors.white1};
   padding: 5px;
   line-height: 1.4;
   z-index: 1;
