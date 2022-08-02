@@ -250,9 +250,9 @@ const SwapPage = ({
 
   const priceDiffText =
     pricesDiffPct > 0
-      ? `${pricesDiffPct}% cheaper `
+      ? `${pricesDiffPct}% cheaper than`
       : pricesDiffPct < -1
-      ? `${-pricesDiffPct}% more expensive `
+      ? `${-pricesDiffPct}% more expensive than`
       : `Within 1% of `
 
   let { amount: maxInputAmount } = getTokenDataByMint(
@@ -839,7 +839,7 @@ const SwapPage = ({
                             >
                               {priceDiffText}
                             </InlineText>{' '}
-                            than CoinGecko price.
+                            CoinGecko price.
                           </Text>
                         </Row>
                       }
