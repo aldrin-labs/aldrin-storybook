@@ -128,11 +128,6 @@ export const InfoIconContainer = styled.span<InfoIconContainerProps>`
     props.isHighPriceDiff
       ? props.theme.colors.red1
       : props.theme.colors.green3};
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
 `
 
 export const BlackRow = styled((props) => (
