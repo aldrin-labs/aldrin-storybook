@@ -26,6 +26,7 @@ import {
   TokenButtonText,
   TokensContainer,
   UpdatedPaper,
+  BalanceLabel,
 } from './styles'
 
 export const SelectCoinPopup = ({
@@ -166,44 +167,40 @@ export const SelectCoinPopup = ({
           </RowContainer>
         </RowContainer>
         <TokensContainer justify="flex-start" direction="column" wrap="nowrap">
-          {sortedMints.map(({ mint, amount, name, symbol, total }) => {
-            return (
-              <SelectorRow
-                key={mint}
-                justify="space-between"
-                style={{ cursor: 'pointer' }}
-                onClick={() => selectMint(mint)}
-              >
-                <Row wrap="nowrap">
-                  <TokenIcon mint={mint} size={32} />
-                  <Row
-                    margin="0 0 0 0.5em"
-                    align="flex-start"
-                    direction="column"
-                  >
-                    <StyledText>{symbol}</StyledText>
-                    {name && (
-                      <Row padding="0.5em 0 0 0">
-                        <InlineText size="esm">{name}</InlineText>
-                      </Row>
-                    )}
+          {sortedMints.map(({ mint, amount, name, symbol, total }) => (
+            <SelectorRow
+              key={mint}
+              justify="space-between"
+              wrap="nowrap"
+              style={{ cursor: 'pointer' }}
+              onClick={() => selectMint(mint)}
+            >
+              <Row wrap="nowrap">
+                <TokenIcon mint={mint} size={32} />
+                <Row margin="0 0 0 0.5em" align="flex-start" direction="column">
+                  <StyledText>{symbol}</StyledText>
+                  {name && (
+                    <Row margin="0.5em 0 0 0">
+                      <InlineText size="esm">{name}</InlineText>
+                    </Row>
+                  )}
+                </Row>
+              </Row>
+              {connected && (
+                <Row direction="column" align="flex-end" wrap="nowrap">
+                  <InlineText size="esm" color="white" weight={600}>
+                    ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
+                  </InlineText>
+                  <Row margin="0.5em 0 0 0">
+                    <BalanceLabel size="esm" color="white1">
+                      {formatNumberToUSFormat(stripByAmount(amount))}&nbsp;
+                      {symbol}
+                    </BalanceLabel>
                   </Row>
                 </Row>
-                {connected && (
-                  <Row direction="column" align="flex-end" wrap="nowrap">
-                    <InlineText size="esm" color="white" weight={600}>
-                      ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
-                    </InlineText>
-                    <Row padding="0.5em 0 0 0">
-                      <InlineText size="esm" color="white1">
-                        {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
-                      </InlineText>
-                    </Row>
-                  </Row>
-                )}
-              </SelectorRow>
-            )
-          })}
+              )}
+            </SelectorRow>
+          ))}
           {mints.length === 0 && (
             <RowContainer>
               <StyledText>Loading...</StyledText>
