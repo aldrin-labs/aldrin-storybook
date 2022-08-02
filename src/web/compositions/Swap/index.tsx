@@ -25,6 +25,7 @@ import {
   USE_MARKETS,
 } from '@sb/dexUtils/markets'
 import { callToast } from '@sb/dexUtils/notifications'
+import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -82,6 +83,7 @@ import {
   RightColumn,
   ChartContainer,
   TextButton,
+  FailedButtonsRow,
 } from './styles'
 import { getSwapButtonText } from './utils'
 
@@ -239,6 +241,8 @@ const SwapPage = ({
     2
   )
   const isHighPriceImpact = swapRoute.priceImpact > 2
+
+  // console.log({ priceImpact: swapRoute.priceImpact })
   const isHighPriceDiff =
     inputTokenMintAddress === RIN_MINT || outputTokenMintAddress === RIN_MINT
       ? isHighPriceImpact
@@ -246,9 +250,9 @@ const SwapPage = ({
 
   const priceDiffText =
     pricesDiffPct > 0
-      ? `${pricesDiffPct}% cheaper `
+      ? `${pricesDiffPct}% cheaper than`
       : pricesDiffPct < -1
-      ? `${-pricesDiffPct}% more expensive `
+      ? `${-pricesDiffPct}% more expensive than`
       : `Within 1% of `
 
   let { amount: maxInputAmount } = getTokenDataByMint(
@@ -380,7 +384,8 @@ const SwapPage = ({
         (pool?.tokenA === inputTokenMintAddress ||
           pool?.tokenA === outputTokenMintAddress) &&
         (pool?.tokenB === inputTokenMintAddress ||
-          pool?.tokenB === outputTokenMintAddress)
+          pool?.tokenB === outputTokenMintAddress) &&
+        !checkIsPoolStable(pool)
     )
   }
 
@@ -514,20 +519,29 @@ const SwapPage = ({
                   segments: swapRoute.steps.length + 1,
                   value: swapRoute.steps.length + 1,
                 }}
-                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                title={`Swap ${stripByAmountAndFormat(
+                  inputAmount,
+                  4
+                )} ${inputSymbol} to ${stripByAmountAndFormat(
+                  outputAmount,
+                  4
+                )} ${outputSymbol}`}
                 description={
                   <RowContainer justify="space-between">
                     <span>Failed.</span>
-                    <Row justify="space-between" width="40%">
+                    <FailedButtonsRow>
                       <TextButton color="white3">Cancel</TextButton>
-                      <TextButton onClick={() => makeTransaction()}>
+                      <TextButton onClick={makeTransaction}>
                         Try again
                       </TextButton>
-                    </Row>
+                    </FailedButtonsRow>
                   </RowContainer>
                 }
               />
             ),
+            options: {
+              autoClose: false,
+            },
           })
         } else {
           callToast(toastId, {
@@ -825,7 +839,7 @@ const SwapPage = ({
                             >
                               {priceDiffText}
                             </InlineText>{' '}
-                            than CoinGecko price.
+                            CoinGecko price.
                           </Text>
                         </Row>
                       }
