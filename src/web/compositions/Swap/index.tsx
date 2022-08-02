@@ -1,4 +1,4 @@
-import { useSwapRoute } from '@likbes_/swap-hook'
+import { useSwapRoute } from '@aldrin_exchange/swap_hook'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
@@ -24,8 +24,7 @@ import {
   getTokenMintAddressByName,
   USE_MARKETS,
 } from '@sb/dexUtils/markets'
-import { callToast } from "@sb/dexUtils/notifications"
-import { notify } from '@sb/dexUtils/notifications'
+import { callToast } from '@sb/dexUtils/notifications'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -445,8 +444,12 @@ const SwapPage = ({
               for (let i = 0; i < swapRoute.steps.length; i++) {
                 const step = swapRoute.steps[i]
                 setTimeout(() => {
-                  const transactionInputSymbol = getTokenNameByMintAddress(step.inputMint)
-                  const transactionOutputSymbol = getTokenNameByMintAddress(step.outputMint)
+                  const transactionInputSymbol = getTokenNameByMintAddress(
+                    step.inputMint
+                  )
+                  const transactionOutputSymbol = getTokenNameByMintAddress(
+                    step.outputMint
+                  )
 
                   callToast(toastId, {
                     render: () => (
