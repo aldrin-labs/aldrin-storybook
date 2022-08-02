@@ -241,6 +241,8 @@ const SwapPage = ({
     2
   )
   const isHighPriceImpact = swapRoute.priceImpact > 2
+
+  // console.log({ priceImpact: swapRoute.priceImpact })
   const isHighPriceDiff =
     inputTokenMintAddress === RIN_MINT || outputTokenMintAddress === RIN_MINT
       ? isHighPriceImpact
