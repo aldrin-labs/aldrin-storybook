@@ -65,7 +65,7 @@ const TokenInfo = (params: TokenInfoParams) => {
           </MintAddressText>
         </Row>
         <ExplorerContainer>
-          <SolExplorerLink mint={mint} />
+          <SolExplorerLink color="#A8A8B2FF" mint={mint} />
         </ExplorerContainer>
       </TokenIconLinksContainer>
     </TokenInfoContainer>

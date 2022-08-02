@@ -41,6 +41,13 @@ const SpreadTable = ({
     }
   })
 
+  console.log({
+    bids: data.bids,
+    length: data.bids.getLength(),
+    tableData,
+    formattedData,
+  })
+
   const dataForCalcBackgroundAmount = tableData.map((el) => {
     return {
       size: el.size,
