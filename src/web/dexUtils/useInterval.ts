@@ -5,12 +5,17 @@ export function useInterval(callback: () => any, delay: number) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
+    console.log('change cb')
     savedCallback.current = callback
   }, [callback])
 
   useEffect(() => {
+    function tick() {
+      savedCallback.current && savedCallback.current()
+    }
+
     if (delay !== null) {
-      const id = setInterval(savedCallback.current, delay)
+      const id = setInterval(tick, delay)
       intervalRef.current = id
       return () => clearInterval(id)
     }
