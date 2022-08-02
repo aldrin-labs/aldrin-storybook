@@ -322,3 +322,9 @@ export const TextButton = styled(Button)`
   width: auto;
   min-width: 0;
 `
+
+export const FailedButtonsRow = styled(Row)`
+  ${TextButton} + ${TextButton} {
+    margin-left: 1.2em;
+  }
+`

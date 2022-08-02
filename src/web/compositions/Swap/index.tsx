@@ -82,6 +82,7 @@ import {
   RightColumn,
   ChartContainer,
   TextButton,
+  FailedButtonsRow,
 } from './styles'
 import { getSwapButtonText } from './utils'
 
@@ -514,20 +515,29 @@ const SwapPage = ({
                   segments: swapRoute.steps.length + 1,
                   value: swapRoute.steps.length + 1,
                 }}
-                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                title={`Swap ${stripByAmountAndFormat(
+                  inputAmount,
+                  4
+                )} ${inputSymbol} to ${stripByAmountAndFormat(
+                  outputAmount,
+                  4
+                )} ${outputSymbol}`}
                 description={
                   <RowContainer justify="space-between">
                     <span>Failed.</span>
-                    <Row justify="space-between" width="40%">
+                    <FailedButtonsRow>
                       <TextButton color="white3">Cancel</TextButton>
-                      <TextButton onClick={() => makeTransaction()}>
+                      <TextButton onClick={makeTransaction}>
                         Try again
                       </TextButton>
-                    </Row>
+                    </FailedButtonsRow>
                   </RowContainer>
                 }
               />
             ),
+            options: {
+              autoClose: false,
+            },
           })
         } else {
           callToast(toastId, {
