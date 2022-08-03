@@ -56,6 +56,7 @@ import ClockIcon from '@icons/clock.svg'
 import { client } from '../../../../../../core/src/graphql/apolloClient'
 import { getPoolsInfo } from '../../../../../../core/src/graphql/queries/pools/getPoolsInfo'
 import { migrateLiquidity } from '../../../dexUtils/migrateAll'
+import { stakeAll } from '../../../dexUtils/stakeAll'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
@@ -245,6 +246,22 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     [connection, wallet, tokenData, refreshAll]
   )
 
+  const stakeAllFn = async () => {
+    const pools = await client.query({
+      query: getPoolsInfo,
+      fetchPolicy: 'network-only',
+    })
+    console.log('pools:', pools)
+    const w = wallet as AuthorizedWalletAdapter
+
+    stakeAll({
+      wallet: w,
+      connection,
+      rinStaking: stakingPool,
+      pools: pools.data.getPoolsInfo,
+    })
+  }
+
   const migrate = async () => {
     const pools = await client.query({
       query: getPoolsInfo,
@@ -408,6 +425,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   return (
     <>
       <button onClick={migrate}>MIGRATE</button>
+      <button onClick={stakeAllFn}>Stake ALL (new acc)</button>
       <Row style={{ height: 'auto' }}>
         <Cell colMd={6} colXl={3} col={12}>
           <GreenBlock>

@@ -43,7 +43,7 @@ interface MigrateLiquidityParams {
   pools: PoolInfo[]
 }
 
-const getTokensForUser = async (
+export const getTokensForUser = async (
   owner: PublicKey,
   connection: AldrinConnection
 ) => {
