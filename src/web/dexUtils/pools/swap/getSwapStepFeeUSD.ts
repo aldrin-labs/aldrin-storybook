@@ -1,4 +1,4 @@
-import { SwapStep } from '@likbes_/swap-hook'
+import { SwapStep } from '@aldrin_exchange/swap_hook'
 import { TokenInfoMap } from '@solana/spl-token-registry'
 
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'

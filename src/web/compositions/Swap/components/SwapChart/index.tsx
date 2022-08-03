@@ -13,10 +13,8 @@ import OHLCVCandlesIcon from '@icons/ohlcvCandles.svg'
 import {
   CrossSwapChartContainer,
   EmptyOHLCVTextContainer,
-  SwapChartAndPriceContainer,
   SwapChartContainer,
 } from './styles'
-import { SwapChartPrice } from './SwapChartPrice'
 import { SwapChartProps } from './types'
 
 const SwapChartWithPrice = (props: SwapChartProps) => {
@@ -42,7 +40,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
 
   return (
     <>
-      <SwapChartAndPriceContainer>
+      {/* <SwapChartAndPriceContainer>
         <SwapChartPrice
           pricesMap={pricesMap}
           inputSymbol={inputSymbol}
@@ -50,7 +48,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           inputTokenMintAddress={inputTokenMintAddress}
           outputTokenMintAddress={outputTokenMintAddress}
         />
-      </SwapChartAndPriceContainer>
+      </SwapChartAndPriceContainer> */}
       <SwapChartContainer>
         {isCrossOHLCV || !inputSymbol || !outputSymbol ? (
           <CrossSwapChartContainer direction="column" height="100%">

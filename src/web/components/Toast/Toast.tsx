@@ -133,7 +133,7 @@ const Progress = (props: ProgressProps) => {
 
 type ToastProps = {
   title: string
-  description?: string
+  description?: string | React.ReactElement
   type: 'progress' | 'error' | 'success'
   progressOptions: ProgressOptionsType
 }

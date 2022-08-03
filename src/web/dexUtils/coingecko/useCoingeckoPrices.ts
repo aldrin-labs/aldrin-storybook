@@ -38,7 +38,7 @@ export const useCoingeckoPrices = (
   }
 
   const { data: pricesMap, mutate: refresh } = useSWR(
-    `useCoingeckoPrices`,
+    `useCoingeckoPrices-${tokenByIdMap.size}`,
     fetcher,
     {
       refreshInterval: COMMON_REFRESH_INTERVAL,
