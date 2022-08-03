@@ -25,6 +25,7 @@ import {
 
 import { PoolInfo } from '../compositions/Pools/index.types'
 import { groupBy, toMap } from '../utils'
+import { FarmingCalc, FarmingTicket } from './common/types'
 import { StakingPool } from './staking/types'
 import { Token, u64 as U64 } from './token/token'
 import { signAndSendTransactions } from './transactions'
@@ -41,6 +42,10 @@ interface MigrateLiquidityParams {
   onStatusChange: (newStatus: MigrationStatus) => void
   rinStaking: StakingPool
   pools: PoolInfo[]
+  stakingTickets: FarmingTicket[]
+  stakingCalcAccounts: FarmingCalc[]
+  poolsTicketsByPool: Map<string, FarmingTicket[]>
+  poolsCalcsByFarmingState: Map<string, FarmingCalc[]>
 }
 
 export const getTokensForUser = async (

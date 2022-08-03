@@ -6,6 +6,7 @@ import {
   WIDTH,
   UCOLORS,
 } from '@variables/variables'
+import { rgba } from 'polished'
 import styled, { css } from 'styled-components'
 
 import RinLogo from '@icons/blueRINLogo.svg'
@@ -111,6 +112,11 @@ const VARIANTS = {
     color: ${({ theme }) => theme.colors.blue1};
     font-weight: 600;
     background: rgba(94, 85, 242, 0.15);
+  `,
+
+  red: css`
+    color: ${({ theme }) => theme.colors.red1};
+    background: ${({ theme }) => rgba(theme.colors.red1, 0.15)};
   `,
 
   // TODO: rewrite with [disabled] html attribute

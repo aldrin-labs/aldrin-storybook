@@ -38,8 +38,14 @@ export const usePools = (): [(Pool | PoolV2)[], RefreshFunction] => {
     ])
 
     const allPoolsList: (Pool | PoolV2)[] = [
-      ...pools.map((p) => p.account as Pool),
-      ...v2pools.map((p) => p.account as PoolV2),
+      ...pools.map((p) => {
+        const pool = { ...p.account, publicKey: p.publicKey } as Pool
+        return pool
+      }),
+      ...v2pools.map((p) => {
+        const pool = { ...p.account, publicKey: p.publicKey } as PoolV2
+        return pool
+      }),
     ]
 
     return allPoolsList
