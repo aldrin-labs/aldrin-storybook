@@ -332,7 +332,8 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
+  const { data: accountInfo, isLoading: accountInfoLoading } =
+    useAccountInfo(publicKey)
 
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
@@ -418,10 +419,10 @@ export async function createAssociatedTokenAccount({
   return [address, txSig]
 }
 export async function createAssociatedTokenAccountIx(
-  fundingAddress,
-  walletAddress,
-  splTokenMintAddress
-) {
+  fundingAddress: PublicKey,
+  walletAddress: PublicKey,
+  splTokenMintAddress: PublicKey
+): Promise<[TransactionInstruction, PublicKey]> {
   const associatedTokenAddress = await findAssociatedTokenAddress(
     walletAddress,
     splTokenMintAddress
