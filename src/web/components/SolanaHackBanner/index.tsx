@@ -19,8 +19,7 @@ export const SolanaHackBanner = () => {
       </svg>
 
       <div>
-        Solana wallets got attacked. In order to keep you funds in safety please
-        move them to CEX or clear wallet. Do not withdraw funds from staking or
+        Solana wallets got attacked. Do not withdraw funds from staking or
         liquidity positions for your safety, our team is working on positions
         migration tool.
       </div>
