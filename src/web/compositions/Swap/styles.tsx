@@ -50,7 +50,7 @@ export const ChartContainer = styled(Row)`
 
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
-  margin: 80px 0;
+  //margin: 80px 0;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
