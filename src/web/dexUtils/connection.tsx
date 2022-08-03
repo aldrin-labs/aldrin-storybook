@@ -19,7 +19,8 @@ export const ENDPOINTS = [
 
 const providers = process.env.RPC_PROVIDERS_ADDRESSES
   ? JSON.parse(process.env.RPC_PROVIDERS_ADDRESSES)
-  : [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }]
+  : // : [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }]
+    [{ url: 'https://solana-api.projectserum.com', weight: 20 }]
 
 const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
