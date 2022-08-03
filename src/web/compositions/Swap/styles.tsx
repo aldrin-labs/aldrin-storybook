@@ -55,7 +55,7 @@ export const SwapPageContainer = styled(RowContainer)`
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
     height: 100%;
-    margin: 0;
+    //margin: 0;
     justify-content: flex-start;
   }
 
