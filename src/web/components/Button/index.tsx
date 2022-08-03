@@ -107,6 +107,12 @@ const VARIANTS = {
     font-size: ${FONT_SIZES.xs};
   `,
 
+  blue: css`
+    color: ${({ theme }) => theme.colors.blue1};
+    font-weight: 600;
+    background: rgba(94, 85, 242, 0.15);
+  `,
+
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
     background: ${COLORS.cardsBack};
