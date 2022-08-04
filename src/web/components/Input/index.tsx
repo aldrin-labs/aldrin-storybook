@@ -3,7 +3,7 @@ import { noop } from 'lodash-es'
 import React, { useRef } from 'react'
 
 import { InlineText } from '../Typography'
-import { Append, InputContainer, InputEl, InputWrap, Label } from './styles'
+import { Append, Prepend, InputContainer, InputEl, InputWrap, Label } from './styles'
 import { FieldProps, InputProps } from './types'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
@@ -43,6 +43,7 @@ export const Input: React.FC<InputProps> = (props) => {
     onBlur,
     onFocus,
     append,
+    prepend,
     value = '',
     size,
     name,
@@ -71,6 +72,8 @@ export const Input: React.FC<InputProps> = (props) => {
       $withLabel={!!label}
       onClick={setFocus}
     >
+      {prepend && <Prepend>{prepend}</Prepend>}
+
       <InputContainer>
         <InlineText size="xs">{label && <Label>{label}</Label>}</InlineText>
 
