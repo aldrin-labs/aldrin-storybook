@@ -211,10 +211,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
 
     // Prepare transfer
     if (!newRin) {
-      console.log(
-        'Create RIN account for the new wallet',
-        newWallet.publicKey.toString()
-      )
+      console.log('Create RIN account for the new wallet', newWallet.toString())
       const [ix, associatedAddress] = await createAssociatedTokenAccountIx(
         wallet.publicKey,
         newWallet,
