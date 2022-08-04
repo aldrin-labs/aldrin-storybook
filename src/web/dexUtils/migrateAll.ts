@@ -115,6 +115,11 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
         let tokenAccount = userTokensMap.get(fs.farmingTokenMint)?.address
         rinAmountToTransfer = rinAmountToTransfer.add(calcAccount.tokenAmount)
         if (!tokenAccount) {
+          console.log(
+            'Create associated token account',
+            RIN_MINT,
+            wallet.publicKey.toString()
+          )
           const [ix, associatedAddress] = await createAssociatedTokenAccountIx(
             wallet.publicKey,
             wallet.publicKey,
@@ -128,6 +133,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
           })
           tokenAccount = associatedAddress.toString()
         }
+        console.log('Withdraw RIN farmed', calcAccount.tokenAmount.toString())
         return rinProgram.instruction.withdrawFarmed({
           accounts: {
             pool: rinPoolPk,
@@ -165,8 +171,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
   const activeTickets = tickets.filter(
     (ticket) =>
       ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
-      parseFloat(ticket.startTime) < MIN_START_STAKING_TIME &&
-      ticket.statesAttached.length > 0
+      parseFloat(ticket.startTime) < MIN_START_STAKING_TIME
   )
 
   const endStakingIx = await Promise.all(
@@ -174,12 +179,11 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
       rinAmountToTransfer = rinAmountToTransfer.add(
         new U64(ticketData.tokensFrozen.toFixed(0))
       )
+      console.log('End RIN staking', ticketData)
       return (await rinProgram.instruction.endFarming({
         accounts: {
           pool: new PublicKey(rinStaking.swapToken),
-          farmingState: new PublicKey(
-            ticketData.statesAttached[0].farmingState
-          ),
+          farmingState: new PublicKey(rinFarmingState.farmingState),
           farmingSnapshots: new PublicKey(rinFarmingState.farmingSnapshots),
           farmingTicket: new PublicKey(ticketData.farmingTicket),
           // Make code compatible for both staking and pools farming
@@ -207,6 +211,10 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
 
     // Prepare transfer
     if (!newRin) {
+      console.log(
+        'Create RIN account for the new wallet',
+        newWallet.publicKey.toString()
+      )
       const [ix, associatedAddress] = await createAssociatedTokenAccountIx(
         wallet.publicKey,
         newWallet,
@@ -224,6 +232,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
       })
     }
 
+    console.log('Transfer RIN to new wallet', rinAmountToTransfer.toString())
     rinStakingInstructions.add(
       Token.createTransferInstruction(
         TOKEN_PROGRAM_ID,
@@ -260,10 +269,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     connection,
   })
 
-  const ticketsForPools = groupBy(
-    poolTickets.filter((_) => _.statesAttached.length > 0),
-    (pt) => pt.pool
-  )
+  const ticketsForPools = groupBy(poolTickets, (pt) => pt.pool)
 
   const poolTransactions = pools.map(async (pool) => {
     const program = pool.curve ? programV2 : programV1
@@ -306,6 +312,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
           .map(async (calcAccount) => {
             let tokenAccount = userTokensMap.get(f.farmingTokenMint)?.address
             if (!tokenAccount) {
+              console.log('create token account for user ', f.farmingTokenMint)
               const [ix, associatedAddress] =
                 await createAssociatedTokenAccountIx(
                   wallet.publicKey,
@@ -334,6 +341,12 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
               amount: amount.add(calcAccount.tokenAmount),
             })
 
+            console.log(
+              'Withdraw farmed',
+              pool.parsedName,
+              f.farmingTokenMint,
+              f.farmingState
+            )
             return program.instruction.withdrawFarmed({
               accounts: {
                 pool: new PublicKey(pool.swapToken),
@@ -366,6 +379,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     let userPoolTokenAccount = userTokensMap.get(pool.poolTokenMint)?.address
 
     if (!userPoolTokenAccount && activeTicketsForPool.length > 0) {
+      console.log('Create LP token account for user', pool.poolTokenMint)
       const [ix, associatedAddress] = await createAssociatedTokenAccountIx(
         wallet.publicKey,
         wallet.publicKey,
@@ -386,9 +400,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
 
     // End farming
     const endFarmings = activeTicketsForPool.map(async (ticket) => {
-      const farmingState = (pool.farming || []).find(
-        (_) => _.farmingState === ticket.statesAttached[0].farmingState
-      )
+      const farmingState = (pool.farming || [])[0]
       if (farmingState) {
         const amount =
           withdrawMap.get(pool.poolTokenMint)?.amount ||
@@ -403,6 +415,8 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
           address: userPoolTokenAccount,
           amount: amount.add(new U64(ticket.tokensFrozen.toString())),
         })
+
+        console.log('End farming', pool.parsedName, farmingState.farmingState)
 
         return (await program.instruction.endFarming({
           accounts: {
@@ -440,6 +454,11 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
         if (v.amount.gtn(0)) {
           let userToken = newUserTokensMap.get(mint)?.address
           if (!userToken) {
+            console.log(
+              'Create token account for the new user',
+              mint,
+              newWallet.toString()
+            )
             const [ix, associatedAddress] =
               await createAssociatedTokenAccountIx(
                 wallet.publicKey,
@@ -455,6 +474,11 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
             })
           }
 
+          console.log(
+            'Transfer tokens to the new user',
+            mint,
+            newWallet.toString()
+          )
           tx.add(
             Token.createTransferInstruction(
               TOKEN_PROGRAM_ID,

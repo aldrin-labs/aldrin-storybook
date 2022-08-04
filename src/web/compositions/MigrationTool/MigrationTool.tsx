@@ -60,6 +60,8 @@ import {
   WithdrawPositionsParams,
 } from './types'
 
+const ACCOUNT_PRICE = 0.003
+
 const ConnectWalletStep: FC<ConnectWalletStepParams> = ({
   nextStep,
   openWalletPopup,
@@ -249,7 +251,8 @@ const MigratePositionsStep = ({
   })
 
   const isWithdrawLiquidityFromUserAccount = operationType === 'withdraw'
-  const MIN_SOL_TO_MIGRATE = 0.05
+  const MIN_SOL_TO_MIGRATE =
+    (stakingAmount ? ACCOUNT_PRICE : 0) + poolsToShow.length * ACCOUNT_PRICE
 
   const userNativeSOLToken =
     userTokenAccounts.length > 0 ? userTokenAccounts[0] : { amount: 0 }
@@ -280,8 +283,7 @@ const MigratePositionsStep = ({
         (ticket) =>
           ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
           parseFloat(ticket.startTime) <
-            Math.floor(Date.now() / 1000) - HOUR - 1 &&
-          ticket.statesAttached.length > 0
+            Math.floor(Date.now() / 1000) - HOUR - 1
       )
 
       setStakingTickets(activeStakingTickets)
@@ -336,8 +338,7 @@ const MigratePositionsStep = ({
           ticket.tokensFrozen > MINIMAL_STAKING_AMOUNT &&
           ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
           parseFloat(ticket.startTime) <
-            Math.floor(Date.now() / 1000) - HOUR - 1 &&
-          ticket.statesAttached.length > 0
+            Math.floor(Date.now() / 1000) - HOUR - 1
       )
 
       const ticketsForPools = groupBy(activeTicketsForPool, (pt) => pt.pool)
