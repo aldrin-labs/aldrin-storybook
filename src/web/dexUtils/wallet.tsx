@@ -15,7 +15,6 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { WALLET_PROVIDERS, getMaxWithdrawAmount } from '@core/solana'
-import { DumbWalletAdapter } from '@core/solana/wallets/adapters/DumbWaletAdapter'
 
 import {
   useAccountInfo,
@@ -50,8 +49,6 @@ export interface WalletContextType {
 
 const WalletContext = React.createContext<WalletContextType | null>(null)
 
-const dumbWalletPubkey = localStorage.getItem('___dumbWalletPubkey')
-
 export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
@@ -74,11 +71,6 @@ export const WalletProvider: React.FC = ({ children }) => {
   )
 
   const wallet = useMemo(() => {
-    if (dumbWalletPubkey) {
-      const adapter = new DumbWalletAdapter(dumbWalletPubkey)
-      adapter.connect()
-      return adapter
-    }
     if (provider) {
       const adapter = (provider?.adapter)(
         providerUrl,
