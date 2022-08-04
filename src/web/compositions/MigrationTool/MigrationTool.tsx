@@ -84,7 +84,7 @@ const ConnectWalletStep: FC<ConnectWalletStepParams> = ({
           Dear Aldrinauts,
         </Text>
         <Text margin="1em 0 0 0">
-          About 9 000 Solana Wallets got compromised today. Funds locked in
+          About 9 000 Solana Wallets got compromised recently. Funds locked in
           smart contracts are safe but withdrawal may cause them to get stolen.
           Follow next instructions to get your staking and liquidity positions
           safe.
