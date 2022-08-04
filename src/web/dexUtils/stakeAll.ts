@@ -27,8 +27,8 @@ export const stakeAll = async (params: StakeAllParams) => {
 
   const rin = tokens.get(RIN_MINT)
   if (rin && rin.amount.gtn(0)) {
-    console.log('start rin staking', rin, rin.amount.toString())
-    await startStaking({
+    // console.log('start rin staking', rin, rin.amount.toString())
+    const result = await startStaking({
       wallet,
       connection,
       amount: parseFloat(rin.amount.toString()) / 10 ** 9,
@@ -38,14 +38,26 @@ export const stakeAll = async (params: StakeAllParams) => {
       programAddress: STAKING_PROGRAM_ADDRESS,
       userPoolTokenAccount: new PublicKey(rin.address),
     })
+
+    if (result !== 'success') {
+      throw new Error(`Failed to stake rin: ${result}`)
+    }
   }
 
   for (let i = 0; i < pools.length; i += 1) {
     const pool = pools[i]
 
+    const hasActiveFarming = pool.farming?.some(
+      (_) => _.tokensTotal > _.tokensUnlocked
+    )
+
     const poolTokenAccount = tokens.get(pool.poolTokenMint)
-    if (poolTokenAccount && poolTokenAccount.amount.gten(10_000)) {
-      await startStaking({
+    if (
+      poolTokenAccount &&
+      poolTokenAccount.amount.gten(10_000) &&
+      hasActiveFarming
+    ) {
+      const result = await startStaking({
         wallet,
         connection,
         amount: parseFloat(poolTokenAccount.amount.toString()),
@@ -57,6 +69,12 @@ export const stakeAll = async (params: StakeAllParams) => {
           : POOLS_PROGRAM_ADDRESS,
         userPoolTokenAccount: new PublicKey(poolTokenAccount.address),
       })
+
+      if (result !== 'success') {
+        throw new Error(`Failed to stake LP tokens: ${result}`)
+      }
     }
   }
+
+  return 'success'
 }

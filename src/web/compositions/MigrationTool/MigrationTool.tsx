@@ -18,7 +18,6 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { stakeAll } from '@sb/dexUtils/stakeAll'
 import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { groupBy } from '@core/collection'
@@ -37,8 +36,10 @@ import {
   walletAdapterToWallet,
 } from '@core/solana'
 import { FarmingCalc, FarmingTicket } from '@core/types/farming.types'
+import { HOUR } from '@core/utils/dateUtils'
 import { stripByAmount } from '@core/utils/numberUtils'
 
+import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { ConnectWalletPopup } from '../Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { getUniqueAmountsToClaimMap } from '../Pools/components/Tables/utils/getUniqueAmountsToClaimMap'
 import AldrinHelmetIcon from './assets/aldrinHelmet.svg'
@@ -83,7 +84,7 @@ const ConnectWalletStep: FC<ConnectWalletStepParams> = ({
           Dear Aldrinauts,
         </Text>
         <Text margin="1em 0 0 0">
-          About 8 000 Solana Wallets got compromised today. Funds locked in
+          About 9 000 Solana Wallets got compromised today. Funds locked in
           smart contracts are safe but withdrawal may cause them to get stolen.
           Follow next instructions to get your staking and liquidity positions
           safe.
@@ -194,8 +195,6 @@ const MigratePositionsStep = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const tokenInfosMap = useTokenInfos()
-
   const { data } = useStakingPoolInfo()
   const { poolInfo } = data || { poolInfo: null }
 
@@ -243,7 +242,8 @@ const MigratePositionsStep = ({
       userTokenAccounts,
       pool.poolTokenMint
     )
-    const hasLpTokens = lpTokenAmount > MINIMAL_STAKING_AMOUNT
+
+    const hasLpTokens = lpTokenAmount > 0
 
     return hasTickets || hasLpTokens
   })
@@ -254,6 +254,10 @@ const MigratePositionsStep = ({
   const userNativeSOLToken =
     userTokenAccounts.length > 0 ? userTokenAccounts[0] : { amount: 0 }
   const isEnoughSOL = userNativeSOLToken.amount > MIN_SOL_TO_MIGRATE
+
+  const hasPositions = stakingAmount > 0 || poolsToShow.length > 0
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const load = async () => {
@@ -273,7 +277,11 @@ const MigratePositionsStep = ({
       })
 
       const activeStakingTickets = parsedStakingTickets.filter(
-        (ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME
+        (ticket) =>
+          ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
+          parseFloat(ticket.startTime) <
+            Math.floor(Date.now() / 1000) - HOUR - 1 &&
+          ticket.statesAttached.length > 0
       )
 
       setStakingTickets(activeStakingTickets)
@@ -324,7 +332,12 @@ const MigratePositionsStep = ({
       })
 
       const activeTicketsForPool = poolTickets.filter(
-        (ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME
+        (ticket) =>
+          ticket.tokensFrozen > MINIMAL_STAKING_AMOUNT &&
+          ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
+          parseFloat(ticket.startTime) <
+            Math.floor(Date.now() / 1000) - HOUR - 1 &&
+          ticket.statesAttached.length > 0
       )
 
       const ticketsForPools = groupBy(activeTicketsForPool, (pt) => pt.pool)
@@ -335,6 +348,51 @@ const MigratePositionsStep = ({
 
     load()
   }, [])
+
+  const doMigrate = async () => {
+    console.log('do migrate', isEnoughSOL, hasPositions)
+    if (!isEnoughSOL || !hasPositions) return
+    if (!poolInfo) {
+      notify({
+        message: 'Staking not loaded',
+        type: 'error',
+      })
+      return
+    }
+
+    const walletWithPk = walletAdapterToWallet(wallet)
+    setLoading(true)
+    setError(false)
+    try {
+      if (isWithdrawLiquidityFromUserAccount) {
+        await migrateLiquidity({
+          wallet: walletWithPk,
+          connection,
+          newWallet: new PublicKey(sendToWalletAddress),
+          rinStaking: poolInfo,
+          pools,
+          stakingTickets,
+          stakingCalcAccounts,
+          poolsCalcsByFarmingState: poolsCalcAccounts,
+          poolsTicketsByPool: poolsTickets,
+          onStatusChange: () => {},
+        })
+      } else {
+        await stakeAll({
+          wallet: walletWithPk,
+          connection,
+          rinStaking: poolInfo,
+          pools,
+        })
+      }
+      nextStep()
+    } catch (e) {
+      console.warn('Unable to process migration', e)
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -358,13 +416,8 @@ const MigratePositionsStep = ({
             </Text>
           </StretchedBlock>
           {poolsToShow.map((pool) => {
-            const { symbol: baseSymbol } = tokenInfosMap.get(pool.tokenA) || {
-              symbol: pool.tokenA,
-            }
-
-            const { symbol: quoteSymbol } = tokenInfosMap.get(pool.tokenB) || {
-              symbol: pool.tokenB,
-            }
+            const baseSymbolFormatted = getTokenNameByMintAddress(pool.tokenA)
+            const quoteSymbolFormatted = getTokenNameByMintAddress(pool.tokenB)
 
             const tickets = poolsTickets.get(pool.swapToken) || []
             const ticketsLPAmount = tickets.reduce(
@@ -388,22 +441,21 @@ const MigratePositionsStep = ({
             const ticketsRewardsMap = getUniqueAmountsToClaimMap({
               calcAccounts: poolsCalcAccounts,
               farmingStates: pool.farming || [],
-              farmingTickets: [],
             })
 
             const userAmountInPoolString = `${stripByAmount(
               userAmountTokenA
-            )} ${baseSymbol} / ${stripByAmount(
+            )} ${baseSymbolFormatted} / ${stripByAmount(
               userAmountTokenB
-            )} ${quoteSymbol}`
+            )} ${quoteSymbolFormatted}`
 
             const userUnclaimedRewardsString = Array.from(
               ticketsRewardsMap.values()
             )
               .map((reward, i, arr) => {
-                const { symbol } = tokenInfosMap.get(
+                const symbol = getTokenNameByMintAddress(
                   reward.farmingTokenMint
-                ) || { symbol: reward.farmingTokenMint }
+                )
 
                 const rewardAmountString = `${stripByAmount(
                   reward.amount
@@ -416,7 +468,7 @@ const MigratePositionsStep = ({
             return (
               <StretchedBlock key={pool.swapToken} style={{ marginTop: '1em' }}>
                 <Text>
-                  {baseSymbol}/{quoteSymbol} Pool:
+                  {baseSymbolFormatted}/{quoteSymbolFormatted} Pool:
                 </Text>
                 <Text weight={600}>
                   {loadingPoolsInfo
@@ -429,56 +481,41 @@ const MigratePositionsStep = ({
         </UserLiquidityContainer>
       </ColumnStretchBlock>
       <StyledButton
+        $loading={loading}
         $variant={isEnoughSOL ? 'blue' : 'red'}
-        onClick={async () => {
-          if (!isEnoughSOL) return
-          if (!poolInfo) {
-            notify({
-              message: 'Staking not loaded',
-              type: 'error',
-            })
-            return
-          }
-
-          const walletWithPk = walletAdapterToWallet(wallet)
-          if (isWithdrawLiquidityFromUserAccount) {
-            await migrateLiquidity({
-              wallet: walletWithPk,
-              connection,
-              newWallet: new PublicKey(sendToWalletAddress),
-              rinStaking: poolInfo,
-              pools,
-              stakingTickets,
-              stakingCalcAccounts,
-              poolsCalcsByFarmingState: poolsCalcAccounts,
-              poolsTicketsByPool: poolsTickets,
-              onStatusChange: () => {},
-            })
-          } else {
-            await stakeAll({
-              wallet: walletWithPk,
-              connection,
-              rinStaking: poolInfo,
-              pools,
-            })
-          }
-          nextStep()
-        }}
+        disabled={!hasPositions}
+        onClick={doMigrate}
       >
-        {isEnoughSOL &&
-          (isWithdrawLiquidityFromUserAccount
-            ? 'Transfer LP Positions, Claimed Rewards & Unstaked RIN'
-            : 'Stake RIN and positions')}
-
-        {!isEnoughSOL && (
+        {error && 'Unexpected error occured. Try again?'}
+        {!error && (
           <>
-            <Text margin="0" color="red1" weight={600}>
-              Not Enough SOL for network fees
-            </Text>
-            <Text margin="0" color="red1" size="esm">
-              We recommend to have {MIN_SOL_TO_MIGRATE} SOL to process all
-              transactions
-            </Text>
+            {isEnoughSOL &&
+              hasPositions &&
+              (isWithdrawLiquidityFromUserAccount
+                ? 'Transfer LP Positions, Claimed Rewards & Unstaked RIN'
+                : 'Stake RIN and positions')}
+
+            {!isEnoughSOL && (
+              <>
+                <Text margin="0" color="red1" weight={600}>
+                  Not Enough SOL for network fees
+                </Text>
+                <Text margin="0" color="red1" size="esm">
+                  We recommend to have {MIN_SOL_TO_MIGRATE} SOL to process all
+                  transactions
+                </Text>
+              </>
+            )}
+            {isEnoughSOL && !hasPositions && (
+              <>
+                <Text margin="0" weight={600}>
+                  No positions to migrate
+                </Text>
+                <Text margin="0" size="esm">
+                  Your funds are safe
+                </Text>
+              </>
+            )}
           </>
         )}
       </StyledButton>

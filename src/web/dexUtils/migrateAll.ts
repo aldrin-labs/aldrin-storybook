@@ -22,6 +22,7 @@ import {
   RIN_MINT,
   STAKING_PROGRAM_ADDRESS,
 } from '@core/solana'
+import { HOUR } from '@core/utils/dateUtils'
 
 import { PoolInfo } from '../compositions/Pools/index.types'
 import { groupBy, toMap } from '../utils'
@@ -71,6 +72,8 @@ export const getTokensForUser = async (
 export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
   const { wallet, connection, rinStaking, newWallet, pools } = params
 
+  const MIN_START_STAKING_TIME = Math.floor(Date.now() / 1000) - HOUR - 1
+
   // 1. RIN staking
 
   // 1.1 Get data
@@ -108,7 +111,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
         (f) => f.farmingState === calcAccount.farmingState.toString()
       )
 
-      if (fs) {
+      if (fs && calcAccount.tokenAmount.gtn(0)) {
         let tokenAccount = userTokensMap.get(fs.farmingTokenMint)?.address
         rinAmountToTransfer = rinAmountToTransfer.add(calcAccount.tokenAmount)
         if (!tokenAccount) {
@@ -160,7 +163,10 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
   )
 
   const activeTickets = tickets.filter(
-    (ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME
+    (ticket) =>
+      ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
+      parseFloat(ticket.startTime) < MIN_START_STAKING_TIME &&
+      ticket.statesAttached.length > 0
   )
 
   const endStakingIx = await Promise.all(
@@ -171,7 +177,9 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
       return (await rinProgram.instruction.endFarming({
         accounts: {
           pool: new PublicKey(rinStaking.swapToken),
-          farmingState: new PublicKey(rinFarmingState.farmingState),
+          farmingState: new PublicKey(
+            ticketData.statesAttached[0].farmingState
+          ),
           farmingSnapshots: new PublicKey(rinFarmingState.farmingSnapshots),
           farmingTicket: new PublicKey(ticketData.farmingTicket),
           // Make code compatible for both staking and pools farming
@@ -252,7 +260,10 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     connection,
   })
 
-  const ticketsForPools = groupBy(poolTickets, (pt) => pt.pool)
+  const ticketsForPools = groupBy(
+    poolTickets.filter((_) => _.statesAttached.length > 0),
+    (pt) => pt.pool
+  )
 
   const poolTransactions = pools.map(async (pool) => {
     const program = pool.curve ? programV2 : programV1
@@ -264,14 +275,20 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
 
     const withdrawMap = new Map<string, { address: string; amount: U64 }>() // mint -> { address, amount }
 
-    const ticketsForPool = ticketsForPools.get(pool.swapToken)
-
-    if (!ticketsForPool) {
-      return undefined
+    const poolTokens = userTokensMap.get(pool.poolTokenMint)
+    if (poolTokens && poolTokens.amount.gtn(0)) {
+      // console.log('add to withdraw', poolTokens.address)
+      withdrawMap.set(pool.poolTokenMint, {
+        address: poolTokens.address,
+        amount: poolTokens.amount,
+      })
     }
+    const ticketsForPool = ticketsForPools.get(pool.swapToken) || []
 
     const activeTicketsForPool = ticketsForPool.filter(
-      (ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME
+      (ticket) =>
+        ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
+        parseFloat(ticket.startTime) < MIN_START_STAKING_TIME
     )
 
     const tx = new Transaction()
@@ -282,15 +299,6 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
       if (!calcAccountsForState) {
         return undefined
       }
-
-      console.log(
-        'calcs for state,',
-        calcAccountsForState
-          .filter((_) => _.tokenAmount.gtn(0))
-          .map((_) => [_.publicKey.toString(), _.tokenAmount.toString()]),
-        pool.parsedName,
-        f.farmingState
-      )
 
       const withdrawInstructions = Promise.all(
         calcAccountsForState
@@ -352,19 +360,12 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     )
 
     if (claimCalcsIxs.flat().length) {
-      console.log('claimCalcsIxs', claimCalcsIxs.flat())
       tx.add(...claimCalcsIxs.flat())
     }
 
     let userPoolTokenAccount = userTokensMap.get(pool.poolTokenMint)?.address
 
-    if (!userPoolTokenAccount) {
-      console.log(
-        'No LP token account, create...',
-        userTokensMap.get(pool.poolTokenMint),
-        pool.poolTokenMint,
-        Date.now()
-      )
+    if (!userPoolTokenAccount && activeTicketsForPool.length > 0) {
       const [ix, associatedAddress] = await createAssociatedTokenAccountIx(
         wallet.publicKey,
         wallet.publicKey,
@@ -386,7 +387,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     // End farming
     const endFarmings = activeTicketsForPool.map(async (ticket) => {
       const farmingState = (pool.farming || []).find(
-        (_) => _.tokensUnlocked < _.tokensTotal
+        (_) => _.farmingState === ticket.statesAttached[0].farmingState
       )
       if (farmingState) {
         const amount =
@@ -428,6 +429,7 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     const endFarmingIxsFiltered = endFarmingIxs.filter(
       (_): _ is TransactionInstruction => !!_
     )
+    // console.log('endFarmingIxsFiltered', endFarmingIxs, endFarmingIxsFiltered)
     if (endFarmingIxsFiltered.length) {
       tx.add(...endFarmingIxsFiltered)
     }
@@ -435,29 +437,35 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
     const toWithdraw = Array.from(withdrawMap.entries())
     await Promise.all(
       toWithdraw.map(async ([mint, v]) => {
-        let userToken = newUserTokensMap.get(mint)?.address
-        if (!userToken) {
-          const [ix, associatedAddress] = await createAssociatedTokenAccountIx(
-            wallet.publicKey,
-            newWallet,
-            new PublicKey(mint)
+        if (v.amount.gtn(0)) {
+          let userToken = newUserTokensMap.get(mint)?.address
+          if (!userToken) {
+            const [ix, associatedAddress] =
+              await createAssociatedTokenAccountIx(
+                wallet.publicKey,
+                newWallet,
+                new PublicKey(mint)
+              )
+            tx.add(ix)
+            userToken = associatedAddress.toString()
+            newUserTokensMap.set(mint, {
+              mint,
+              address: associatedAddress.toString(),
+              amount: new U64(0),
+            })
+          }
+
+          tx.add(
+            Token.createTransferInstruction(
+              TOKEN_PROGRAM_ID,
+              new PublicKey(v.address),
+              new PublicKey(userToken),
+              wallet.publicKey,
+              [],
+              v.amount.toString()
+            )
           )
-          tx.add(ix)
-          userToken = associatedAddress.toString()
         }
-
-        console.log('withdraw', v.address, v.amount.toString())
-
-        tx.add(
-          Token.createTransferInstruction(
-            TOKEN_PROGRAM_ID,
-            new PublicKey(v.address),
-            new PublicKey(userToken),
-            wallet.publicKey,
-            [],
-            v.amount.toString()
-          )
-        )
       })
     )
 
@@ -478,12 +486,18 @@ export const migrateLiquidity = async (params: MigrateLiquidityParams) => {
 
   for (let i = 0; i < splittedTransactions.length; i += 1) {
     const transactionsAndSigners = splittedTransactions[i]
-    console.log('tx', transactionsAndSigners)
+    // console.log('tx', transactionsAndSigners)
     const result = await signAndSendTransactions({
       transactionsAndSigners,
       connection,
       wallet,
     })
-    console.log('txHash', result)
+
+    if (result !== 'success') {
+      throw new Error(`Failed to send transactions: ${result}`)
+    }
+    // console.log('txHash', result)
   }
+
+  return 'success'
 }
