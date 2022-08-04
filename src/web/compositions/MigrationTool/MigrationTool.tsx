@@ -128,9 +128,9 @@ const CreateNewWalletStep: FC<CommonStepParams> = ({ nextStep }) => {
           <StyledLink
             target="_blank"
             rel="noopener noreferrer"
-            href="https://sollet.io"
+            href="https://glow.app"
           >
-            Sollet.io
+            Glow
           </StyledLink>
         </Text>
       </ColumnStretchBlock>
