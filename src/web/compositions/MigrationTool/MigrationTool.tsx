@@ -27,7 +27,6 @@ import {
   getParsedUserFarmingTickets,
   getParsedUserStakingTickets,
   getTokenDataByMint,
-  MINIMAL_STAKING_AMOUNT,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
   ProgramsMultiton,
@@ -245,6 +244,8 @@ const MigratePositionsStep = ({
       pool.poolTokenMint
     )
 
+    console.log('hasTickets', hasTickets, pool.parsedName)
+
     const hasLpTokens = lpTokenAmount > 0
 
     return hasTickets || hasLpTokens
@@ -335,20 +336,22 @@ const MigratePositionsStep = ({
 
       const activeTicketsForPool = poolTickets.filter(
         (ticket) =>
-          ticket.tokensFrozen > MINIMAL_STAKING_AMOUNT &&
           ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
           parseFloat(ticket.startTime) <
             Math.floor(Date.now() / 1000) - HOUR - 1
       )
 
+      console.log('activeTicketsForPool', poolTickets, activeTicketsForPool)
       const ticketsForPools = groupBy(activeTicketsForPool, (pt) => pt.pool)
       setPoolsTickets(ticketsForPools)
 
       setPoolsInfoLoading(false)
     }
 
-    load()
-  }, [])
+    if (wallet.publicKey) {
+      load()
+    }
+  }, [wallet.publicKey?.toString()])
 
   const doMigrate = async () => {
     console.log('do migrate', isEnoughSOL, hasPositions)
