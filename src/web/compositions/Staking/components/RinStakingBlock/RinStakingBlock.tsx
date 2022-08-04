@@ -47,6 +47,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
     const [totalStakedRIN] = useAccountBalance({
       publicKey: farm ? farm.stakeVault : undefined,
     })
+
     const rinHarvest = farm?.harvests.find(
       (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
     )

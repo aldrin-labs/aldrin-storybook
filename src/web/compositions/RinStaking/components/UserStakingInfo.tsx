@@ -1,3 +1,4 @@
+import { PublicKey } from '@solana/web3.js'
 import { toNumber } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -27,6 +28,7 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -52,14 +54,19 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     stakingPool,
     currentFarmingState,
     getDexTokensPricesQuery,
+    getStakingInfoQuery,
     treasuryDailyRewards,
   } = props
 
-  const { data: farms } = useFarmInfo()
-  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+  const stakingData = getStakingInfoQuery.getStakingInfo.farming
 
+  const stakingDataMap = toMap(stakingData, (farm) => farm.stakeMint.toString())
+
+  const { data: farms } = useFarmInfo({ stakingDataMap })
+
+  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
-    publicKey: farm ? farm.stakeVault : undefined,
+    publicKey: farm ? new PublicKey(farm.stakeVault) : undefined,
   })
 
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
@@ -81,6 +88,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
 
   const totalStaked = farmer?.totalStaked || '0'
+
+  console.log({ farmersInfo })
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
@@ -303,6 +312,7 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
     currentFarmingState,
     getDexTokensPricesQuery,
     treasuryDailyRewards,
+    getStakingInfoQuery,
   } = props
 
   return (
@@ -312,6 +322,7 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
         currentFarmingState={currentFarmingState}
         getDexTokensPricesQuery={getDexTokensPricesQuery}
         treasuryDailyRewards={treasuryDailyRewards}
+        getStakingInfoQuery={getStakingInfoQuery}
       />
     </StretchedBlock>
   )
@@ -321,6 +332,13 @@ export default compose<InnerProps, OuterProps>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  }),
+  queryRendererHoc({
+    query: getStakingInfo,
+    name: 'getStakingInfoQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000,

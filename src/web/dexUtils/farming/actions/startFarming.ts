@@ -37,7 +37,7 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
 
   const { instruction } = await buildStartFarmingV2Instruction({
     tokenAmount,
-    farm: farm.publicKey,
+    farm: new PublicKey(farm.publicKey),
     stakeVault: farm.stakeVault,
     stakeWallet: new PublicKey(userTokenAccount.address),
     wallet,

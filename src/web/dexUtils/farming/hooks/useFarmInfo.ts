@@ -6,11 +6,15 @@ import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
-export const useFarmInfo = () => {
+export const useFarmInfo = ({ stakingDataMap }: { stakingDataMap: any }) => {
+  // TODO: type
   const { wallet } = useWallet()
   const connection = useConnection()
 
   const fetcher = async () => {
+    if (stakingDataMap) {
+      return stakingDataMap
+    }
     const farms = await loadFarmAccountsData({
       connection,
       wallet,
