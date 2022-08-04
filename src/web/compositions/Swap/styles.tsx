@@ -248,6 +248,7 @@ export const ReverseTokensContainer = styled(
 
 export const SwapPageLayout = styled(Page)`
   font-size: 13px;
+  justify-content: center;
 
   @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
