@@ -2,9 +2,10 @@ import { BREAKPOINTS, FONTS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/compositions/Addressbook'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
+import { EscapeButtonSC } from "@sb/components/EscapeButton"
 
 export const UpdatedPaper = styled(({ ...props }) => (
   <StyledPaper {...props} />
@@ -85,5 +86,11 @@ export const TokensContainer = styled(RowContainer)`
 
   @media (max-width: ${BREAKPOINTS.sm}) {
     height: 80%;
+  }
+`
+
+export const SearchRow = styled(RowContainer)`
+  ${EscapeButtonSC} {
+    margin-left: 1em;
   }
 `

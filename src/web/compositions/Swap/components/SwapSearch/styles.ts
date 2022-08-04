@@ -12,9 +12,9 @@ export const Container = styled.div`
   ${(props: { listOpened: boolean }) =>
     props.listOpened &&
     `
-    .inputWrapper { 
-      border-bottom-left-radius: 0; 
-      border-bottom-right-radius: 0; 
+    .inputWrapper {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
       box-shadow: 0px 8px 8px -2px ${props.theme.colors.shadowColor};
     }
 
@@ -55,7 +55,7 @@ export const SwapsList = styled.div`
   box-shadow: 0px 8px 8px -2px ${(props) => props.theme.colors.shadowColor};
 `
 
-export const SwapItem = styled.div`
+export const SwapRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
