@@ -81,7 +81,7 @@ export const SwapSettingsPopup = ({
           Swap Info
         </InlineText>
 
-        <EscapeButton close={close} />
+        <EscapeButton onClose={close} />
       </RowContainer>
       <RowContainer
         direction="column"

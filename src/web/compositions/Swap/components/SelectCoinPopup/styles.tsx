@@ -2,6 +2,7 @@ import { BREAKPOINTS, FONTS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
+import { EscapeButtonSC } from '@sb/components/EscapeButton'
 import { InlineText } from '@sb/components/Typography'
 import { Text } from '@sb/compositions/Addressbook'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -92,4 +93,10 @@ export const TokensContainer = styled(RowContainer)`
 
 export const BalanceLabel = styled(InlineText)`
   white-space: nowrap;
+`
+
+export const SearchRow = styled(RowContainer)`
+  ${EscapeButtonSC} {
+    margin-left: 1em;
+  }
 `

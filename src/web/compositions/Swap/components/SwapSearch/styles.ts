@@ -64,7 +64,7 @@ export const SwapsList = styled.div`
   box-shadow: 0px 8px 8px -2px ${(props) => props.theme.colors.shadowColor};
 `
 
-export const SwapItem = styled.div`
+export const SwapRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
