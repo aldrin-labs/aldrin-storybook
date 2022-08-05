@@ -1,9 +1,9 @@
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
-import { useTheme } from 'styled-components'
 import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
@@ -68,11 +68,7 @@ import {
 } from './utils'
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
-  const {
-    stakingPool,
-    currentFarmingState,
-    getDexTokensPricesQuery,
-  } = props
+  const { stakingPool, currentFarmingState, getDexTokensPricesQuery } = props
   const theme = useTheme()
 
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({

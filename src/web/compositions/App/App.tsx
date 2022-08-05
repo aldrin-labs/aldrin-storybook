@@ -40,7 +40,6 @@ import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { Theme, THEME_DARK } from './themes'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import 'react-toastify/dist/ReactToastify.min.css'
-import { SolanaHackBanner } from '../../components/SolanaHackBanner'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -135,7 +134,7 @@ const AppRaw = ({
                 <TokenRegistryProvider>
                   <MarketProvider>
                     <WalletProvider>
-                      <SolanaHackBanner />
+                      {/* <SolanaHackBanner /> */}
                       <AppGridLayout
                         id="react-notification"
                         showFooter={showFooter}

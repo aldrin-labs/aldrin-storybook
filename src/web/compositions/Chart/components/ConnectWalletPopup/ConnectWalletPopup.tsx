@@ -38,9 +38,11 @@ const modalRootStyle = {
 
 const ConnectWalletPopup = ({
   onClose,
+  connectCallback,
   open,
 }: {
   onClose: () => void
+  connectCallback?: () => void
   open: boolean
 }) => {
   const { setAutoConnect, setProvider } = useWallet()
