@@ -64,12 +64,12 @@ export const ChartContainer = styled(Row)`
 
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
-  margin: 80px 0;
+  //margin: 80px 0;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
     height: 100%;
-    margin: 0;
+    //margin: 0;
     justify-content: flex-start;
   }
 
@@ -265,6 +265,7 @@ export const ReverseTokensContainer = styled(
 
 export const SwapPageLayout = styled(Page)`
   font-size: 13px;
+  justify-content: center;
 
   @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
