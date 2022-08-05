@@ -1,11 +1,11 @@
-import { DexInstructions, TokenInstructions } from '@project-serum/serum'
+import { DexInstructions } from '@project-serum/serum'
 import { Transaction } from '@solana/web3.js'
 import useMobileSize from '@webhooks/useMobileSize'
 import BN from 'bn.js'
 import copy from 'clipboard-copy'
 import { orderBy } from 'lodash'
 import { useSnackbar } from 'notistack'
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
@@ -18,7 +18,6 @@ import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenName } from '@sb/dexUtils/markets'
 import {
-  useAssociatedTokenAccount,
   useUserTokenAccounts,
 } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -93,13 +92,12 @@ type WalletBreakdownPopupProps = {
 
 const OPEN_ORDER_ACCOUNT_SOL_COST = 0.024
 
-const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
-
 const WalletBreakdownPopup = ({
   onClose,
   open,
   getDexTokensPricesQuery,
 }: WalletBreakdownPopupProps) => {
+  const [isClaiming, setIsClaiming] = useState(false)
   const { wallet } = useWallet()
   const connection = useConnection()
   const [tokensList, refreshUserTokenList] = useUserTokenAccounts()
@@ -107,7 +105,6 @@ const WalletBreakdownPopup = ({
   const isMobile = useMobileSize()
   const tokenMap = useTokenInfos()
   const [openOrders, refreshOpenOrders] = useCurrentUserOpenOrders()
-  const solWallet = useAssociatedTokenAccount(SOL_MINT)
 
   const FREE_SLOT_BITS_MAX = new BN('f'.repeat(32), 16) // https://doc.rust-lang.org/std/u128/constant.MAX.html
 
@@ -160,6 +157,8 @@ const WalletBreakdownPopup = ({
   }
 
   const onClaimGasClick = async () => {
+    setIsClaiming(true)
+
     const transaction = new Transaction()
     const walletWithPk = walletAdapterToWallet(wallet)
 
@@ -175,7 +174,7 @@ const WalletBreakdownPopup = ({
       )
     })
 
-    const txResult = await signAndSendSingleTransaction({
+    await signAndSendSingleTransaction({
       wallet: walletWithPk,
       connection,
       transaction,
@@ -183,6 +182,8 @@ const WalletBreakdownPopup = ({
 
     await refreshUserTokenList()
     await refreshOpenOrders()
+
+    setIsClaiming(false)
   }
 
   return (
@@ -306,7 +307,7 @@ const WalletBreakdownPopup = ({
           disabled={!openOrderWhichMightBeClosed.length}
           onClick={onClaimGasClick}
         >
-          Claim
+          {isClaiming ? 'Claiming ...' : 'Claim'}
         </ClaimGasButton>
       </Footer>
     </Modal>
