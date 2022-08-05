@@ -253,14 +253,14 @@ export const StyledLink = styled.a`
 
   &:hover {
     svg path:not(.not-fill) {
-      fill: ${COLORS.white};
+      fill: ${(props) => props.theme.colors.white1};
     }
 
     svg {
       defs {
         clipPath {
           rect {
-            fill: ${COLORS.white};
+            fill: ${(props) => props.theme.colors.white1};
           }
         }
       }
