@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import Logo from '@sb/components/Logo'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { DropDown } from './Dropdown'
@@ -39,6 +40,7 @@ export const Header = React.memo(
   ({ setCurrentTheme }: { setCurrentTheme: (a: string) => void }) => {
     const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
     const [listingPopupOpen, setListingPopupOpen] = useState(false)
+    const { wallet } = useWallet()
 
     return (
       <>
@@ -46,7 +48,7 @@ export const Header = React.memo(
           <Container>
             <Left>
               <Logo />
-              <RinBalance />
+              {wallet.connected && <RinBalance />}
               <MainLinksWrap>
                 <MainLinksBlock>
                   <NavLink
