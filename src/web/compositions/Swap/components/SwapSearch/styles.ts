@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { Input } from '@sb/components/Input'
 import { InlineText } from '@sb/components/Typography'
+import { Append, InputContainer } from "@sb/components/Input/styles"
 
 export const Container = styled.div`
   width: 100%;
@@ -12,9 +13,9 @@ export const Container = styled.div`
   ${(props: { listOpened: boolean }) =>
     props.listOpened &&
     `
-    .inputWrapper { 
-      border-bottom-left-radius: 0; 
-      border-bottom-right-radius: 0; 
+    .inputWrapper {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
       box-shadow: 0px 8px 8px -2px ${props.theme.colors.shadowColor};
     }
 
@@ -24,19 +25,27 @@ export const Container = styled.div`
 export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
-  height: 100%;
   border: 0.1rem solid ${(props) => props.theme.colors.white6};
   background: ${(props) => props.theme.colors.white6};
+  height: 4.6em;
+  padding: 0 1.8em;
 
-  div {
+  ${InputContainer} {
+    display: flex;
     width: 100%;
   }
 
+  ${Append} {
+    padding: 0;
+  }
+
   input {
-    font-size: ${FONT_SIZES.sm};
+    font-size: ${FONT_SIZES.xsm};
     font-weight: normal;
     width: 100%;
     height: 100%;
+    padding: 0;
+    margin-left: 1.8em;
 
     &::placeholder {
       color: ${(props) => props.theme.colors.white3};
@@ -77,4 +86,19 @@ export const TokenName = styled(InlineText)``
 export const NoData = styled.div`
   padding: 20px 0;
   text-align: center;
+`
+
+export const CloseButton = styled.button`
+  cursor: pointer;
+  border: none;
+  height: 2.25em;
+  width: 3.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) => props.theme.colors.white3};
+  background-color: ${(props) => props.theme.colors.white5};
+  border-radius: 8px;
+  font-weight: bold;
+  margin-left: 1.8em;
 `

@@ -1,7 +1,7 @@
 import { useOutsideRef } from '@webhooks/useOutsideRef'
 import React, { useEffect, useRef, useState } from 'react'
+import { useTheme } from 'styled-components'
 
-import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -11,8 +11,6 @@ import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { notEmpty } from '@sb/dexUtils/utils'
 
-import Loop from '@icons/loop.svg'
-
 import {
   SearchInput,
   Container,
@@ -20,8 +18,39 @@ import {
   SwapItem,
   TokenName,
   NoData,
+  CloseButton,
 } from './styles'
 import { SearchItem, SwapSearchProps } from './types'
+
+const FindIcon = () => {
+  const theme = useTheme()
+
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <ellipse
+        cx="7.59961"
+        cy="7.59998"
+        rx="6"
+        ry="6"
+        stroke="#5B5A72"
+        strokeWidth="2"
+      />
+      <path
+        d="M12 12L16.2426 16.2426"
+        stroke={theme.colors.white3}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const {
@@ -143,13 +172,11 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         })
         .slice(0, 5)
 
-      const swapOptions = tokensTo.map((tokenTo) => ({
+      return tokensTo.map((tokenTo) => ({
         tokenTo,
         tokenFrom,
         amountFrom: Number.isNaN(amountFrom) ? null : amountFrom.toString(),
       }))
-
-      return swapOptions
     })
 
     setSearchValue(searchText)
@@ -240,13 +267,23 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     <Container listOpened={listOpened} ref={wrapperRef}>
       <SearchInput
         name="search"
-        placeholder={'Try: "10 SOL to RIN"'}
+        placeholder="You can try “10 USDC to RIN”"
         value={searchValue}
         onChange={onInput}
-        onFocus={() => {
-          setListOpened(true)
-        }}
-        append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
+        onFocus={() => setListOpened(true)}
+        prepend={<FindIcon />}
+        append={
+          listOpened && (
+            <CloseButton
+              onClick={(e) => {
+                e.stopPropagation()
+                setListOpened(false)
+              }}
+            >
+              Esc
+            </CloseButton>
+          )
+        }
         borderRadius="lg"
         className="inputWrapper"
       />
