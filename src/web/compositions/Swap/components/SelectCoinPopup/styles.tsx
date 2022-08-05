@@ -2,7 +2,8 @@ import { BREAKPOINTS, FONTS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { InlineText } from '@sb/components/Typography'
+import { Text } from '@sb/compositions/Addressbook'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
 
@@ -28,7 +29,7 @@ export const SelectorRow = styled(({ ...props }) => (
   border-radius: 1.2rem;
   margin-bottom: 0.8em;
   padding: 1.5em;
-  top: 0px;
+  top: 0;
   transition: all 0.3s ease-out;
 
   &:hover {
@@ -70,7 +71,7 @@ export const TokenButtonText = styled.span`
 export const HeaderContainer = styled(({ ...props }) => (
   <RowContainer {...props} />
 ))`
-  top: 0px;
+  top: 0;
   position: sticky;
   z-index: 100;
   background: ${(props) => props.theme.colors.white1};
@@ -79,6 +80,7 @@ export const HeaderContainer = styled(({ ...props }) => (
 export const Container = styled(RowContainer)`
   height: 100%;
 `
+
 export const TokensContainer = styled(RowContainer)`
   height: 55vh;
   overflow: auto;
@@ -86,4 +88,8 @@ export const TokensContainer = styled(RowContainer)`
   @media (max-width: ${BREAKPOINTS.sm}) {
     height: 80%;
   }
+`
+
+export const BalanceLabel = styled(InlineText)`
+  white-space: nowrap;
 `
