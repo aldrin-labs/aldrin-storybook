@@ -79,7 +79,7 @@ import {
   FailedButtonsRow,
   DropdownIconContainer,
 } from './styles'
-import { getSwapButtonText } from './utils'
+import { getEstimatedPrice, getSwapButtonText } from './utils'
 
 const SwapPage = ({
   getPoolsInfoQuery,
@@ -173,7 +173,9 @@ const SwapPage = ({
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
   const [isExchangeReversed, setIsExchangeReversed] = useState(false)
-
+  const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
+    'input'
+  )
   const [
     selectedInputTokenAddressFromSeveral,
     setInputTokenAddressFromSeveral,
@@ -569,6 +571,19 @@ const SwapPage = ({
   const formattedPoolsFeeUSD =
     poolsFeeUSD < 0.01 ? '< $ 0.01' : `$ ${stripByAmount(poolsFeeUSD, 2)}`
 
+  const basePrice = dexTokensPricesMap.get(inputSymbol) || 0
+  const quotePrice = dexTokensPricesMap.get(outputSymbol) || 0
+
+  const estimatedPriceValue = stripByAmount(
+    getEstimatedPrice({
+      inputPrice: basePrice,
+      outputPrice: quotePrice,
+      field: priceShowField,
+    })
+  )
+
+  const isInputPriceShowField = priceShowField === 'input'
+
   return (
     <SwapPageLayout>
       <SwapPageContainer justify="center" direction="row" wrap="nowrap">
@@ -808,13 +823,19 @@ const SwapPage = ({
                       <Row width="50%" justify="flex-start">
                         <InlineText color="white2" size="xs">
                           <SvgIcon
+                            style={{ cursor: 'pointer' }}
+                            onClick={() =>
+                              setPriceShowField(
+                                isInputPriceShowField ? 'output' : 'input'
+                              )
+                            }
                             src={HalfArrowsIcon}
                             width="0.8em"
                             height="0.8em"
                           />{' '}
-                          1 {inputSymbol} ={' '}
-                          {stripByAmount(estimatedPriceFromRoute)}{' '}
-                          {outputSymbol}
+                          1 {isInputPriceShowField ? inputSymbol : outputSymbol}{' '}
+                          = {stripByAmount(estimatedPriceValue)}{' '}
+                          {isInputPriceShowField ? outputSymbol : inputSymbol}
                         </InlineText>
                       </Row>
 
