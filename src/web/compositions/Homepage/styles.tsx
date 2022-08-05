@@ -252,8 +252,6 @@ export const StyledLink = styled.a`
   transition: ${TRANSITION};
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue3};
-
     svg path:not(.not-fill) {
       fill: ${COLORS.white};
     }

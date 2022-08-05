@@ -54,7 +54,6 @@ export const RinBalance = () => {
   }
 
   const { farmingTokenMintDecimals } = poolInfo.currentFarmingState
-  const { amount: rinBalance } = rinTokenData
 
   const rinStaked = getStakedTokensTotal(
     getTicketsWithUiValues({
@@ -63,9 +62,7 @@ export const RinBalance = () => {
     })
   )
 
-  const totalRin = rinBalance + rinStaked
-
   return (
-    <RinBalanceContent>{roundAndFormatNumber(totalRin, 2)}</RinBalanceContent>
+    <RinBalanceContent>{roundAndFormatNumber(rinStaked, 2)}</RinBalanceContent>
   )
 }

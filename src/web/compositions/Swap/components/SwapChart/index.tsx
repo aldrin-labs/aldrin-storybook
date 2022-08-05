@@ -49,7 +49,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           outputTokenMintAddress={outputTokenMintAddress}
         />
       </SwapChartAndPriceContainer> */}
-      <SwapChartContainer>
+      <SwapChartContainer isCrossOHLCV={isCrossOHLCV}>
         {isCrossOHLCV || !inputSymbol || !outputSymbol ? (
           <CrossSwapChartContainer direction="column" height="100%">
             <SvgIcon src={OHLCVCandlesIcon} />

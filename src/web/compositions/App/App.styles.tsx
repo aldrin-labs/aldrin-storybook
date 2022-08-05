@@ -61,7 +61,7 @@ export const StyledToastContainer = styled(ToastContainer).attrs({
 
   --toastify-font-family: ${FONTS.main};
 
-  --toastify-toast-width: 360px;
+  --toastify-toast-width: auto;
 
   .toast {
     background-color: ${(props) => props.theme.colors.white6};

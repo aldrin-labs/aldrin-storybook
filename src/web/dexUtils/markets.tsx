@@ -103,6 +103,28 @@ export const marketsMap = toMap(AWESOME_MARKETS.concat(USE_MARKETS), (market) =>
   market.name.replace('/', '_')
 )
 
+export const marketsWithMints = USE_MARKETS.concat(AWESOME_MARKETS)
+  .filter((market) => !market.deprecated && !market.delisted)
+  .map((market) => {
+    const marketName = market.name
+    const [base, quote] = marketName.split('/')
+
+    const { address: baseMintAddress } = aldrinTokensMapBySymbol.get(base) || {
+      address: '',
+    }
+    const { address: quoteMintAddress } = aldrinTokensMapBySymbol.get(
+      quote
+    ) || {
+      address: '',
+    }
+
+    return {
+      ...market,
+      baseMintAddress,
+      quoteMintAddress,
+    }
+  })
+
 export interface RawMarketData {
   name: string
   address: PublicKey

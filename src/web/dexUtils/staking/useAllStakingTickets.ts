@@ -1,5 +1,5 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { useEffect, useState, useCallback } from 'react'
+import useSWR from 'swr'
 
 import { getParsedUserStakingTickets } from '@core/solana'
 
@@ -17,27 +17,23 @@ export const useAllStakingTickets = ({
   walletPublicKey?: PublicKey | null
   onlyUserTickets?: boolean
 }): [FarmingTicket[], AsyncRefreshFunction] => {
-  const [allStakingFarmingTickets, setAllStakingFarmingTickets] = useState<
-    FarmingTicket[]
-  >([])
-
-  const loadStakingTickets = useCallback(async () => {
+  const fetcher = async () => {
     if (onlyUserTickets && !walletPublicKey) {
-      setAllStakingFarmingTickets([])
-      return false
+      return []
     }
+
     const allTickets = await getParsedUserStakingTickets({
       wallet,
       connection,
     })
 
-    setAllStakingFarmingTickets(allTickets)
-    return true
-  }, [walletPublicKey])
+    return allTickets
+  }
 
-  useEffect(() => {
-    loadStakingTickets()
-  }, [walletPublicKey])
+  const { data, mutate } = useSWR(
+    `all-staking-tickets-${wallet.publicKey?.toString()}`,
+    fetcher
+  )
 
-  return [allStakingFarmingTickets, loadStakingTickets]
+  return [data || [], mutate]
 }

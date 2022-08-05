@@ -120,7 +120,7 @@ const WalletBreakdownPopup = ({
 
   const modalBodyStyle = isMobile
     ? {
-        maxHeight: '100%',
+        height: '90%',
         width: '100%',
       }
     : {

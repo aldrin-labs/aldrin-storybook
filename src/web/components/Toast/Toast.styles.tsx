@@ -5,11 +5,13 @@ export const Left = styled.div``
 export const Title = styled.div`
   font-weight: bold;
   font-size: 1.2em;
+  white-space: nowrap;
 `
 
 export const Description = styled.div`
   color: ${(props) => props.theme.colors.white2};
   margin-top: 0.3em;
+  white-space: nowrap;
 `
 
 export const DescriptionSuccess = styled(Description)`
@@ -32,6 +34,7 @@ export const Right = styled.div`
 
 export const Container = styled.div`
   display: flex;
+  width: auto;
 
   ${Left} + ${Right} {
     margin-left: 2em;

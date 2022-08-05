@@ -13,16 +13,14 @@ import { PieTimer } from '@sb/components/PieTimer'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Toast } from '@sb/components/Toast/Toast'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { InlineText, Text } from '@sb/components/Typography'
+import { InlineText } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
-  aldrinTokensMapBySymbol,
   getTokenMintAddressByName,
-  USE_MARKETS,
+  marketsWithMints,
 } from '@sb/dexUtils/markets'
 import { callToast } from '@sb/dexUtils/notifications'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
@@ -56,13 +54,13 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
+import HalfArrowsIcon from '@icons/halfArrows.svg'
 import SettingIcon from '@icons/settings.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { ArrowsExchangeIcon } from './components/Inputs/images/arrowsExchangeIcon'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
-import { SwapChartWithPrice } from './components/SwapChart'
 import { SwapSearch } from './components/SwapSearch'
 import { SwapSettingsPopup } from './components/SwapSettingsPopup'
 import { getDefaultBaseToken, getDefaultQuoteToken } from './config'
@@ -74,16 +72,12 @@ import {
   ReverseTokensContainer,
   SwapButton,
   BlackRow,
-  RowTitle,
-  RowValue,
   RowImpactTitle,
   SlippageButton,
-  InfoIconContainer,
-  LeftColumn,
   RightColumn,
-  ChartContainer,
   TextButton,
   FailedButtonsRow,
+  DropdownIconContainer,
 } from './styles'
 import { getSwapButtonText } from './utils'
 
@@ -102,6 +96,8 @@ const SwapPage = ({
   const { wallet } = useWallet()
   const connection = useConnection()
   const tokenInfosMap = useTokenInfos()
+
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
@@ -211,6 +207,8 @@ const SwapPage = ({
     buildTransactions,
     refreshOpenOrdersMap,
     depositAndFee,
+    feeMint,
+    feeAmount,
   } = useSwapRoute({
     wallet,
     connection: connection.getConnection(),
@@ -241,7 +239,6 @@ const SwapPage = ({
   )
   const isHighPriceImpact = swapRoute.priceImpact > 2
 
-  // console.log({ priceImpact: swapRoute.priceImpact })
   const isHighPriceDiff =
     inputTokenMintAddress === RIN_MINT || outputTokenMintAddress === RIN_MINT
       ? isHighPriceImpact
@@ -261,9 +258,11 @@ const SwapPage = ({
   )
 
   const depositAndFeeAmount =
-    depositAndFee.signers + depositAndFee.tokenAccounts
+    depositAndFee.signers +
+    depositAndFee.tokenAccounts +
+    depositAndFee.openOrders
 
-  const depositAndFeeUSD = depositAndFeeAmount * dexTokensPricesMap.get('SOL')
+  const depositAndFeeUSD = depositAndFeeAmount
   const poolsFeeUSD = getSwapRouteFeesAmount({
     swapSteps: swapRoute.steps,
     pricesMap: dexTokensPricesMap,
@@ -340,32 +339,6 @@ const SwapPage = ({
     !isSwapRouteExists
 
   const showPriceInfo = !isEmptyInputAmount && !isEmptyOutputAmount
-
-  const marketsList = USE_MARKETS
-
-  const marketsWithMints = marketsList
-    .filter((market) => !market.deprecated && !market.delisted)
-    .map((market) => {
-      const marketName = market.name
-      const [base, quote] = marketName.split('/')
-
-      const { address: baseMintAddress } = aldrinTokensMapBySymbol.get(
-        base
-      ) || {
-        address: '',
-      }
-      const { address: quoteMintAddress } = aldrinTokensMapBySymbol.get(
-        quote
-      ) || {
-        address: '',
-      }
-
-      return {
-        ...market,
-        baseMintAddress,
-        quoteMintAddress,
-      }
-    })
 
   const findMarketByMints = () => {
     return marketsWithMints.find(
@@ -588,10 +561,18 @@ const SwapPage = ({
     }
   }, [swapStatus])
 
+  const formattedPriceImpact =
+    swapRoute.priceImpact < 0.01
+      ? '< 0.01'
+      : stripByAmount(swapRoute.priceImpact, 2)
+
+  const formattedPoolsFeeUSD =
+    poolsFeeUSD < 0.01 ? '< $ 0.01' : `$ ${stripByAmount(poolsFeeUSD, 2)}`
+
   return (
     <SwapPageLayout>
       <SwapPageContainer justify="center" direction="row" wrap="nowrap">
-        <LeftColumn>
+        {/* <LeftColumn>
           <ChartContainer>
             <SwapChartWithPrice
               isCrossOHLCV={isCrossOHLCV}
@@ -609,7 +590,7 @@ const SwapPage = ({
               pricesMap={dexTokensPricesMap}
             />
           </ChartContainer>
-        </LeftColumn>
+        </LeftColumn> */}
 
         <RightColumn>
           <SwapContentContainer direction="column">
@@ -680,6 +661,7 @@ const SwapPage = ({
                   style={{ borderBottom: `1px solid ${theme.colors.white4}` }}
                 >
                   <SwapAmountInput
+                    needMaxButton
                     title="From"
                     maxAmount={maxInputAmount}
                     amount={formatNumberWithSpaces(inputAmount)}
@@ -770,7 +752,7 @@ const SwapPage = ({
               </RowContainer>
               {showPriceInfo && (
                 <RowContainer justify="space-between" margin="0.5em 0 0 0">
-                  <BlackRow width="calc(50% - 0.6em)">
+                  {/* <BlackRow width="calc(50% - 0.6em)">
                     <RowTitle>Fee:</RowTitle>
                     <Row align="center" wrap="nowrap">
                       <RowValue>
@@ -811,64 +793,91 @@ const SwapPage = ({
                         </DarkTooltip>
                       )}
                     </Row>
-                  </BlackRow>
+                  </BlackRow> */}
 
-                  <BlackRow width="calc(50% - 0.6em)">
-                    <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
-                      {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
-                    </RowImpactTitle>
-
-                    <DarkTooltip
-                      PopperProps={{ style: { opacity: 1 } }}
-                      title={
-                        <Row
-                          direction="column"
-                          align="flex-start"
-                          style={{ fontSize: '16px' }}
-                        >
-                          <Text size="esm" margin="0">
-                            <InlineText color="white1" weight={600}>
-                              {stripByAmount(estimatedPriceFromRoute)}
-                            </InlineText>{' '}
-                            {outputSymbol} per {inputSymbol}.
-                          </Text>
-                          <Text color="white1" size="esm" margin="0">
-                            <InlineText
-                              color={isHighPriceDiff ? 'red1' : 'green2'}
-                            >
-                              {priceDiffText}
-                            </InlineText>{' '}
-                            CoinGecko price.
-                          </Text>
-                        </Row>
-                      }
+                  <BlackRow isDetailsOpen={isDetailsOpen} width="100%">
+                    <RowContainer
+                      style={{
+                        borderBottom: isDetailsOpen
+                          ? `1px solid ${theme.colors.white4}`
+                          : 'none',
+                      }}
+                      height="1.7em"
+                      justify="space-between"
                     >
-                      <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                      <Row width="50%" justify="flex-start">
+                        <InlineText color="white2" size="xs">
+                          <SvgIcon
+                            src={HalfArrowsIcon}
+                            width="0.8em"
+                            height="0.8em"
+                          />{' '}
+                          1 {inputSymbol} ={' '}
+                          {stripByAmount(estimatedPriceFromRoute)}{' '}
+                          {outputSymbol}
+                        </InlineText>
+                      </Row>
+
+                      <Row justify="space-between">
+                        <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
+                          {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
+                        </RowImpactTitle>
+                        <DropdownIconContainer
+                          isDetailsOpen={isDetailsOpen}
+                          onClick={() => {
+                            setIsDetailsOpen(!isDetailsOpen)
+                          }}
                         >
-                          <path
-                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                            stroke="currentColor"
-                          />
-                          <path
-                            d="M6 3.5H6.00656"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M6 5.5V8"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </InfoIconContainer>
-                    </DarkTooltip>
+                          <svg
+                            width="100%"
+                            height="100%"
+                            viewBox="0 0 18 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M1 1L9 9L17 1"
+                              stroke="#ABBAD1"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                        </DropdownIconContainer>
+                      </Row>
+                    </RowContainer>
+                    {isDetailsOpen && (
+                      <RowContainer direction="column">
+                        <RowContainer margin="1em 0" justify="space-between">
+                          <InlineText weight={500} size="xs" color="white3">
+                            Price Impact:
+                          </InlineText>
+                          <InlineText weight={600} size="xs" color="white2">
+                            {formattedPriceImpact}%
+                          </InlineText>
+                        </RowContainer>
+                        <RowContainer
+                          margin="0 0 1em 0"
+                          justify="space-between"
+                        >
+                          <InlineText weight={500} size="xs" color="white3">
+                            Swap Fee:
+                          </InlineText>
+                          <InlineText weight={600} size="xs" color="white2">
+                            {formattedPoolsFeeUSD}
+                          </InlineText>
+                        </RowContainer>
+                        <RowContainer
+                          margin="0 0 1em 0"
+                          justify="space-between"
+                        >
+                          <InlineText weight={500} size="xs" color="white3">
+                            Network Fee:
+                          </InlineText>
+                          <InlineText weight={600} size="xs" color="white2">
+                            {stripByAmount(depositAndFeeUSD)} SOL
+                          </InlineText>
+                        </RowContainer>
+                      </RowContainer>
+                    )}
                   </BlackRow>
                 </RowContainer>
               )}

@@ -15,6 +15,20 @@ import { Page } from '@sb/components/Layout'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
+type BoxProps = {
+  image?: string
+}
+
+type TextButtonProps = {
+  color?: string
+  weight?: number
+  padding?: string
+}
+
+type DropdownIconContainerProps = {
+  isDetailsOpen?: boolean
+}
+
 export const LeftColumn = styled(Row)`
   justify-content: flex-end;
   order: 1;
@@ -76,10 +90,6 @@ export const Card = styled(BlockTemplate)`
   box-shadow: none;
 `
 
-type BoxProps = {
-  image?: string
-}
-
 export const InfoBox = styled(Row)`
   width: 32%;
   height: 15rem;
@@ -133,11 +143,14 @@ export const InfoIconContainer = styled.span<InfoIconContainerProps>`
 export const BlackRow = styled((props) => (
   <Row justify="space-between" {...props} />
 ))`
-  background: ${(props) => props.theme.colors.white5};
+  flex-direction: column;
+  justify-content: center;
   border-radius: 1.2rem;
-  height: 1.7em;
+  height: ${(props) => (props.isDetailsOpen ? 'auto' : '1.7em')};
   padding: 0 0.6em;
   margin-top: 0.8rem;
+  border: 1px solid ${(props) => props.theme.colors.white4};
+  transition: height 2s;
 `
 
 export const RowTitle = styled.span`
@@ -161,6 +174,10 @@ export const RowImpactTitle = styled(RowTitle)`
     isHighPriceDiff: boolean
     theme: DefaultTheme
   }) => (isHighPriceDiff ? theme.colors.red1 : theme.colors.green3)};
+  border-right: 1px solid ${(props) => props.theme.colors.white4};
+  padding-right: 1.5em;
+  margin-right: 1.5em;
+  white-space: nowrap;
 `
 
 export const SwapButton = styled(Button)`
@@ -313,12 +330,12 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
     font-size: 20px;
   }
 `
-export const TextButton = styled(Button)`
+export const TextButton = styled(Button)<TextButtonProps>`
   background: none;
   color: ${(props) => props.theme.colors[props.color || 'green3']};
   border: 0;
-  padding: 0;
-  font-weight: 600;
+  padding: ${(props) => props.padding || 0};
+  font-weight: ${(props) => props.weight || 600};
   width: auto;
   min-width: 0;
 `
@@ -327,4 +344,12 @@ export const FailedButtonsRow = styled(Row)`
   ${TextButton} + ${TextButton} {
     margin-left: 1.2em;
   }
+`
+
+export const DropdownIconContainer = styled.div<DropdownIconContainerProps>`
+  transform: ${(props) => (props.isDetailsOpen ? 'rotate(180deg)' : '')};
+  width: 0.5em;
+  height: 0.9em;
+  cursor: pointer;
+  transition: transform 0.5s;
 `
