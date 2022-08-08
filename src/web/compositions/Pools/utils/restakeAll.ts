@@ -3,11 +3,10 @@ import { Connection, PublicKey } from '@solana/web3.js'
 import { startStaking } from '@sb/dexUtils/common/actions'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { sleep } from '@sb/dexUtils/utils'
 
-import { filterOpenFarmingStates } from '@core/solana'
+import { filterOpenFarmingStates, getPoolsProgramAddress } from '@core/solana'
 
 import { getTokenDataByMint } from '.'
 import { PoolInfo } from '../index.types'

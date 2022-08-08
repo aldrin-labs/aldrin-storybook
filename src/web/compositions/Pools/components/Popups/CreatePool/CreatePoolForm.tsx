@@ -415,16 +415,15 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
       const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
 
+      const tokensTotal = parseFloat(values.farming.tokenAmount || '0')
       const tokensPerPeriod =
-        (parseFloat(values.farming.tokenAmount) * HOUR) /
-        DAY /
-        parseFloat(values.farming.farmingPeriod)
+        (tokensTotal * HOUR) / DAY / parseFloat(values.farming.farmingPeriod)
 
       const tokensPerPeriodWithMultiplier = new BN(
         (tokensPerPeriod * tokensMultiplier).toFixed(0)
       )
 
-      if (!tokensPerPeriodWithMultiplier.toNumber()) {
+      if (tokensTotal > 0 && !tokensPerPeriodWithMultiplier.toNumber()) {
         return {
           farming: {
             tokenAmount: 'Farming rewards for period is less than minimum',
@@ -653,7 +652,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       name="initialLiquidityLockPeriod"
                       append={
                         <InputAppendContainer>
-                          <InlineText color="gray1" weight={600}>
+                          <InlineText color="white1" weight={600}>
                             Days
                           </InlineText>
                         </InputAppendContainer>
@@ -705,11 +704,11 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Set Base Token initial price" />
                 <FlexBlock>
                   <FlexBlock alignItems="center">
-                    <InlineText weight={600} color="gray1">
+                    <InlineText weight={600} color="white1">
                       1&nbsp;
                     </InlineText>
                     <TokenIconWithName mint={form.values.baseToken.mint} />{' '}
-                    <InlineText weight={600} color="gray1">
+                    <InlineText weight={600} color="white1">
                       &nbsp;=
                     </InlineText>
                   </FlexBlock>
@@ -773,7 +772,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     </ErrorText>
                   )}
                 <Centered>
-                  <InlineText weight={600} color="gray1">
+                  <InlineText weight={600} color="white1">
                     +
                   </InlineText>
                 </Centered>
@@ -788,7 +787,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       form.setFieldValue(field, value)
                       onQuoteAmountChange(value)
                     }}
-                    available={selectedQuoteAccount.amount}
+                    available={selectedQuoteAccount?.amount || 0}
                     mint={form.values.quoteToken.mint}
                     onChange={onQuoteAmountChange}
                   />

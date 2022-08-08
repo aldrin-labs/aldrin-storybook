@@ -92,7 +92,7 @@ export const TransactionComponent = ({
           <StyledTextColumnContainer style={{ justifyContent: 'flex-end' }}>
             <Row justify="flex-end" padding=".3rem 0">
               <Text
-                color="gray1"
+                color="white1"
                 style={{
                   whiteSpace: 'nowrap',
                   paddingRight: '1rem',

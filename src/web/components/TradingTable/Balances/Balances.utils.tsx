@@ -38,17 +38,17 @@ export const combineBalancesTable = (
             <RowContainer height="20rem" padding="0 2rem">
               <RowContainer style={{ width: '40%' }} direction="column">
                 <RowContainer justify="flex-start">
-                  <StyledTitle color={theme.colors.gray1}>{coin}</StyledTitle>
+                  <StyledTitle color={theme.colors.white1}>{coin}</StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
                   <StyledTitle>Wallet</StyledTitle>
-                  <StyledTitle color={theme.colors.gray1}>
+                  <StyledTitle color={theme.colors.white1}>
                     {roundAndFormatNumber(wallet, 8, true) || '0'}
                   </StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
                   <StyledTitle>Unsettled</StyledTitle>
-                  <StyledTitle color={theme.colors.gray1}>
+                  <StyledTitle color={theme.colors.white1}>
                     {roundAndFormatNumber(unsettled, 8, true) || '0'}
                   </StyledTitle>
                 </RowContainer>
@@ -62,7 +62,7 @@ export const combineBalancesTable = (
                   textTransform="none"
                   padding=".5rem 1rem .4rem 1rem"
                   borderRadius="1.4rem"
-                  btnColor={theme.colors.primaryWhite}
+                  btnColor={theme.colors.persistent.white1}
                   borderColor={theme.colors.blue3}
                   backgroundColor={theme.colors.blue3}
                   transition="all .4s ease-out"

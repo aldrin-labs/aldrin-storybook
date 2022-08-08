@@ -7,6 +7,8 @@ import DiscordSvg from '@icons/smallDiscord.svg'
 import TechSvg from '@icons/tech.svg'
 import TelegramSvg from '@icons/telegram.svg'
 
+import { socialLinks } from '../Homepage/SocialsLinksComponents'
+
 const ButtonLink = styled.a`
   display: flex;
   align-items: center;
@@ -17,8 +19,18 @@ const ButtonLink = styled.a`
   text-decoration: none;
 `
 
+const Title = styled.h3`
+  font-family: 'DM Sans';
+  font-weight: bold;
+  font-size: 2.5rem;
+  color: ${(props) => props.theme.colors.white1};
+  margin-top: 5rem;
+  text-align: center;
+`
+
 const TechIssues = () => {
   const theme = useTheme()
+
   return (
     <div
       style={{
@@ -30,17 +42,9 @@ const TechIssues = () => {
       }}
     >
       <SvgIcon src={TechSvg} width="6rem" height="6rem" />
-      <h3
-        style={{
-          fontFamily: 'DM Sans',
-          fontWeight: 'bold',
-          fontSize: '2.5rem',
-          color: theme.colors.gray0,
-          marginTop: '5rem',
-        }}
-      >
+      <Title>
         Sorry, we support only Chrome and Chrome Canary browsers for now
-      </h3>
+      </Title>
       <div
         style={{
           display: 'flex',
@@ -66,7 +70,7 @@ const TechIssues = () => {
         style={{
           fontFamily: 'DM Sans',
           fontSize: '2rem',
-          color: theme.colors.gray0,
+          color: theme.colors.white1,
           marginTop: '8rem',
         }}
       >
@@ -83,7 +87,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href="https://t.me/Aldrin_Exchange"
+          href={socialLinks.telegram}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
@@ -102,7 +106,7 @@ const TechIssues = () => {
           target="_blank"
           rel="noopener noreferrer"
           background="#886AED"
-          href="https://discord.gg/4VZyNxT2WU"
+          href={socialLinks.discord}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon

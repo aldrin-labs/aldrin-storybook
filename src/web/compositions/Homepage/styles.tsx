@@ -1,4 +1,4 @@
-import { COLORS, BORDER_RADIUS, TRANSITION } from '@variables/variables'
+import { COLORS, TRANSITION } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -249,22 +249,18 @@ export const StyledPicture = styled.picture`
 export const StyledLink = styled.a`
   width: 36px;
   height: 36px;
-  background: ${(props) => props.theme.colors.gray6};
-  border-radius: ${BORDER_RADIUS.md};
   transition: ${TRANSITION};
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
-
     svg path:not(.not-fill) {
-      fill: ${COLORS.white};
+      fill: ${(props) => props.theme.colors.white1};
     }
 
     svg {
       defs {
         clipPath {
           rect {
-            fill: ${COLORS.white};
+            fill: ${(props) => props.theme.colors.white1};
           }
         }
       }

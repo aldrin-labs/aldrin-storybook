@@ -1,0 +1,46 @@
+import React, { useEffect } from 'react'
+import styled from 'styled-components'
+
+import { Button } from '../Button'
+import { InlineText } from '../Typography'
+
+export const EscapeButtonSC = styled((props) => (
+  <Button $variant="none" minWidth="0" {...props} />
+))`
+  background: ${(props) => props.theme.colors.white5};
+  color: ${(props) => props.theme.colors.white1};
+  height: 3em;
+  width: 3em;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    background: ${(props) => props.theme.colors.white4};
+    transition: all 0.3s ease-out;
+  }
+`
+
+interface EscapeButtonParams {
+  onClose: () => void
+}
+
+export const EscapeButton: React.FC<EscapeButtonParams> = (params) => {
+  const { onClose } = params
+
+  useEffect(() => {
+    const closePopup = (e) => {
+      if (e.code === 'Escape') {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', closePopup)
+    return () => window.removeEventListener('keydown', closePopup)
+  }, [])
+
+  return (
+    <EscapeButtonSC onClick={onClose}>
+      <InlineText size="esm" weight={500} color="gray0">
+        Esc
+      </InlineText>
+    </EscapeButtonSC>
+  )
+}

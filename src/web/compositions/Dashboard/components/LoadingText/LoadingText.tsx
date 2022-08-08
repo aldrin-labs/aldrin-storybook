@@ -20,7 +20,7 @@ const LoadingText = ({
   return (
     <RowContainer direction="column">
       <Title
-        color={theme.colors.gray1}
+        color={theme.colors.white1}
         fontFamily="Avenir Next Demi"
         fontSize="3rem"
         style={{ marginBottom: '2rem' }}
@@ -31,7 +31,7 @@ const LoadingText = ({
         %
       </Title>
       <Title
-        color={theme.colors.gray1}
+        color={theme.colors.white1}
         fontFamily="Avenir Next Demi"
         fontSize="2rem"
       >

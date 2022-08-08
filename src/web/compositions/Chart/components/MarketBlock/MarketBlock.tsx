@@ -26,11 +26,11 @@ import {
 
 const selectStyles = (theme) => ({
   height: '100%',
-  background: theme.colors.gray6,
+  background: theme.colors.white5,
   marginRight: '.8rem',
   cursor: 'pointer',
   padding: 0,
-  backgroundColor: theme.colors.gray6,
+  backgroundColor: theme.colors.white5,
   border: `none`,
   borderRadius: '0.75rem',
   boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
@@ -39,11 +39,11 @@ const selectStyles = (theme) => ({
     fontFamily: 'Avenir Next Demi',
     fontSize: '1.8rem',
     cursor: 'pointer',
-    color: theme.colors.gray0,
+    color: theme.colors.white1,
     textTransform: 'uppercase',
   },
   '& svg': {
-    color: theme.colors.gray1,
+    color: theme.colors.white1,
   },
   '.custom-select-box__control': {
     padding: '0 .75rem',
@@ -59,7 +59,7 @@ const selectStyles = (theme) => ({
     width: '19rem',
     '& div': { fontSize: '2rem' },
     '& svg': {
-      color: theme.colors.gray6,
+      color: theme.colors.white5,
     },
   },
 })
@@ -172,10 +172,10 @@ const MarketBlock = ({
         </Row>
         <Row>
           <Row align="flex-start" direction="column">
-            <Title color={theme.colors.green7}>
+            <Title color={theme.colors.green3}>
               You have to settle funds after each trade to transfer{' '}
             </Title>
-            <Title color={theme.colors.green7}>
+            <Title color={theme.colors.green3}>
               funds from your trading account to your wallet account.
             </Title>
           </Row>
@@ -183,7 +183,7 @@ const MarketBlock = ({
             theme={theme}
             margin="0 0 0 2rem"
             fontSize="5rem"
-            color={theme.colors.green7}
+            color={theme.colors.green3}
           />
         </Row>
         <MintsPopup

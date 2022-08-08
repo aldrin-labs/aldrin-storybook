@@ -28,6 +28,6 @@ const Container = styled.tr`
 `
 
 const Typography = styled.td`
-  color: ${(props) => (props.theme && props.theme.colors.gray1) || '#F8FAFF'};
+  color: ${(props) => (props.theme && props.theme.colors.white1) || '#F8FAFF'};
   font-size: 3rem;
 `

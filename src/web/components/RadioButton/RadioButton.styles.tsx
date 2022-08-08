@@ -42,7 +42,7 @@ const Checkmark = styled.span`
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: ${(props) => props.theme.colors.green7};
+    background-color: ${(props) => props.theme.colors.green3};
   }
 `
 
@@ -52,7 +52,7 @@ const Input = styled.span<{ checked: boolean }>`
     props.checked
       ? `
   & ~ ${Checkmark} {
-    border: 1px solid ${props.theme.colors.green7};
+    border: 1px solid ${props.theme.colors.green3};
     transition: all 0.25s ease-in-out;
 
     &:after {

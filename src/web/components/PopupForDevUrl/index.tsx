@@ -20,7 +20,7 @@ const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   padding: 2rem 4rem;
   width: 55rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 0.8rem;
 `
 

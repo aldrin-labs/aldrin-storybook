@@ -2,7 +2,6 @@ import React from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
-// import { Text } from '@sb/compositions/Addressƒbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
@@ -32,12 +31,10 @@ export const SearchInputWithLoop = ({
   onBlur?: () => {}
 }) => {
   return (
-    <Row style={{ position: 'relative' }} height="3em" width={width}>
+    <Row style={{ position: 'relative', flex: 1 }} height="3em" width={width}>
       <SearchInput
         value={searchValue}
-        onChange={(e) => {
-          onChangeSearch(e.target.value)
-        }}
+        onChange={(e) => onChangeSearch(e.target.value)}
         placeholder={placeholder}
         onFocus={onFocus}
         onBlur={onBlur}

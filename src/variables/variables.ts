@@ -129,12 +129,14 @@ export const BORDER_RADIUS = {
 
 export const FONT_SIZES = {
   xs: '0.6875em', // 11px
-  es: '0.7125em',
+  es: '0.7125em', // 11.4px
+  esm: '0.75em', // 12px
   sm: '0.8125em', // 13px
-  xsm: '0.9em',
+  xsm: '0.9em', // 14.4px
   md: '1em', // 16px
   xmd: '1.3em', // 21px
-  lg: '1.6em', // 26px
+  xlmd: '1.5em', // 24px
+  lg: '1.6em', // 26.6px
   xl: '2em', // 32px
   xxxl: '4em', // 64px
 }
@@ -146,6 +148,7 @@ export const BREAKPOINTS = {
   lg: '1024px',
   xl: '1200px',
   xxl: '1400px',
+  xxxl: '1560px',
 }
 
 export const SIZE = {
@@ -156,6 +159,7 @@ export const SIZE = {
 export const WIDTH = {
   sm: '10%',
   md: '30%',
+  xmd: '40%',
   hf: '50%',
   rg: '49%',
   lg: '60%',

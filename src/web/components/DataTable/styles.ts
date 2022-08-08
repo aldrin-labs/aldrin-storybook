@@ -16,8 +16,8 @@ export const Table = styled.table`
 
 export const Thead = styled.thead``
 export const Tr = styled.tr`
-  border-top: 1px solid ${(props) => props.theme.colors.gray5};
-  border-bottom: 1px solid ${(props) => props.theme.colors.gray5};
+  border-top: 1px solid ${(props) => props.theme.colors.white3};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white3};
   background: rgba(0, 0, 0, 0);
   transition: ${TRANSITION};
 `
@@ -26,15 +26,15 @@ export const ThContent = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const Th = styled.th`
   font-size: 0.8em;
   font-weight: normal;
   text-align: left;
-  border-bottom: 1px solid ${(props) => props.theme.colors.gray5};
-  border-top: 1px solid ${(props) => props.theme.colors.gray5};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white4};
+  border-top: 1px solid ${(props) => props.theme.colors.white4};
   padding: 4px 8px;
 
   &.sortable {
@@ -45,7 +45,7 @@ export const Th = styled.th`
 
 export const Tbody = styled.tbody`
   ${Tr}:not(.no-hover):hover {
-    background: ${(props) => props.theme.colors.gray5};
+    background: ${(props) => props.theme.colors.white4};
   }
 `
 
@@ -56,7 +56,7 @@ export const Td = styled.td`
 export const ArrowContainer = styled.div`
   width: 24px;
   text-align: center;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const NoDataBlock = styled(FlexBlock)`

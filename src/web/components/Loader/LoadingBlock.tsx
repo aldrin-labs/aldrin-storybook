@@ -13,7 +13,7 @@ export const LoadingBlock: React.FC<{ loading?: boolean }> = (props) => {
 
   return (
     <LoaderBlockWrap>
-      <Loader className="with-loader" color={theme.colors.white} width="3em" />
+      <Loader className="with-loader" color={theme.colors.white1} width="3em" />
       <LoaderBlockInner>{children}</LoaderBlockInner>
     </LoaderBlockWrap>
   )

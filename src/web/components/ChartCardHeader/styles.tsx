@@ -12,7 +12,7 @@ export const CardTitle = styled(TypographyFullWidth)`
   letter-spacing: 0.01rem;
   font-size: 1.3rem;
   text-align: center;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 type TriggerTitleProps = {
@@ -29,7 +29,7 @@ export const TriggerTitle = styled(Title)`
   position: relative;
   padding: ${(props: TriggerTitleProps) => props.padding || '1rem 0'};
   transition: opacity 0.75s ease-in-out;
-  background: ${(props) => props.theme.colors.gray10};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: 0;
 
   &:hover {

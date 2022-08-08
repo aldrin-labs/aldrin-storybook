@@ -1,7 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-
 interface WebIconProps {
   width?: string
   height?: string
@@ -16,13 +15,11 @@ export interface Props extends WebIconProps {
   className?: string
 }
 
-
 const WebIcon = styled.img<WebIconProps>`
   object-fit: contain;
   width: ${(props: WebIconProps) => props.width || '16px'};
   height: ${(props: WebIconProps) => props.height || '16px'};
 `
-
 
 const SvgIcon: React.FC<Props> = (props) => {
   const {
@@ -48,6 +45,5 @@ const SvgIcon: React.FC<Props> = (props) => {
     />
   )
 }
-
 
 export default SvgIcon

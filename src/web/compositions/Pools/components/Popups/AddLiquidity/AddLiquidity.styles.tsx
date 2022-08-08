@@ -13,6 +13,6 @@ export const WarningLabel = styled(WhiteText)`
 `
 
 export const PriceImpactWarningBlock = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 1.2rem;
 `

@@ -14,7 +14,7 @@ import {
 } from '@core/utils/chartPageUtils'
 
 // eslint-disable-next-line import/no-useless-path-segments
-import { OrderBook } from '../components'
+import { OrderBook } from '.'
 
 const OrderbookAndDepthChart = (props) => {
   const {
@@ -127,13 +127,15 @@ const OrderbookAndDepthChart = (props) => {
       asks: updatedData.asks,
       bids: updatedData.bids,
     })
+  }, 250)
 
+  useEffect(() => {
     return () =>
       setOrderbookData({
         asks: new TreeMap(),
         bids: new TreeMap(),
       })
-  }, 250)
+  }, [])
 
   const dataToSend =
     String(aggregation) ===

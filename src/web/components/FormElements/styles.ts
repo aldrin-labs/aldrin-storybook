@@ -20,7 +20,7 @@ interface RadioButtonProps {
 export const RadioButton = styled.div<RadioButtonProps>`
   height: 16px;
   width: 16px;
-  border: 2px solid ${(props) => props.theme.colors.blue4};
+  border: 2px solid ${(props) => props.theme.colors.blue2};
   background: transparent;
   border-radius: 50%;
   margin-right: 5px;
@@ -33,7 +33,7 @@ export const RadioButton = styled.div<RadioButtonProps>`
     content: "";
     width: 6px;
     height: 6px;
-    background:${props.theme.colors.blue4};
+    background:${props.theme.colors.blue2};
     border-radius: 50%;
     margin: 3px;
   }
@@ -43,7 +43,7 @@ export const RadioButton = styled.div<RadioButtonProps>`
 
 export const RadioLabel = styled.label`
   font-size: 0.68em;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const CheckboxContainer = styled.div`
@@ -100,7 +100,7 @@ export const LabelWrap = styled(FlexBlock)`
   &::after {
     display: block;
     content: '';
-    border-bottom: 1px solid ${(props) => props.theme.colors.gray5};
+    border-bottom: 1px solid ${(props) => props.theme.colors.white4};
     flex: 1;
     margin: -20px 0 0 10px;
     transform: translateY(10px);
@@ -109,5 +109,5 @@ export const LabelWrap = styled(FlexBlock)`
 
 export const GroupLabelText = styled.label`
   font-size: 11px;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `

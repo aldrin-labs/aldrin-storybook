@@ -34,9 +34,9 @@ export const MarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 6rem;
   padding: 0 3rem;
-  border-top: 0.1rem solid ${(props) => props.theme.colors.gray5};
-  border-bottom: 0.1rem solid ${(props) => props.theme.colors.gray5};
-  background: ${(props) => props.theme.colors.gray10};
+  border-top: 0.1rem solid ${(props) => props.theme.colors.white4};
+  border-bottom: 0.1rem solid ${(props) => props.theme.colors.white4};
+  background: ${(props) => props.theme.colors.white6};
 
   @media (max-width: 600px) {
     display: none;
@@ -49,8 +49,8 @@ export const MobileMarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 10rem;
   padding: 0 3rem;
-  background: ${(props) => props.theme.colors.gray6};
-  border-bottom: ${(props) => props.theme.colors.gray1};
+  background: ${(props) => props.theme.colors.white5};
+  border-bottom: ${(props) => props.theme.colors.white1};
   @media (min-width: 600px) {
     display: none;
   }

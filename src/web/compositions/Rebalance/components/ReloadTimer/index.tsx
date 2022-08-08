@@ -9,7 +9,7 @@ export const TimerButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 0.8rem;
   cursor: pointer;
   margin: ${(props: { margin?: string }) => props.margin || '0 3rem 0 0'};

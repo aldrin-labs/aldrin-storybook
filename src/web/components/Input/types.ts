@@ -8,6 +8,10 @@ export interface AppendProps {
   padding?: string
 }
 
+export interface PrependProps {
+  padding?: string
+}
+
 export interface WrapProps {
   $borderRadius: keyof typeof BORDER_RADIUS
   $variant: keyof typeof VARIANTS
@@ -30,6 +34,7 @@ export interface InputCommon {
 export interface InputBase extends InputCommon {
   formatter?: (e: string, prevValue: string) => string
   append?: ReactNode
+  prepend?: ReactNode
 }
 
 export interface OnChangeProps {
@@ -37,7 +42,12 @@ export interface OnChangeProps {
   onChange: (e: string) => void
 }
 
-export interface InputProps extends InputBase, OnChangeProps {
+export interface OnFocusBlurProps {
+  onBlur?: () => void
+  onFocus?: () => void
+}
+
+export interface InputProps extends InputBase, OnChangeProps, OnFocusBlurProps {
   autoFocus?: boolean
   maxLength?: number
 }

@@ -10,7 +10,16 @@ import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { BlockContent } from '../Block'
 import { Modal } from '../Modal'
 import { TokenIconWithName } from '../TokenIcon'
-import { Balance, SearchInput, TokenModalRow, IconContainer } from './styles'
+import {
+  Balance,
+  SearchInput,
+  TokenModalRow,
+  IconContainer,
+  ModalHeader,
+  ModalTitleContainer,
+} from './styles'
+import { CloseIcon, ModalTitle } from '../Modal/styles'
+import { CloseIconSvg } from './icons/CloseIconSvg'
 
 export interface Token {
   mint: string
@@ -23,6 +32,7 @@ interface SelectTokenModalProps {
   onClose: () => void
   onSelect: (token: Token) => void
 }
+
 export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
   const { onClose, tokens, onSelect } = props
 
@@ -33,10 +43,16 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
     .filter((t) => t.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <Modal backdrop="dark" onClose={onClose} open title="Select Token">
-      <BlockContent>
+    <Modal backdrop="dark" onClose={onClose} open>
+      <ModalHeader>
+        <ModalTitleContainer>
+          <ModalTitle>Select Token</ModalTitle>
+          <CloseIcon onClick={onClose}>
+            <CloseIconSvg />
+          </CloseIcon>
+        </ModalTitleContainer>
         <SearchInput
-          autoFocus={true}
+          autoFocus
           name="token_search"
           append={
             <IconContainer>
@@ -47,6 +63,9 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
           onChange={setSearch}
           placeholder="Search..."
         />
+      </ModalHeader>
+
+      <BlockContent>
         {tokensWithName.map((t, idx) => (
           <TokenModalRow
             key={`token_selector_${t.mint}_${t.account || idx}`}
