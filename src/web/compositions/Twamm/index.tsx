@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
 import React, { useEffect, useState } from 'react'
 import { TabPanel } from 'react-tabs'
@@ -34,21 +33,19 @@ import { withRegionCheck } from '@sb/hoc'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
-import ArrowBanner from '@icons/arrowBanner.svg'
 import BlackBanner from '@icons/blackBanner.png'
 import PinkBanner from '@icons/pinkBanner.png'
 
 import { DexTokensPrices } from '../Pools/index.types'
 import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.Wrapper'
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
+import ArrowBanner from './icons/arrowBanner.svg'
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
 
 const TwammComponent = ({
-  theme,
   getDexTokensPricesQuery,
 }: {
-  theme: Theme
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
@@ -84,12 +81,6 @@ const TwammComponent = ({
     handleGetOrderArray()
   }, [wallet.publicKey?.toString()])
 
-  // console.log(
-  //   'stake: ',
-  //   tickets
-  //     .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
-  //     .reduce((acc, t) => acc + t.tokensFrozen, 0)
-  // )
   if (!pairSettings.length) {
     return null
   }
@@ -185,24 +176,6 @@ const TwammComponent = ({
                 <TabTitle>Order History</TabTitle>
               </TabStyled>
             </TabListStyled>
-            {/* <BtnCustom */}
-            {/*  theme={theme} */}
-            {/*  onClick={() => {}} */}
-            {/*  needMinWidth={false} */}
-            {/*  btnWidth="21.3rem" */}
-            {/*  height="4rem" */}
-            {/*  fontSize="1.4rem" */}
-            {/*  borderRadius="1.1rem" */}
-            {/*  borderColor="#45AC14" */}
-            {/*  btnColor="#fff" */}
-            {/*  backgroundColor="#45AC14" */}
-            {/*  textTransform="none" */}
-            {/*  margin="0" */}
-            {/*  transition="all .4s ease-out" */}
-            {/*  style={{ whiteSpace: 'nowrap' }} */}
-            {/* > */}
-            {/*  Trade on TWAMM */}
-            {/* </BtnCustom> */}
           </TabsListWrapper>
 
           <TabPanel>

@@ -3,9 +3,8 @@ import React from 'react'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { RINProviderURL } from '@sb/dexUtils/utils'
 
-import newBanner from '@icons/newBanner.png'
-import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.png'
-
+import newBanner from './icons/newBanner.png'
+import newBannerForSmallScreens from './icons/newBannerForSmallScreens.png'
 import {
   LinkToDiscord,
   LinkToMedium,

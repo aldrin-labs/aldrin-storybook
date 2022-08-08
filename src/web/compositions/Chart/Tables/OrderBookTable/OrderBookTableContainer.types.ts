@@ -14,15 +14,8 @@ export interface IProps {
 
 export type OrderbookMode = 'both' | 'bids' | 'asks'
 
-export type OrderbookGroup = 0.01 | 0.1 | 1 | 10 | 50 | 100
-
 export interface IState {
-  asks: IOrder[]
-  bids: IOrder[]
-  lastQueryData: string | null
-  group: number
   mode: OrderbookMode
-  i: number
 }
 
 export const OrderbookGroupOptions = [
