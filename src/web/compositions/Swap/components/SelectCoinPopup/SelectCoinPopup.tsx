@@ -1,3 +1,4 @@
+import { orderBy, keyBy } from 'lodash-es'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -26,6 +27,8 @@ import {
   TokenButtonText,
   TokensContainer,
   UpdatedPaper,
+  BalanceLabel,
+  SearchRow,
 } from './styles'
 
 export const SelectCoinPopup = ({
@@ -61,18 +64,7 @@ export const SelectCoinPopup = ({
     setIsSelectorForSeveralAddressesOpen,
   ] = useState(false)
 
-  const sortedAllTokensData = new Map()
-
-  userTokensData.forEach((tokensData) => {
-    if (sortedAllTokensData.has(tokensData.mint)) {
-      sortedAllTokensData.set(
-        tokensData.mint,
-        sortedAllTokensData.get(tokensData.mint) + tokensData.amount
-      )
-    } else {
-      sortedAllTokensData.set(tokensData.mint, tokensData.amount)
-    }
-  })
+  const userTokensDataMap = keyBy(userTokensData, 'mint')
 
   const filteredMints = searchValue
     ? mints.filter((mint) => {
@@ -91,27 +83,33 @@ export const SelectCoinPopup = ({
       })
     : mints
 
-  const sortedMints = filteredMints
-    .map((mint) => {
-      const { name, symbol } = tokenInfos.get(mint) || {
-        name: '',
-        symbol: getTokenNameByMintAddress(mint),
-      }
+  const sortedMints = orderBy(
+    filteredMints
+      .map((mint) => {
+        const { name, symbol } = tokenInfos.get(mint) || {
+          name: '',
+          symbol: getTokenNameByMintAddress(mint),
+        }
 
-      const amount = sortedAllTokensData.get(mint) || 0
-      const price = pricesMap.get(getTokenNameByMintAddress(mint)) || 0
+        const userToken = userTokensDataMap[mint]
+        const price = pricesMap.get(getTokenNameByMintAddress(mint)) || 0
 
-      return {
-        mint,
-        name,
-        symbol,
-        amount,
-        price,
-        total: amount * price,
-      }
-    })
-    .filter((token) => !!token.price)
-    .sort((a, b) => b.total - a.total)
+        const topMint = topTradingMints.indexOf(mint)
+
+        return {
+          mint,
+          name,
+          symbol,
+          amount: userToken ? userToken.amount : 0,
+          price,
+          total: userToken ? userToken.amount * price : 0,
+          topMint: topMint > -1 ? topMint : topTradingMints.length,
+        }
+      })
+      .filter((token) => !!token.price),
+    ['total', 'topMint'],
+    ['desc', 'asc']
+  )
 
   const selectMint = (mint: string) => {
     const isSeveralCoinsWithSameAddress =
@@ -142,19 +140,16 @@ export const SelectCoinPopup = ({
     >
       <Container>
         <RowContainer direction="column">
-          <RowContainer padding="1.5em 0 0 0">
+          <SearchRow padding="1.5em 0 0 0">
             <SearchInputWithLoop
               searchValue={searchValue}
               onChangeSearch={onChangeSearch}
               placeholder="Search token or paste address"
-              width="calc(100% - 4em)"
             />
-            <Row margin="0 0 0 1em">
-              <EscapeButton close={close} />
-            </Row>
-          </RowContainer>
+            <EscapeButton onClose={close} />
+          </SearchRow>
+
           <RowContainer justify="flex-start" padding="0.8em 0">
-            {/* top-8 tokens */}
             {topTradingMints.slice(0, 8).map((mint) => (
               <TokenButton onClick={() => selectMint(mint)}>
                 <TokenIcon mint={mint} size={16} margin="0 0.5em 0 0" />
@@ -165,45 +160,42 @@ export const SelectCoinPopup = ({
             ))}
           </RowContainer>
         </RowContainer>
+
         <TokensContainer justify="flex-start" direction="column" wrap="nowrap">
-          {sortedMints.map(({ mint, amount, name, symbol, total }) => {
-            return (
-              <SelectorRow
-                key={mint}
-                justify="space-between"
-                style={{ cursor: 'pointer' }}
-                onClick={() => selectMint(mint)}
-              >
-                <Row wrap="nowrap">
-                  <TokenIcon mint={mint} size={32} />
-                  <Row
-                    margin="0 0 0 0.5em"
-                    align="flex-start"
-                    direction="column"
-                  >
-                    <StyledText>{symbol}</StyledText>
-                    {name && (
-                      <Row padding="0.5em 0 0 0">
-                        <InlineText size="esm">{name}</InlineText>
-                      </Row>
-                    )}
+          {sortedMints.map(({ mint, amount, name, symbol, total }) => (
+            <SelectorRow
+              key={mint}
+              justify="space-between"
+              wrap="nowrap"
+              style={{ cursor: 'pointer' }}
+              onClick={() => selectMint(mint)}
+            >
+              <Row wrap="nowrap">
+                <TokenIcon mint={mint} size={32} />
+                <Row margin="0 0 0 0.5em" align="flex-start" direction="column">
+                  <StyledText>{symbol}</StyledText>
+                  {name && (
+                    <Row margin="0.5em 0 0 0">
+                      <InlineText size="esm">{name}</InlineText>
+                    </Row>
+                  )}
+                </Row>
+              </Row>
+              {connected && (
+                <Row direction="column" align="flex-end" wrap="nowrap">
+                  <InlineText size="esm" color="white" weight={600}>
+                    ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
+                  </InlineText>
+                  <Row margin="0.5em 0 0 0">
+                    <BalanceLabel size="esm" color="white1">
+                      {formatNumberToUSFormat(stripByAmount(amount))}&nbsp;
+                      {symbol}
+                    </BalanceLabel>
                   </Row>
                 </Row>
-                {connected && (
-                  <Row direction="column" align="flex-end" wrap="nowrap">
-                    <InlineText size="esm" color="white" weight={600}>
-                      ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
-                    </InlineText>
-                    <Row padding="0.5em 0 0 0">
-                      <InlineText size="esm" color="white1">
-                        {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
-                      </InlineText>
-                    </Row>
-                  </Row>
-                )}
-              </SelectorRow>
-            )
-          })}
+              )}
+            </SelectorRow>
+          ))}
           {mints.length === 0 && (
             <RowContainer>
               <StyledText>Loading...</StyledText>

@@ -26,6 +26,13 @@ html {
   }
 }
 
+.amm_pools_table_user {
+  .ReactVirtualized__Table__Grid {
+     will-change: auto !important;
+  }
+}
+
+
 @media only screen and (max-width: 1440px) {
   html {
     font-size: 8px !important;
@@ -283,12 +290,9 @@ export const TablesContainer = styled(Grid)`
   }
 `
 
-export const TradingTerminalContainer = styled(
-  ({
-    MASTER_BUILD,
-    ...rest
-  }) => <div {...rest} />
-)`
+export const TradingTerminalContainer = styled(({ MASTER_BUILD, ...rest }) => (
+  <div {...rest} />
+))`
   height: 100%;
   transition: all 0.5s ease;
   position: relative;
@@ -535,9 +539,9 @@ export const ChartAndOrderbookContainer = styled(Grid)`
   height: 100%;
   @media (max-width: 600px) {
     dispay: ${(props) =>
-    props.$terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
+      props.$terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
     flex-direction: ${(props) =>
-    props.$terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
+      props.$terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
   }
 `
 export const RoundLink = styled(Link)`

@@ -1,6 +1,6 @@
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 
-export interface SearchItem {
+export interface SwapItem {
   tokenFrom: { symbol: string; mint: string }
   tokenTo: { symbol: string; mint: string }
   amountFrom: string | number | null
@@ -18,5 +18,5 @@ export interface SwapSearchProps {
   topTradingMints: string[]
   setInputTokenAddressFromSeveral: (address: string) => void
   setOutputTokenAddressFromSeveral: (address: string) => void
-  onSelect: (selected: SearchItem) => void
+  onSelect: (selected: SwapItem) => void
 }
