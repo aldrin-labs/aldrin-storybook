@@ -56,6 +56,7 @@ export const WalletProvider: React.FC = ({ children }) => {
     'walletConnectedUpdatedFinally',
     false
   )
+
   const [connected, setConnected] = useState(false)
   const [autoConnect, setAutoConnect] = useState(connectedPersist)
 
@@ -69,10 +70,19 @@ export const WalletProvider: React.FC = ({ children }) => {
     [providerUrl]
   )
 
-  const wallet = useMemo(
-    () => provider?.adapter(providerUrl, endpoint) as any as WalletAdapter,
-    [provider, endpoint]
-  )
+  const wallet = useMemo(() => {
+    if (provider) {
+      const adapter = (provider?.adapter)(
+        providerUrl,
+        endpoint
+      ) as any as WalletAdapter
+
+      return adapter
+    }
+    return undefined
+  }, [provider, endpoint])
+
+  console.log('wallet:', wallet)
 
   const connectWalletHash = useMemo(
     () => window.location.hash,
@@ -335,7 +345,8 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
+  const { data: accountInfo, isLoading: accountInfoLoading } =
+    useAccountInfo(publicKey)
 
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
@@ -421,10 +432,10 @@ export async function createAssociatedTokenAccount({
   return [address, txSig]
 }
 export async function createAssociatedTokenAccountIx(
-  fundingAddress,
-  walletAddress,
-  splTokenMintAddress
-) {
+  fundingAddress: PublicKey,
+  walletAddress: PublicKey,
+  splTokenMintAddress: PublicKey
+): Promise<[TransactionInstruction, PublicKey]> {
   const associatedTokenAddress = await findAssociatedTokenAddress(
     walletAddress,
     splTokenMintAddress

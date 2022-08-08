@@ -20,6 +20,7 @@ import {
   RequestListingIcon,
   CreatePoolIcon,
   MoreIcon,
+  MigrationToolIcon,
 } from './MenuIcons'
 import { RinBalance } from './RinBalance'
 import {
@@ -161,6 +162,10 @@ export const Header = React.memo(
                     <NavLink $left to="/pools/create">
                       <CreatePoolIcon />
                       <span>Create Pool</span>
+                    </NavLink>
+                    <NavLink $left to="/migrationTool">
+                      <MigrationToolIcon />
+                      <span>Migration Tool</span>
                     </NavLink>
                   </DropDown>
                 </MainLinksBlock>
