@@ -205,7 +205,11 @@ const WalletBreakdownPopup = ({
         <PrimaryCardTop>
           <PrimaryCardTopLeft>
             <Wallet>
-              <SvgIcon src={wallet.icon} width="1em" height="100%" />
+              <SvgIcon
+                src={wallet.icon}
+                width="1em"
+                height="100%"
+              />
               <WalletName>
                 {formatSymbol({ symbol: wallet.publicKey.toString() })}
               </WalletName>
