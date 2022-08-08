@@ -6,7 +6,7 @@ import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
-export const useFarmInfo = ({ stakingDataMap }: { stakingDataMap: any }) => {
+export const useFarmInfo = (stakingDataMap: any) => {
   // TODO: type
   const { wallet } = useWallet()
   const connection = useConnection()

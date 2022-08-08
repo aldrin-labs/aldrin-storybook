@@ -27,5 +27,10 @@ export const useFarmersAccountInfo = () => {
     )
   }
 
-  return useSWR(`farmers-account-info-${wallet.publicKey?.toString()}`, fetcher) // .data
+  const { data = new Map(), mutate } = useSWR(
+    `farmers-account-info-${wallet.publicKey?.toString()}`,
+    fetcher
+  )
+
+  return { data, mutate }
 }

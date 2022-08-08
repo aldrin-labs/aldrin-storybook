@@ -58,15 +58,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     treasuryDailyRewards,
   } = props
 
-  const stakingData = getStakingInfoQuery.getStakingInfo.farming
+  const stakingData = getStakingInfoQuery?.getStakingInfo?.farming || []
 
-  const stakingDataMap = toMap(stakingData, (farm) => farm.stakeMint.toString())
+  const stakingDataMap = toMap(stakingData, (farm) =>
+    farm?.stakeMint.toString()
+  )
 
-  const { data: farms } = useFarmInfo({ stakingDataMap })
+  const { data: farms } = useFarmInfo(stakingDataMap)
 
   const farm = farms?.get(FARMING_V2_TEST_TOKEN)
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
-    publicKey: farm ? new PublicKey(farm.stakeVault) : undefined,
+    publicKey: farm ? new PublicKey(farm?.stakeVault) : undefined,
   })
 
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
@@ -83,7 +85,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
-  const { data: farmersInfo } = useFarmersAccountInfo()
+  const { data: farmersInfo, mutate: refreshFarmersInfo } =
+    useFarmersAccountInfo()
 
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
 
@@ -103,7 +106,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   })
 
   const refreshAll = async () => {
-    await Promise.all([refreshTotalStaked(), refreshAllTokenData()])
+    await Promise.all([
+      refreshTotalStaked(),
+      refreshAllTokenData(),
+      refreshFarmersInfo(),
+    ])
   }
 
   const { buyBackAmountWithoutDecimals } = stakingPool.apr
@@ -211,6 +218,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const availableForUnstake = parseFloat(
     farmer?.account.staked.amount.toString() || '0'
   )
+
+  console.log({ availableForUnstake })
 
   return (
     <>

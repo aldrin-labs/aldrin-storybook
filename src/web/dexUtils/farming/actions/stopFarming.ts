@@ -47,9 +47,9 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
   const { instruction } = await buildStopFarmingV2Instruction({
     wallet,
     connection,
-    farm: farm.publicKey,
+    farm: new PublicKey(farm.publicKey),
     stakeWallet: new PublicKey(userTokenAccount),
-    stakeVault: farm.stakeVault,
+    stakeVault: new PublicKey(farm.stakeVault),
     tokenAmount,
   })
 
