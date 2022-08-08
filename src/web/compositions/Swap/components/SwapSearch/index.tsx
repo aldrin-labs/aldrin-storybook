@@ -250,6 +250,9 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         case 'Enter':
           selectRow(swapItems[selectedKeyboardSwapOptionIndex])
           break
+        case 'Escape':
+          setSearchValue('')
+          break
         default:
           break
       }
@@ -278,6 +281,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
               onClick={(e) => {
                 e.stopPropagation()
                 setListOpened(false)
+                setSearchValue('')
               }}
             >
               Esc
