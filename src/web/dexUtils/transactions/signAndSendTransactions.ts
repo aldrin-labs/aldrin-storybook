@@ -1,4 +1,8 @@
-import { SendTransactionStatus, signTransactions, WithStatusChange } from "@core/solana"
+import {
+  SendTransactionStatus,
+  signTransactions,
+  WithStatusChange,
+} from '@core/solana'
 
 import { sendSignedTransactions } from '.'
 import { getNotifier } from './notifier'

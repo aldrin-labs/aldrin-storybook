@@ -17,9 +17,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenName } from '@sb/dexUtils/markets'
-import {
-  useUserTokenAccounts,
-} from '@sb/dexUtils/token/hooks'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -178,6 +176,7 @@ const WalletBreakdownPopup = ({
       wallet: walletWithPk,
       connection,
       transaction,
+      commitment: 'finalized',
     })
 
     await refreshUserTokenList()
