@@ -35,8 +35,9 @@ export const REGEXP_FORMATTER =
     return prevValue
   }
 
-export const Input: React.FC<InputProps> = (props) => {
-  const input = useRef<HTMLInputElement | null>(null)
+export const Input: React.FC<InputProps> = React.forwardRef((props, ref) => {
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
   const {
     placeholder,
     onChange,
@@ -58,9 +59,7 @@ export const Input: React.FC<InputProps> = (props) => {
   } = props
 
   const setFocus = () => {
-    if (input.current) {
-      input.current.focus()
-    }
+    inputRef.current.focus()
   }
 
   return (
@@ -86,7 +85,13 @@ export const Input: React.FC<InputProps> = (props) => {
           onFocus={onFocus}
           name={name}
           disabled={disabled}
-          ref={input}
+          ref={(el) => {
+            inputRef.current = el
+
+            if (ref) {
+              ref.current = el
+            }
+          }}
           autoComplete="off"
           autoFocus={autoFocus}
           maxLength={maxLength}
@@ -96,7 +101,7 @@ export const Input: React.FC<InputProps> = (props) => {
       {append && <Append>{append}</Append>}
     </InputWrap>
   )
-}
+})
 
 export const InputField: React.FC<FieldProps> = (props) => {
   const {

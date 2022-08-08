@@ -53,6 +53,8 @@ const FindIcon = () => {
 }
 
 export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
+  const inputRef = useRef()
+
   const {
     tokens,
     topTradingPairs,
@@ -198,6 +200,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     }
   }
 
+  const resetSearchState = () => {
+    setListOpened(false)
+    setSearchValue('')
+    setSwapItems(defaultItems)
+    inputRef.current.blur()
+  }
+
   const selectRow = (selected: SwapItem) => {
     const { tokenFrom, tokenTo } = selected
     const isSeveralTokenAccountsForSelectedInputMint =
@@ -251,7 +260,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
           selectRow(swapItems[selectedKeyboardSwapOptionIndex])
           break
         case 'Escape':
-          setSearchValue('')
+          resetSearchState()
           break
         default:
           break
@@ -269,6 +278,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   return (
     <Container listOpened={listOpened} ref={wrapperRef}>
       <SearchInput
+        ref={inputRef}
         name="search"
         placeholder="You can try “10 USDC to RIN”"
         value={searchValue}
@@ -280,8 +290,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
             <CloseButton
               onClick={(e) => {
                 e.stopPropagation()
-                setListOpened(false)
-                setSearchValue('')
+                resetSearchState()
               }}
             >
               Esc
