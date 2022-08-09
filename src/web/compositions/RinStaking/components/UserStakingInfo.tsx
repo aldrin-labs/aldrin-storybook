@@ -93,8 +93,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const totalStaked = farmer?.totalStaked || '0'
 
-  console.log({ farmersInfo })
-
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
   const rinHarvest = farm?.harvests.find(
@@ -105,6 +103,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     totalStaked: totalStakedRIN,
     harvest: rinHarvest,
   })
+
+  console.log('getStakingInfoQuery', getStakingInfoQuery)
 
   const refreshAll = async () => {
     await Promise.all([
@@ -349,8 +349,7 @@ export default compose<InnerProps, OuterProps>(
   queryRendererHoc({
     query: getStakingInfo,
     name: 'getStakingInfoQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
     withoutLoading: true,
-    pollInterval: 60000,
   })
 )(UserStakingInfo)
