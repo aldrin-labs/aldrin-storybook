@@ -1,7 +1,7 @@
 import { BORDER_RADIUS, COLORS } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
-import { WrapProps, AppendProps } from './types'
+import { WrapProps, AppendProps, PrependProps } from './types'
 
 export const VARIANTS = {
   default: css`
@@ -73,6 +73,11 @@ export const Append = styled.span<AppendProps>`
   font-size: 1em;
   display: flex;
   flex: 1;
+`
+
+export const Prepend = styled.span<PrependProps>`
+  display: flex;
+
 `
 
 export const Label = styled.div`

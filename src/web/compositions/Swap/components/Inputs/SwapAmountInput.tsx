@@ -16,6 +16,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import WalletIcon from '@icons/walletIcon.svg'
 
+import { TextButton } from '../../styles'
 import {
   AmountInputContainer,
   InputContainer,
@@ -33,6 +34,7 @@ export const SwapAmountInput = ({
   onChange = () => {},
   onMaxAmountClick = () => {},
   appendComponent = null,
+  needMaxButton = false,
 }: {
   amount?: string | number
   amountUSD?: string | number
@@ -43,6 +45,7 @@ export const SwapAmountInput = ({
   onChange?: (value: number | string) => void
   onMaxAmountClick?: () => void
   appendComponent?: any
+  needMaxButton: boolean
 }) => {
   return (
     <InputContainer disabled={disabled} direction="column" wrap="nowrap">
@@ -64,6 +67,17 @@ export const SwapAmountInput = ({
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}
           </MaxAmountText>
+
+          {needMaxButton && (
+            <TextButton
+              weight={500}
+              $fontSize="xs"
+              color="blue1"
+              padding="0 0 0 0.5em"
+            >
+              MAX
+            </TextButton>
+          )}
         </MaxAmountRow>
       </RowContainer>
       <RowContainer

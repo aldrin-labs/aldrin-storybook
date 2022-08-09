@@ -163,6 +163,8 @@ export const WalletProvider: React.FC = ({ children }) => {
 
   const w = WALLET_PROVIDERS.find(({ url }) => url === providerUrl)
 
+  wallet.icon = wallet.icon || w?.icon
+
   const context: WalletContextType = {
     wallet,
     connected,
@@ -171,6 +173,7 @@ export const WalletProvider: React.FC = ({ children }) => {
     setAutoConnect,
     providerName: w?.name ?? providerUrl,
   }
+
   return (
     <WalletContext.Provider value={context}>{children}</WalletContext.Provider>
   )

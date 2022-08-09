@@ -154,6 +154,11 @@ export const ClaimGasButton = styled.button`
   &:hover {
     background-color: ${(props) => props.theme.colors.obGreenBack};
   }
+
+  &:disabled {
+    cursor: default;
+    background-color: ${(props) => props.theme.colors.white5};
+  }
 `
 
 export const TopUpButton = styled.button`

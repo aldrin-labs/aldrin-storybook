@@ -50,10 +50,11 @@ export const RinBalance = () => {
   })
 
   if (!poolInfo || !rinTokenData) {
-    return <RinBalanceContent>0.00 RIN</RinBalanceContent>
+    return <RinBalanceContent>0.00</RinBalanceContent>
   }
 
   const { farmingTokenMintDecimals } = poolInfo.currentFarmingState
+
   const { amount: rinBalance } = rinTokenData
 
   const rinStaked = getStakedTokensTotal(
