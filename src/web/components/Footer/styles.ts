@@ -9,6 +9,7 @@ export const FooterContainer = styled.div`
   border-top-style: solid;
   border-top-color: ${(props) => props.theme.colors.border1};
   display: flex;
+  flex-shrink: 0;
   width: 100%;
   justify-content: space-between;
   align-items: center;
@@ -20,6 +21,7 @@ export const FooterContainer = styled.div`
     flex-direction: column;
   }
 `
+
 export const MediaContainer = styled(Row)`
   width: 25%;
   align-items: center;
