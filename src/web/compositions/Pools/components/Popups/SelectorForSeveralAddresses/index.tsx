@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { DefaultTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -44,6 +44,12 @@ export const SelectSeveralAddressesPopup = ({
   selectTokenAddressFromSeveral: (address: string) => void
 }) => {
   const tokensMap = useTokenInfos()
+
+  const tokenName = getTokenName({
+    address: tokens.length > 0 ? tokens[0].mint : '',
+    tokensInfoMap: tokensMap,
+  })
+
   return (
     <DialogWrapper
       PaperComponent={UpdatedPaper}
@@ -58,14 +64,10 @@ export const SelectSeveralAddressesPopup = ({
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start" margin="3rem 0">
-        <Text>You have several SOL addresses. Choose one of them.</Text>
+        <Text>You have several {tokenName} addresses. Choose one of them.</Text>
       </RowContainer>
       <RowContainer>
         {tokens.map((token: TokenInfo) => {
-          const tokenName = getTokenName({
-            address: token.mint,
-            tokensInfoMap: tokensMap,
-          })
           return (
             <SelectorRow
               justify="space-between"
@@ -77,7 +79,7 @@ export const SelectSeveralAddressesPopup = ({
               }}
             >
               <Row wrap="nowrap">
-                <TokenIcon mint={token.mint} size={32} />
+                <TokenIcon mint={token.mint} size={24} />
                 <StyledText>{tokenName}</StyledText>
               </Row>
               <Row wrap="nowrap">

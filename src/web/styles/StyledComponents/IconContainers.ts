@@ -7,7 +7,7 @@ export const CloseIconContainer = styled.div`
 
   svg {
     path {
-      stroke: ${(props) => props.theme.colors.gray0};
+      stroke: ${(props) => props.theme.colors.white1};
     }
   }
 `

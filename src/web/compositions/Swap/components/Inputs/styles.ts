@@ -1,33 +1,28 @@
-import { BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
+import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { Text } from '@sb/compositions/Addressbook'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const InputContainer = styled(RowContainer)`
   position: relative;
   justify-content: space-between;
-  height: 4em;
-  background: ${(props) =>
-    props.disabled ? props.theme.colors.gray5 : props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white6};
   border: none;
   border-radius: 0;
-  ${(props) =>
-    props.roundSides.map(
-      (roundSide: string) => `border-${roundSide}-radius: ${BORDER_RADIUS.md};`
-    )}
 `
 
 export const DropdownIconContainer = styled(Row)`
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: ${(props) => props.theme.colors.gray7};
 
   svg {
     width: 0.5875em;
     height: 0.5875em;
+
     path {
-      stroke: ${(props) => props.theme.colors.gray1};
+      stroke: ${(props) => props.theme.colors.white1};
     }
   }
 `
@@ -37,5 +32,21 @@ export const AmountInputContainer = styled(Row)`
 
   @media (min-width: ${BREAKPOINTS.xs}) {
     width: 50%;
+  }
+`
+
+export const MaxAmountText = styled(Text)`
+  color: ${(props) => props.theme.colors.white2};
+  letter-spacing: -0.005em;
+  font-size: 0.6em;
+`
+
+export const MaxAmountRow = styled(Row)`
+  &:hover {
+    cursor: pointer;
+
+    ${MaxAmountText} {
+      color: ${(props) => props.theme.colors.white1};
+    }
   }
 `

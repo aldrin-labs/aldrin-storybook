@@ -1,28 +1,30 @@
-import { Market, OpenOrders } from '@project-serum/serum'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { DEX_PID } from '@core/config/dex'
+import { Market } from '@project-serum/serum'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
 import BN from 'bn.js'
+
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { DEX_PID } from '@core/config/dex'
 
 export const getVariablesForPlacingOrder = async ({
   wallet,
   connection,
   market,
   vaultSigner,
-  openOrders,
+  openOrdersAccountAddress,
   side,
   tokenAccountA,
   tokenAccountB,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  market: Market,
-  vaultSigner: PublicKey | BN,
-  openOrders: OpenOrders[],
+  market: Market
+  vaultSigner: PublicKey | BN
+  openOrdersAccountAddress: PublicKey
   side: 'buy' | 'sell'
-  tokenAccountA: PublicKey,
-  tokenAccountB: PublicKey,
+  tokenAccountA: PublicKey
+  tokenAccountB: PublicKey
 }) => {
   const isBuySide = side === 'buy'
   const orderPayerTokenAccount = isBuySide ? tokenAccountB : tokenAccountA
@@ -38,7 +40,7 @@ export const getVariablesForPlacingOrder = async ({
       pcVault: market._decoded.quoteVault,
 
       vaultSigner,
-      openOrders: openOrders?.length > 0 ? openOrders[0].publicKey : null,
+      openOrders: openOrdersAccountAddress,
       orderPayerTokenAccount, // token address
       coinWallet: tokenAccountA, // token address
     },

@@ -1,18 +1,18 @@
 import { BORDER_RADIUS, COLORS } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
-import { WrapProps, AppendProps } from './types'
+import { WrapProps, AppendProps, PrependProps } from './types'
 
 export const VARIANTS = {
   default: css`
-    background: ${(props) => props.theme.colors.gray5};
-    border: 1px solid ${(props) => props.theme.colors.gray1};
+    background: ${(props) => props.theme.colors.white4};
+    border: 1px solid ${(props) => props.theme.colors.white1};
   `,
   'outline-white': css`
-    border: 1px solid ${(props) => props.theme.colors.white};
+    border: 1px solid ${(props) => props.theme.colors.white4};
   `,
   outline: css`
-    border: 1px solid ${(props) => props.theme.colors.gray5};
+    border: 1px solid ${(props) => props.theme.colors.white4};
   `,
 }
 
@@ -26,7 +26,7 @@ export const InputEl = styled.input`
   line-height: 1.7;
   font-weight: 600;
   padding: 0.6em 0 0.6em 1.5em;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
   width: auto;
 
   &::placeholder {
@@ -40,7 +40,7 @@ export const InputEl = styled.input`
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill {
-    -webkit-text-fill-color: ${(props) => props.theme.colors.white};
+    -webkit-text-fill-color: ${(props) => props.theme.colors.white1};
     transition: background-color 5000s ease-in-out 0s;
   }
 `
@@ -73,6 +73,11 @@ export const Append = styled.span<AppendProps>`
   font-size: 1em;
   display: flex;
   flex: 1;
+`
+
+export const Prepend = styled.span<PrependProps>`
+  display: flex;
+
 `
 
 export const Label = styled.div`

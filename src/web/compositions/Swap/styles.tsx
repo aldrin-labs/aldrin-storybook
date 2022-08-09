@@ -1,23 +1,85 @@
 import {
-  BORDER_RADIUS,
   BREAKPOINTS,
   FONTS,
   FONT_SIZES,
   MAIN_FONT,
+  TRANSITION,
 } from '@variables/variables'
+import { rgba, em } from 'polished'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Button, PADDINGS } from '@sb/components/Button'
+import { Button } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
+type BoxProps = {
+  image?: string
+}
+
+type TextButtonProps = {
+  color?: string
+  weight?: number
+  padding?: string
+}
+
+type DropdownIconContainerProps = {
+  isDetailsOpen?: boolean
+}
+
+export const LeftColumn = styled(Row)`
+  justify-content: flex-end;
+  order: 1;
+  height: 20em;
+  margin-right: 1em;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    order: 2;
+    justify-content: center;
+    margin-right: 0;
+  }
+`
+
+export const RightColumn = styled(Row)`
+  justify-content: flex-start;
+  order: 2;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    order: 1;
+    justify-content: center;
+  }
+`
+
+export const ChartContainer = styled(Row)`
+  width: 33em;
+  height: 100%;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    width: 100%;
+    margin: ${em('24px', '14px')};
+  }
+`
+
 export const SwapPageContainer = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.gray9};
-  overflow-y: auto;
+  background: ${(props) => props.theme.colors.background1};
+  //margin: 80px 0;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    flex-direction: column;
+    height: 100%;
+    //margin: 0;
+    justify-content: flex-start;
+  }
+
+  ${LeftColumn} + ${RightColumn} {
+    margin-left: 0.6em;
+
+    @media (max-width: ${BREAKPOINTS.xs}) {
+      margin-left: 0;
+    }
+  }
 `
 
 export const Card = styled(BlockTemplate)`
@@ -27,20 +89,6 @@ export const Card = styled(BlockTemplate)`
   border-top: none;
   box-shadow: none;
 `
-export const TokenLabel = styled.div`
-  width: auto;
-  padding: 0.5rem 1rem;
-  font-family: Avenir Next Medium;
-  color: #f8faff;
-  border-radius: 1.3rem;
-  background: #f69894;
-  font-size: 1.4rem;
-  margin-left: 1rem;
-`
-
-type BoxProps = {
-  image?: string
-}
 
 export const InfoBox = styled(Row)`
   width: 32%;
@@ -55,121 +103,171 @@ export const InfoBox = styled(Row)`
   padding: 2rem;
 `
 
-export const ValueButton = styled.button`
+export const SlippageButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
 
-  width: 2em;
-  height: 2em;
+  height: 32px;
   cursor: pointer;
-  padding: 0.5em 0.8em;
-  font-family: Avenir Next Bold;
-  color: #a7a7ae;
-  background-color: ${(props) => props.theme.colors.gray5};
-  margin-left: 0.5rem;
-  font-size: ${(props) => FONT_SIZES[props.$fontSize || 'sm']};
-  line-height: 2em;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
-  border-radius: 0.8rem;
+
+  padding: 0 0.6em;
+
+  font-family: ${FONTS.main};
+  font-size: 1em;
+  font-weight: 600;
+
+  color: ${(props) => props.theme.colors.white2};
+  background-color: ${(props) => props.theme.colors.white5};
+
+  border: none;
+  border-radius: 2em;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    background: ${(props) => props.theme.colors.white4};
+    transition: all 0.3s ease-out;
+  }
 `
 
-export const ValueInput = styled.input`
-  width: 5em;
-  height: 2em;
-  padding: 0.5em 0.8em;
-  font-family: Avenir Next Medium;
-  color: ${(props) => props.theme.colors.gray0};
-  background-color: ${(props) => props.theme.colors.gray5};
-  border: none;
-  font-size: ${FONT_SIZES.sm};
-  border-radius: 0.8rem;
-  outline: none;
+type InfoIconContainerProps = {
+  isHighPriceDiff: boolean
+}
+
+export const InfoIconContainer = styled.span<InfoIconContainerProps>`
+  color: ${(props) =>
+    props.isHighPriceDiff
+      ? props.theme.colors.red1
+      : props.theme.colors.green3};
 `
 
 export const BlackRow = styled((props) => (
   <Row justify="space-between" {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray5};
+  flex-direction: column;
+  justify-content: center;
   border-radius: 1.2rem;
-  height: 3em;
-  padding: 1em 0.8em;
+  height: ${(props) => (props.isDetailsOpen ? 'auto' : '1.7em')};
+  padding: 0 0.6em;
   margin-top: 0.8rem;
+  border: 1px solid ${(props) => props.theme.colors.white4};
+  transition: height 2s;
 `
 
 export const RowTitle = styled.span`
   font-family: ${MAIN_FONT};
-  font-size: ${FONT_SIZES.xsm};
-  color: ${(props) => props.theme.colors.gray0};
+  font-size: ${FONT_SIZES.esm};
+  line-height: ${FONT_SIZES.md};
+  color: ${(props) => props.$color || props.theme.colors.white2};
 `
 
 export const RowValue = styled(RowTitle)`
   font-weight: 500;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
 `
 
-export const RowAmountValue = styled(RowValue)`
-  margin-right: 0.4rem;
-  color: ${(props) => props.theme.colors.green3};
+export const RowImpactTitle = styled(RowTitle)`
+  font-weight: 600;
+  color: ${({
+    isHighPriceDiff,
+    theme,
+  }: {
+    isHighPriceDiff: boolean
+    theme: DefaultTheme
+  }) => (isHighPriceDiff ? theme.colors.red1 : theme.colors.green3)};
+  border-right: 1px solid ${(props) => props.theme.colors.white4};
+  padding-right: 1.5em;
+  margin-right: 1.5em;
+  white-space: nowrap;
 `
 
-export const SwapButton = styled((props) => (
-  <BtnCustom
-    btnWidth="100%"
-    height="4em"
-    fontSize="initial"
-    padding="0.7em 1.2em"
-    borderRadius=".8rem"
-    borderColor="none"
-    btnColor="#fff"
-    backgroundColor={
-      props.disabled ? props.theme.colors.disabled : props.theme.colors.blue5
-    }
-    textTransform="none"
-    transition="all .4s ease-out"
-    {...props}
-  />
-))`
+export const SwapButton = styled(Button)`
+  height: 4em;
+
+  color: ${(props: { isHighPriceDiff: boolean }) =>
+    props.isHighPriceDiff
+      ? props.theme.colors.red1
+      : props.theme.colors.green3};
+
+  background: ${(props: { isHighPriceDiff: boolean }) =>
+    props.isHighPriceDiff
+      ? rgba(props.theme.colors.red0, 0.15)
+      : rgba(props.theme.colors.green2, 0.15)};
+
+  border: none;
+
+  transition: all 0.4s ease-out;
+
+  span {
+    font-size: ${FONT_SIZES.esm};
+    font-weight: 600;
+  }
+
   &:disabled {
-    color: #fff;
+    color: ${(props) => props.theme.colors.white3};
+    background: ${(props) => rgba(props.theme.colors.white3, 0.15)};
+  }
+
+  &:hover {
+    background: ${(props: { isHighPriceDiff: boolean }) =>
+      props.isHighPriceDiff
+        ? rgba(props.theme.colors.red0, 0.2)
+        : rgba(props.theme.colors.green2, 0.2)};
+  }
+
+  &:active {
+    background: ${(props: { isHighPriceDiff: boolean }) =>
+      props.isHighPriceDiff
+        ? rgba(props.theme.colors.red0, 0.25)
+        : rgba(props.theme.colors.green2, 0.25)};
   }
 `
 
 export const CircleIconContainer = styled(Row)`
-  width: ${(props) => props.size || '1.6em'};
-  height: ${(props) => props.size || '1.6em'};
-  background: ${(props) => props.theme.colors.gray7};
+  width: ${(props) => props.size || '2em'};
+  height: ${(props) => props.size || '2em'};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: 50%;
   font-family: Avenir Next Bold;
-  color: ${(props) => props.theme.colors.gray0};
-  line-height: ${(props) => props.size || '1.6em'};
+  color: ${(props) => props.theme.colors.white1};
+  line-height: ${(props) => props.size || '2em'};
 `
 
-export const ReverseTokensContainer = styled(CircleIconContainer)`
+type ReverseTokensContainerProps = {
+  $isReversed: boolean
+}
+
+export const ReverseTokensContainer = styled(
+  CircleIconContainer
+)<ReverseTokensContainerProps>`
   position: absolute;
-  right: 1rem;
+  left: 50%;
   top: 50%;
-  box-shadow: ${(props) => props.theme.colors.shadow};
-  transform: translateY(-50%);
+  border: 1px solid ${(props) => props.theme.colors.white4};
+  transform: translate(-50%, -50%)
+    rotate(${(props) => (props.$isReversed ? 180 : 0)}deg);
   cursor: pointer;
   z-index: 2;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    transform: translate(-50%, -50%)
+      rotate(${(props) => (props.$isReversed ? 180 : 0)}deg) scale(1.2);
+  }
+
   svg {
-    width: 10px;
+    width: 0.8em;
     height: auto;
     path {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 `
 
 export const SwapPageLayout = styled(Page)`
-  font-size: 12px;
+  font-size: 13px;
+  justify-content: center;
 
-  @media (min-width: 380px) {
-    font-size: 13px;
-  }
-
-  @media (min-width: 480px) {
+  @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
   }
 
@@ -183,39 +281,76 @@ export const SwapPageLayout = styled(Page)`
 `
 
 export const SwapContentContainer = styled(Row)`
-  width: 90%;
+  padding: 10px 0;
+  width: 24em;
+  height: 100%;
 
-  @media (min-width: ${BREAKPOINTS.sm}) {
-    width: 30em;
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    width: 100%;
   }
 
-  @media (min-width: 1920px) {
-    width: 40em;
+  @media (min-width: ${BREAKPOINTS.xxl}) {
+    width: 27em;
   }
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
-  box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
-  background: ${({ theme }) => theme.colors.gray6};
-  padding: 2.4rem 1.6rem;
+  background: ${({ theme }) => theme.colors.white6};
+  padding: 1em 1em;
   z-index: 10;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 25em;
 
-  @media (min-width: 1920px) {
+  .timer {
+    &:hover {
+      background-color: ${(props) => props.theme.colors.white4};
+      border: 0.1rem solid ${(props) => props.theme.colors.white4};
+    }
+    &:active {
+      background-color: ${(props) => props.theme.colors.white4};
+      border: 0.1rem solid ${(props) => props.theme.colors.white4};
+    }
+  }
+
+  .btn {
+    transition: ${TRANSITION};
+
+    &:hover {
+      background: ${(props) => props.theme.colors.blue2};
+      border: 1px solid transparent;
+    }
+
+    &:active {
+      background: ${(props) => props.theme.colors.blue3};
+      border: 1px solid transparent;
+    }
+  }
+
+  @media (min-width: ${BREAKPOINTS.xxl}) {
     font-size: 20px;
   }
 `
-
-export const SetAmountButton = styled(Button)`
+export const TextButton = styled(Button)<TextButtonProps>`
+  background: none;
+  color: ${(props) => props.theme.colors[props.color || 'green3']};
+  border: 0;
+  padding: ${(props) => props.padding || 0};
+  font-weight: ${(props) => props.weight || 600};
+  width: auto;
   min-width: 0;
-  font-size: ${FONT_SIZES.xs};
-  font-family: ${FONTS.demi};
-  border-radius: ${BORDER_RADIUS.xxl};
-  color: ${(props) => props.theme.colors.gray1};
-  background-color: ${(props) => props.theme.colors.gray11};
-  border: none;
-  padding: ${PADDINGS.xs};
+`
 
-  @media (min-width: ${BREAKPOINTS.sm}) {
-    padding: ${PADDINGS.sm};
+export const FailedButtonsRow = styled(Row)`
+  ${TextButton} + ${TextButton} {
+    margin-left: 1.2em;
   }
+`
+
+export const DropdownIconContainer = styled.div<DropdownIconContainerProps>`
+  transform: ${(props) => (props.isDetailsOpen ? 'rotate(180deg)' : '')};
+  width: 0.5em;
+  height: 0.9em;
+  cursor: pointer;
+  transition: transform 0.5s;
 `

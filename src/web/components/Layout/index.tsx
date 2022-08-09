@@ -17,23 +17,15 @@ export const Body = styled.div`
   font-size: ${SIZE.fontSize};
 `
 
-export const PopupBody = styled(Body)`
-  max-width: 65rem;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    padding: 0 10px;
-  }
-`
-
 export const Page = styled(Body)`
-  background: ${(props) => props.theme.colors[props.$background || 'gray9']};
+  background: ${(props) => props.theme.colors[props.$background || 'header']};
   flex: 1;
   display: flex;
   flex-direction: column;
 `
 
 export const BlackPage = styled(Page)`
-  background: ${(props) => props.theme.colors.gray9};
+  background: ${(props) => props.theme.colors.header};
 `
 
 export const Content = styled.div`
@@ -84,6 +76,7 @@ export const Cell = styled.div<CellProps>`
   align-items: stretch;
   position: relative;
   flex: 0 1 ${(props) => ((props.col || 12) / LAYOUT_COL_NUMBER) * 100}%;
+
   ${(props) =>
     props.colSm
       ? `@media(min-width:${BREAKPOINTS.sm}) {

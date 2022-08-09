@@ -10,7 +10,6 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
-import { noop } from 'lodash-es'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
@@ -46,7 +45,6 @@ export interface WalletContextType {
   setProviderUrl: (newState: string) => void
   setAutoConnect: (autoConnect: boolean) => void
   providerName: string
-  providerFullName?: string
 }
 
 const WalletContext = React.createContext<WalletContextType | null>(null)
@@ -58,6 +56,7 @@ export const WalletProvider: React.FC = ({ children }) => {
     'walletConnectedUpdatedFinally',
     false
   )
+
   const [connected, setConnected] = useState(false)
   const [autoConnect, setAutoConnect] = useState(connectedPersist)
 
@@ -72,13 +71,18 @@ export const WalletProvider: React.FC = ({ children }) => {
   )
 
   const wallet = useMemo(() => {
-    const adapter = (provider?.adapter || noop)(
-      providerUrl,
-      endpoint
-    ) as any as WalletAdapter
+    if (provider) {
+      const adapter = (provider?.adapter)(
+        providerUrl,
+        endpoint
+      ) as any as WalletAdapter
 
-    return adapter
+      return adapter
+    }
+    return undefined
   }, [provider, endpoint])
+
+  console.log('wallet:', wallet)
 
   const connectWalletHash = useMemo(
     () => window.location.hash,
@@ -159,6 +163,8 @@ export const WalletProvider: React.FC = ({ children }) => {
 
   const w = WALLET_PROVIDERS.find(({ url }) => url === providerUrl)
 
+  wallet.icon = wallet.icon || w?.icon
+
   const context: WalletContextType = {
     wallet,
     connected,
@@ -166,8 +172,8 @@ export const WalletProvider: React.FC = ({ children }) => {
     setProviderUrl,
     setAutoConnect,
     providerName: w?.name ?? providerUrl,
-    providerFullName: w?.fullName,
   }
+
   return (
     <WalletContext.Provider value={context}>{children}</WalletContext.Provider>
   )
@@ -184,7 +190,6 @@ export function useWallet() {
     providerUrl: context.providerUrl,
     setProvider: context.setProviderUrl,
     providerName: context.providerName,
-    providerFullName: context.providerFullName,
     setAutoConnect: context.setAutoConnect,
   }
 }
@@ -340,7 +345,9 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
+  const { data: accountInfo, isLoading: accountInfoLoading } =
+    useAccountInfo(publicKey)
+
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}
@@ -425,10 +432,10 @@ export async function createAssociatedTokenAccount({
   return [address, txSig]
 }
 export async function createAssociatedTokenAccountIx(
-  fundingAddress,
-  walletAddress,
-  splTokenMintAddress
-) {
+  fundingAddress: PublicKey,
+  walletAddress: PublicKey,
+  splTokenMintAddress: PublicKey
+): Promise<[TransactionInstruction, PublicKey]> {
   const associatedTokenAddress = await findAssociatedTokenAddress(
     walletAddress,
     splTokenMintAddress

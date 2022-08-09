@@ -1,9 +1,7 @@
-import {
-  notifyForDevelop,
-  notifyWithLog,
-} from '@sb/dexUtils/notifications'
-import { MINT_LAYOUT } from '@sb/dexUtils/tokens'
 import { Connection } from '@solana/web3.js'
+
+import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
+import { MINT_LAYOUT } from '@sb/dexUtils/tokens'
 
 export const loadMintsDecimalsInfo = async ({
   connection,
@@ -13,8 +11,6 @@ export const loadMintsDecimalsInfo = async ({
   mints: string[]
 }) => {
   const mintsMap = new Map()
-
-  console.timeEnd('mints')
 
   const loadedMints = await connection._rpcRequest('getMultipleAccounts', [
     mints,
@@ -49,8 +45,6 @@ export const loadMintsDecimalsInfo = async ({
     // get mint by index for now, don't see any other way to match decimals with mint
     mintsMap.set(mint, { mint, decimals })
   })
-
-  console.timeEnd('mints')
 
   return mintsMap
 }

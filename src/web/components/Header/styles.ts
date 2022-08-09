@@ -1,42 +1,37 @@
 import {
-  UCOLORS,
   COLORS,
-  SIZE,
   BREAKPOINTS,
   BORDER_RADIUS,
   FONT_SIZES,
   TRANSITION,
+  UCOLORS,
+  FONTS,
+  SIZE,
 } from '@variables/variables'
-import { Link, NavLink as RouterNavLink } from 'react-router-dom'
+import { rgba, em } from 'polished'
+import { NavLink as RouterNavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 // TODO: remove dat
 
 import { Button } from '../Button'
+import { Row } from '../Layout'
 import { Text } from '../Typography'
 
-export const HeaderWrap = styled.header`
-  display: flex;
-  flex-direction: row;
-  height: 60px;
-  background: ${(props) => props.theme.colors.gray9};
+export const Wrapper = styled.header`
+  font-family: ${FONTS.main};
+  font-size: ${SIZE.fontSize};
 `
 
-export const LogoBlock = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
-  padding-right: ${SIZE.defaultPadding};
-  margin: 8px 0;
-  flex: 0 1 auto;
-`
-
-export const StakeButton = styled(Button)`
-  display: none;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    display: block;
-  }
+  height: 76px;
+  background: ${(props) => props.theme.colors.header};
+  padding: 0 24px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: ${(props) => props.theme.colors.border1};
 `
 
 interface ShowHideProps {
@@ -50,23 +45,31 @@ interface LinkProps extends ShowHideProps {
   $beta?: boolean
 }
 
-type CopyButton = {
-  isCopied: boolean
-}
-
 export const NavLink = styled(RouterNavLink)<LinkProps>`
+  display: flex;
+  align-items: center;
   text-decoration: none;
   font-size: 0.8em;
   padding: 4px 0;
   margin: 0;
   text-align: ${(props: LinkProps) => (props.$left ? 'left' : 'center')};
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   background: transparent;
   border: 0;
   cursor: pointer;
   white-space: nowrap;
   font-weight: 500;
   transition: 0.3s;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.white1};
+    }
+  }
+
+  svg + * {
+    margin-left: 0.4em;
+  }
 
   &.dropdown {
     &:hover {
@@ -75,36 +78,32 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   &.selected-from-dropdown {
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
+
     svg {
       path {
-        fill: ${(props) => props.theme.colors.gray0};
+        fill: ${(props) => props.theme.colors.white1};
       }
     }
   }
 
-  svg,
-  img {
-    margin: 0 0.5rem;
-  }
-
   &:hover {
-    color: ${(props) => props.theme.colors.gray0};
-    transition: 0.3s;
-    svg {
-      path {
-        fill: ${(props) => props.theme.colors.gray0};
-      }
+    color: ${(props) => props.theme.colors.white1};
+
+    svg path {
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 
   &.selected {
-    color: ${(props) => props.theme.colors.gray0};
-    border-bottom: 1px solid ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
+    border-bottom: 1px solid ${(props) => props.theme.colors.white1};
     transition: all ease-in 0.2s;
+    font-weight: 600;
+
     svg {
       path {
-        fill: ${(props) => props.theme.colors.gray0};
+        fill: ${(props) => props.theme.colors.white1};
       }
     }
   }
@@ -194,24 +193,9 @@ export const MainLinksBlock = styled.div`
 `
 
 export const WalletContainer = styled.div`
-  margin: 5px 0 5px auto;
-  padding: 0 0 0 ${SIZE.defaultPadding};
   display: flex;
-  flex-direction: row;
   align-items: center;
-  overflow: hidden;
-`
-
-export const LogoLink = styled(Link)`
-  // height: 100%;
-  margin-right: 60px;
-  display: block;
-`
-
-export const Logo = styled.img`
-  height: 31px;
-  display: block;
-  margin: 0;
+  margin-left: 0.5em;
 `
 
 export const DropdownContent = styled.div`
@@ -233,141 +217,110 @@ export const DropdownWrap = styled.div<ShowHideProps>`
   &:hover ${DropdownContent} {
     display: flex;
   }
-
-  /*${(props: ShowHideProps) =>
-    props.show
-      ? `
-    display: none;
-
-    @media(min-width: ${BREAKPOINTS[props.show]}) {
-      display: flex;
-    }
-  `
-      : ''}
-
-  ${(props: ShowHideProps) =>
-    props.hide
-      ? `
-    @media(min-width: ${BREAKPOINTS[props.hide]}) {
-      display: none;
-    }
-  `
-      : ''}*/
 `
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
   padding: 0.5em;
   border-radius: ${BORDER_RADIUS.md};
+
   & ${NavLink} {
     margin: 4px;
 
     &:hover {
-      border: none;
+      opacity: 0.5;
     }
   }
 `
 
 export const WalletButton = styled(Button)`
-  width: 17rem;
-  white-space: nowrap;
-  padding: 10px 20px;
-  font-size: 0.75em;
-  background-color: ${(props) => props.theme.colors.blue3};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: ${em('14px')};
+  width: ${em('144px', '14px')};
+  background-color: ${(props) => props.theme.colors.white6};
   border: none;
   font-weight: 600;
-  height: 3.5em;
+  height: ${em('40px', '14px')};
   transition: ${TRANSITION};
-  color: white;
+  color: ${UCOLORS.blue2};
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    font-size: ${em('11px')};
+    height: ${em('40px', '11px')};
+    width: auto;
+  }
 
   &:hover {
-    background: ${UCOLORS.blue4};
-  }
-
-  &:active,
-  &:focus {
-    background: ${COLORS.darkBlue};
-  }
-
-  @media (max-width: 1100px) {
-    padding: 7px 10px;
+    background-color: ${(props) => rgba(props.theme.colors.blue3, 0.1)};
   }
 `
 
 export const WalletDataContainer = styled.div`
-  width: 8.5em;
   border-radius: ${BORDER_RADIUS.md};
+  height: 40px;
+  width: 140px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  max-width: 120px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.colors.white5};
 
-  @media (min-width: ${BREAKPOINTS.md}) {
-    flex-direction: column;
-    align-items: flex-start;
+  @media (max-width: ${BREAKPOINTS.md}) {
+    width: auto;
   }
 
-  .disconnect-wallet {
-    display: none;
+  img {
+    @media (max-width: ${BREAKPOINTS.md}) {
+      display: none;
+    }
   }
 
   &:hover {
-    .disconnect-wallet {
-      display: flex;
-      justify-content: space-between;
-      flex-direction: row;
-    }
+    background-color: ${(props) => props.theme.colors.white4};
   }
 
   .wallet-data {
     display: flex;
-  }
-
-  &:hover {
-    .wallet-data {
-      display: none;
-    }
   }
 `
 
 export const WalletData = styled.div`
   width: 100%;
   display: flex;
+  flex: 1;
   justify-content: space-between;
   padding: 0.5rem 1rem;
   border-radius: ${BORDER_RADIUS.md};
-  background: ${(props) => props.theme.colors.gray6};
   align-items: center;
-  img {
-    border-radius: 50%;
-  }
-
-  @media (max-width: 1200px) {
-    padding: 1rem 1.5rem;
-    height: 7rem;
-    img {
-      width: 25px;
-      height: 25px;
-    }
-  }
 `
+
+export const AstronautImage = styled.img`
+  border-radius: 50%;
+`
+
 export const Column = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  align-items: flex-end;
   margin-left: 0.4em;
+`
+
+export const DownArrowWrapper = styled.div`
+  margin-left: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 export const WalletName = styled(Text)`
   font-size: 0.6em;
   line-height: 1.3;
   margin: 0;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -375,7 +328,7 @@ export const WalletName = styled(Text)`
 `
 
 export const WalletAddress = styled(WalletName)`
-  opacity: 0.5;
+  color: ${(props) => props.theme.colors.white1};
   font-weight: 400;
   display: block;
   font-size: ${FONT_SIZES.sm};
@@ -385,83 +338,22 @@ export const WalletAddress = styled(WalletName)`
   }
 `
 
-export const WalletDisconnectButton = styled(Button)`
-  width: calc(100% - 5rem);
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75em;
-  background-color: ${COLORS.newOrange};
-  border: none;
-  font-weight: 600;
-  height: 100%;
-  transition: ${TRANSITION};
-  border-radius: 8px 0 0 8px;
-  min-width: 2rem;
-
-  &:hover {
-    background-color: ${COLORS.primaryRed};
-  }
-
-  &:active {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.primaryRed};
-  }
-`
 export const BalanceTitle = styled.span`
-  font-size: ${FONT_SIZES.sm};
-  color: ${(props) => props.theme.colors.green7};
+  font-size: 12px;
+  color: ${(props) => props.theme.colors.white1};
   font-weight: 600;
   white-space: nowrap;
+
   @media (max-width: 1200px) {
     font-size: 0.7125em;
   }
 `
 
-export const Wrap = styled.div`
-  padding: 0 15px;
-  background: ${(props) => props.theme.colors.gray9};
-
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    padding: 0 1.5em;
-  }
-`
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
-  height: 5rem;
-`
-
-export const CopyAddressButton = styled(Button)<CopyButton>`
-  width: 5rem;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75em;
-  background: ${(props) => (props.isCopied ? '#269F13' : '#434343')};
-  border: none;
-  font-weight: 600;
   height: 100%;
-  transition: ${TRANSITION};
-  border-radius: 0 8px 8px 0;
-  min-width: 2rem;
-  border-left: 2px solid #191919;
-
-  &:hover {
-    background: ${(props) => (props.isCopied ? '#269F13' : '#363636')};
-
-    svg {
-      path {
-        stroke: #fff;
-      }
-    }
-  }
-
-  &:active {
-    background: #363636;
-  }
 `
+
 export const LogoContainer = styled.div`
   width: 4em;
 
@@ -470,4 +362,24 @@ export const LogoContainer = styled.div`
       fill: ${(props) => props.theme.colors.logo};
     }
   }
+`
+
+export const ArrowDownIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 0.5em;
+`
+
+export const Left = styled.div`
+  display: flex;
+  flex: 1;
+`
+
+export const Right = styled.div`
+  display: flex;
+`
+
+export const WalletIconContainer = styled(Row)`
+  margin-right: 0.3em;
+  align-items: center;
 `

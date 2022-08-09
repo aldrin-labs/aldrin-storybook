@@ -1,10 +1,13 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
+import { socialLinks } from '@sb/compositions/Homepage/SocialsLinksComponents'
 
 import {
+  Link,
   PoolProcessingBlock,
   PoolProcessingButton,
   PoolProcessingContent,
@@ -75,21 +78,21 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
                 {error || 'Pool creation failed.'}
                 <>
                   {txId && (
-                    <a target="blank" href={`https://solscan.io/tx/${txId}`}>
+                    <Link target="blank" href={`https://solscan.io/tx/${txId}`}>
                       View on SolScan.
-                    </a>
+                    </Link>
                   )}
                 </>
               </Text>
               <Text size="sm">
                 If you have any questions, contact us via{' '}
-                <a
-                  href="https://t.me/Aldrin_Exchange"
+                <Link
+                  href={socialLinks.telegram}
                   target="_blank"
                   rel="noreferrer"
                 >
                   Telegram
-                </a>
+                </Link>
                 .
               </Text>
             </>

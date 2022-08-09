@@ -1,7 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 import { useTheme } from 'styled-components'
 
-import { TooltipRegionBlocker } from '@sb/components'
 import {
   RowContainer,
   Title,
@@ -54,41 +53,22 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
-  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
-    useState<boolean>(false)
-  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
-    useState<boolean>(false)
-
-  // useEffect(() => {
-  //   setRegionCheckIsLoading(true)
-  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
-  //     setRegionCheckIsLoading(false)
-  //   })
-  // }, [setIsFromRestrictedRegion])
-
   const buttonWithModal = (
     <>
-      <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
-        <span>
-          <Button
-            $padding="lg"
-            type="button"
-            $loading={isRegionCheckIsLoading}
-            onClick={() => {
-              if (isRegionCheckIsLoading || isFromRestrictedRegion) {
-                return
-              }
-              setIsConnectWalletPopupOpen(true)
-            }}
-            disabled={isFromRestrictedRegion}
-          >
-            {!isRegionCheckIsLoading &&
-              (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
-          </Button>
-        </span>
-      </TooltipRegionBlocker>
+      <span>
+        <Button
+          $padding="lg"
+          type="button"
+          onClick={() => {
+            setIsConnectWalletPopupOpen(true)
+          }}
+        >
+          Connect wallet
+        </Button>
+      </span>
+
       <ConnectWalletPopup
-        open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
+        open={isConnectWalletPopupOpen}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
     </>
@@ -144,7 +124,7 @@ export const ConnectWalletScreen = () => {
     <RowContainer
       direction="column"
       height="100%"
-      style={{ background: theme.colors.gray9 }}
+      style={{ background: theme.colors.white6 }}
     >
       <ConnectWalletInner />
     </RowContainer>

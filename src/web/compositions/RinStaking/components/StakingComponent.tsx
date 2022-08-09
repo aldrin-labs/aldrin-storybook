@@ -14,7 +14,7 @@ const StakingComponent = () => {
   if (!poolInfo) {
     return (
       <>
-        <br /> <Loader color={theme.colors.white} width="5em" />
+        <br /> <Loader color={theme.colors.white1} width="5em" />
       </>
     )
   }

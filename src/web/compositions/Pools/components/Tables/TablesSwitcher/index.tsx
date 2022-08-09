@@ -402,7 +402,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </FlexBlock>
           <AuditInfo onClick={() => setIsAuditPopupOpen(true)}>
             <div>
-              <Text margin="0" size="sm">
+              <Text color="white1" margin="0" size="sm">
                 Audited by
               </Text>
             </div>
@@ -525,14 +525,14 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
   }),
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfoRequest,
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 2),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccountRequest,
@@ -543,7 +543,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
   }),
   queryRendererHoc({
     name: 'getFeesEarnedByPoolQuery',
@@ -551,7 +551,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
     // TODO: Comment before merge
     variables: () => ({
       timestampFrom: endOfHourTimestamp() - DAY,
@@ -564,7 +564,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
     variables: () => ({
       dailyTimestampTo: endOfHourTimestamp(),
       dailyTimestampFrom: endOfHourTimestamp() - DAY,

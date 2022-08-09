@@ -2,11 +2,14 @@ import { PublicKey } from '@solana/web3.js'
 import { toNumber } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
-import { Block, BlockContentStretched, BlockTitle } from '@sb/components/Block'
+import { BlockTitle, Block, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { NumberWithLabel } from '@sb/compositions/Staking/components/NumberWithLabel/NumberWithLabel'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
@@ -26,6 +29,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
@@ -34,9 +38,6 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import EyeIcon from '@icons/eye.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import InfoIcon from './assets/info.svg'
@@ -55,8 +56,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     currentFarmingState,
     getDexTokensPricesQuery,
     getStakingInfoQuery,
-    treasuryDailyRewards,
   } = props
+  const theme = useTheme()
 
   const stakingData = getStakingInfoQuery?.getStakingInfo?.farming || []
 

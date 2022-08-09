@@ -29,7 +29,7 @@ const TradeHistoryTable = ({
           <Table
             headerHeight={height / 19}
             headerStyle={{
-              color: theme.colors.gray1,
+              color: theme.colors.white1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -69,13 +69,13 @@ const TradeHistoryTable = ({
               label="Size"
               dataKey="size"
               width={width}
-              style={{ color: theme.colors.white }}
+              style={{ color: theme.colors.white1 }}
             />
             <Column
               label="time"
               dataKey="time"
               width={width}
-              style={{ color: theme.colors.white }}
+              style={{ color: theme.colors.white1 }}
             />
           </Table>
         )}

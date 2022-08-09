@@ -49,7 +49,6 @@ export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
     tradingVolumes,
     farms,
   } = props
-
   return (
     <PoolsTable
       addColumns={COLUMNS}

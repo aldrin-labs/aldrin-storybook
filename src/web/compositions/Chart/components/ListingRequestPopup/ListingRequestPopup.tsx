@@ -14,6 +14,7 @@ import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { socialLinks } from '@sb/compositions/Homepage/SocialsLinksComponents'
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
 import { useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
@@ -463,7 +464,7 @@ const ListingRequestPopup = ({
                       rel="noopener noreferrer"
                       href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
                       style={{
-                        color: theme.colors.green7,
+                        color: theme.colors.green3,
                         textDecoration: 'none',
                       }}
                     >
@@ -542,7 +543,7 @@ const ListingRequestPopup = ({
                       name="twitterLink"
                       id="twitterLink"
                       autoComplete="off"
-                      placeholder="e.g. https://twitter.com/Aldrin_Exchange"
+                      placeholder={`e.g. ${socialLinks.twitter}`}
                       value={requestData.twitterLink}
                       onChange={(e) =>
                         setData({
@@ -571,7 +572,7 @@ const ListingRequestPopup = ({
                       name="coinMarketCapLink"
                       id="coinMarketCapLink"
                       autoComplete="off"
-                      placeholder="e.g. https://coinmarketcap.com/currencies/aldrin/"
+                      placeholder={`e.g. ${socialLinks.coinmarketcap}`}
                       value={requestData.coinMarketCapLink}
                       onChange={(e) =>
                         setData({
@@ -676,7 +677,7 @@ const ListingRequestPopup = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
-                          color: theme.colors.green7,
+                          color: theme.colors.green3,
                           textDecoration: 'none',
                         }}
                       >

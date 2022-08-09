@@ -4,19 +4,15 @@ import {
   IGetMyProfile,
   Key,
 } from '@core/types/ChartTypes'
-import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 import { TooltipsType } from '@core/types/PortfolioTypes'
-
-
+import { TooltipMutationType } from '@core/types/TooltipTypes'
 
 export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
   app: {
     themeMode: string
   }
   getTooltipSettings: TooltipsType
-  marketByMarketType: {
-    _id: string
-  }[]
+
   chart: {
     selectedKey: Key
     activeExchange: {
@@ -31,11 +27,6 @@ export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
   }
   multichart: {
     charts: string[]
-  }
-  getTradingSettings: {
-    selectedTradingKey: string | null
-    hedgeMode: boolean | null
-    isFuturesWarsKey: boolean | null
   }
 }
 

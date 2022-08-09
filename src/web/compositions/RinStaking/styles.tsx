@@ -278,7 +278,7 @@ export const StakingInput = styled(Input)`
   width: 100%;
 
   &:focus {
-    border: 0.1rem solid ${COLORS.gray2};
+    border: 0.1rem solid ${COLORS.white2};
   }
 
   ${InputEl} {

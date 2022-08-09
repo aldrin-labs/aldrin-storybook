@@ -383,7 +383,7 @@ const CustomMarketDialog = ({
             placeholder="Market Id"
             value={marketId}
             onChange={(e) => setMarketId(e.target.value)}
-            // suffix={loadingMarket ? <Loading /> : null}
+            // suffix={loadingMarket && <Loading />}
           />
         </RowContainer>
         <RowContainer margin="1rem 0 0 0">

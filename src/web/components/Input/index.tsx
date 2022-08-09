@@ -3,7 +3,7 @@ import { noop } from 'lodash-es'
 import React, { useRef } from 'react'
 
 import { InlineText } from '../Typography'
-import { Append, InputContainer, InputEl, InputWrap, Label } from './styles'
+import { Append, Prepend, InputContainer, InputEl, InputWrap, Label } from './styles'
 import { FieldProps, InputProps } from './types'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
@@ -35,12 +35,16 @@ export const REGEXP_FORMATTER =
     return prevValue
   }
 
-export const Input: React.FC<InputProps> = (props) => {
-  const input = useRef<HTMLInputElement | null>(null)
+export const Input: React.FC<InputProps> = React.forwardRef((props, ref) => {
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
   const {
     placeholder,
     onChange,
+    onBlur,
+    onFocus,
     append,
+    prepend,
     value = '',
     size,
     name,
@@ -50,13 +54,14 @@ export const Input: React.FC<InputProps> = (props) => {
     borderRadius = 'xxl',
     disabled,
     label,
+    autoFocus,
+    maxLength,
   } = props
 
   const setFocus = () => {
-    if (input.current) {
-      input.current.focus()
-    }
+    inputRef.current.focus()
   }
+
   return (
     <InputWrap
       $borderRadius={borderRadius}
@@ -66,6 +71,8 @@ export const Input: React.FC<InputProps> = (props) => {
       $withLabel={!!label}
       onClick={setFocus}
     >
+      {prepend && <Prepend>{prepend}</Prepend>}
+
       <InputContainer>
         <InlineText size="xs">{label && <Label>{label}</Label>}</InlineText>
 
@@ -74,17 +81,27 @@ export const Input: React.FC<InputProps> = (props) => {
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(formatter(e.target.value, value))}
+          onBlur={onBlur}
+          onFocus={onFocus}
           name={name}
           disabled={disabled}
-          ref={input}
+          ref={(el) => {
+            inputRef.current = el
+
+            if (ref) {
+              ref.current = el
+            }
+          }}
           autoComplete="off"
+          autoFocus={autoFocus}
+          maxLength={maxLength}
         />
       </InputContainer>
 
       {append && <Append>{append}</Append>}
     </InputWrap>
   )
-}
+})
 
 export const InputField: React.FC<FieldProps> = (props) => {
   const {
