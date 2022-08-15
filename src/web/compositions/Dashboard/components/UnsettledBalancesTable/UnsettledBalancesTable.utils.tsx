@@ -40,7 +40,7 @@ const SettleButton = ({
           setIsBalancesSettling(false)
         }
       }}
-      btnColor={theme.colors.green7}
+      btnColor={theme.colors.green3}
       btnWidth="10rem"
       height="3.5rem"
       borderRadius="1.8rem"
@@ -74,7 +74,7 @@ export const getUnsettledBalancesColumnNames = ({
     label: (
       <BtnCustom
         onClick={() => onSettleAll()}
-        btnColor={theme.colors.green7}
+        btnColor={theme.colors.green3}
         btnWidth="12rem"
         height="3.5rem"
         borderRadius="1.8rem"

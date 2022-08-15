@@ -79,8 +79,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         id="tables"
         style={{
           height: '100%',
-          backgroundColor: newTheme?.colors?.gray6,
-          borderLeft: newTheme?.colors?.gray2,
+          backgroundColor: newTheme?.colors?.white5,
+          borderLeft: newTheme?.colors?.white2,
         }}
       >
         <TradingTabs

@@ -128,7 +128,7 @@ const ChooseActionPopup = ({
   return (
     <>
       <PortfolioSelectorPopupWrapper id={id}>
-        {isPopupOpen && isSideNavOpen ? (
+        {isPopupOpen && isSideNavOpen && (
           needPortalPopup ? (
             ReactDOM.createPortal(
               <Popup
@@ -169,10 +169,10 @@ const ChooseActionPopup = ({
               }}
             />
           )
-        ) : null}
+        )}
       </PortfolioSelectorPopupWrapper>
       {/* portal to backdrop */}
-      {isPopupOpen ? (
+      {isPopupOpen && (
         needPortalMask ? (
           ReactDOM.createPortal(
             <PortfolioSelectorPopupMask
@@ -187,7 +187,7 @@ const ChooseActionPopup = ({
             onClick={closePopup}
           />
         )
-      ) : null}
+      )}
     </>
   )
 }

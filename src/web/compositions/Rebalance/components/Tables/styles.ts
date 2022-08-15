@@ -24,7 +24,7 @@ export const RowTd = styled.td`
   width: auto;
   padding: 0 2rem;
   font-family: 'Avenir Next';
-  border-top: 0.2rem solid ${(props) => props.theme.colors.gray5};
+  border-top: 0.2rem solid ${(props) => props.theme.colors.white4};
   color: #f5f5fb;
   font-size: 1.5rem;
 `

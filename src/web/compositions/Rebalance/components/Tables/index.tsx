@@ -52,7 +52,7 @@ const HeaderRow = ({
       padding="2rem"
       justify="space-between"
       align="center"
-      style={{ borderBottom: `0.1rem solid ${theme.colors.gray5}` }}
+      style={{ borderBottom: `0.1rem solid ${theme.colors.white4}` }}
     >
       <Row width="30%" align="center" justify="flex-start">
         <Text>Set up your allocation </Text>
@@ -210,10 +210,7 @@ export const TableMainRow = ({
 }) => {
   const theme = useTheme()
   const handleSliderChange = (e, value) => {
-    // console.log('value: ', value)
     const token = tokensMap[el.symbol]
-
-    // console.log('token: ', token)
 
     const oldTargetPercentage = token.targetPercentage
     const oldTargetTokenValue = token.targetTokenValue
@@ -370,9 +367,9 @@ export const TableMainRow = ({
           borderRadiusAfter="3rem"
           thumbBackground={el.disabled ? '#93A0B2' : '#5E55F2'}
           borderThumb="2px solid #f2fbfb"
-          trackAfterBackground={theme.colors.gray5}
+          trackAfterBackground={theme.colors.white4}
           trackBeforeBackground={
-            el.disabled ? theme.colors.gray10 : theme.colors.blue5
+            el.disabled ? theme.colors.white6 : theme.colors.blue3
           }
           value={el.targetPercentage}
           disabled={el.disabled}
@@ -451,10 +448,9 @@ const RebalanceTable = ({
         align="flex-end"
         direction="column"
         justify="end"
-        color="gray6"
+        color="white5"
       >
         <MemoizedHeaderRow
-          resetTargetAllocation={resetTargetAllocation}
           loadingRebalanceData={loadingRebalanceData}
           resetTargetAllocation={resetTargetAllocation}
           openAddCoinPopup={async (...args) => {

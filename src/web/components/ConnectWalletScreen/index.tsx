@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 import { useTheme } from 'styled-components'
+
 import {
   RowContainer,
   Title,
@@ -62,7 +63,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
             setIsConnectWalletPopupOpen(true)
           }}
         >
-          Connect Wallet
+          Connect wallet
         </Button>
       </span>
 
@@ -123,7 +124,7 @@ export const ConnectWalletScreen = () => {
     <RowContainer
       direction="column"
       height="100%"
-      style={{ background: theme.colors.gray9 }}
+      style={{ background: theme.colors.white6 }}
     >
       <ConnectWalletInner />
     </RowContainer>

@@ -2,19 +2,31 @@ import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import { Text } from '@sb/compositions/Addressbook/index'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { InlineText } from '@sb/components/Typography'
+import { Text } from '@sb/compositions/Addressbook'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InvisibleInput } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { formatNumbersForState } from '@sb/dexUtils/utils'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import WalletIcon from '@icons/walletIcon.svg'
 
-import { AmountInputContainer, InputContainer } from './styles'
+import { TextButton } from '../../styles'
+import {
+  AmountInputContainer,
+  InputContainer,
+  MaxAmountRow,
+  MaxAmountText,
+} from './styles'
 
 export const SwapAmountInput = ({
   amount = '',
+  amountUSD = null,
   maxAmount = '0.00',
   disabled = false,
   title = 'Title',
@@ -22,8 +34,10 @@ export const SwapAmountInput = ({
   onChange = () => {},
   onMaxAmountClick = () => {},
   appendComponent = null,
+  needMaxButton = false,
 }: {
   amount?: string | number
+  amountUSD?: string | number
   maxAmount?: number | string
   disabled?: boolean
   title?: string
@@ -31,41 +45,48 @@ export const SwapAmountInput = ({
   onChange?: (value: number | string) => void
   onMaxAmountClick?: () => void
   appendComponent?: any
+  needMaxButton: boolean
 }) => {
   return (
-    <InputContainer
-      disabled={disabled}
-      direction="column"
-      wrap="nowrap"
-      padding="0em 1em"
-    >
+    <InputContainer disabled={disabled} direction="column" wrap="nowrap">
       <RowContainer justify="space-between">
-        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray3">
+        <Text fontSize={FONT_SIZES.esm} fontFamily="Avenir Next" color="white3">
           {title}
         </Text>
-        <Row onClick={onMaxAmountClick}>
+        <MaxAmountRow onClick={onMaxAmountClick}>
           <SvgIcon
             src={WalletIcon}
             width={FONT_SIZES.sm}
             height={FONT_SIZES.sm}
           />
-          <Text
-            fontSize={FONT_SIZES.sm}
+
+          <MaxAmountText
+            fontSize={FONT_SIZES.esm}
             fontFamily="Avenir Next Demi"
-            color="gray1"
             padding="0 0 0 0.2em"
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}
-          </Text>
-        </Row>
+          </MaxAmountText>
+
+          {needMaxButton && (
+            <TextButton
+              weight={500}
+              $fontSize="xs"
+              color="blue1"
+              padding="0 0 0 0.5em"
+            >
+              MAX
+            </TextButton>
+          )}
+        </MaxAmountRow>
       </RowContainer>
       <RowContainer
         wrap="nowrap"
         justify="space-between"
-        align="flex-end"
-        margin="0.6em 0 0 0"
+        margin="0.8em 0 0 0"
+        align="center"
       >
-        <AmountInputContainer>
+        <AmountInputContainer direction="column" align="flex-start">
           <InvisibleInput
             data-testid={`swap-${title.replaceAll(' ', '-')}-field`}
             type="text"
@@ -76,6 +97,11 @@ export const SwapAmountInput = ({
             }}
             placeholder={placeholder}
           />
+          {!!amountUSD && (
+            <InlineText color="white3" size="esm">
+              ${formatNumberWithSpaces(stripDigitPlaces(amountUSD, 2))}
+            </InlineText>
+          )}
         </AmountInputContainer>
         {appendComponent}
       </RowContainer>

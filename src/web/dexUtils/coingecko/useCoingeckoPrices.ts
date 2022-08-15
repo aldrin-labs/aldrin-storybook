@@ -28,18 +28,17 @@ export const useCoingeckoPrices = (
     )
 
     const pricesResponse = await prices.json()
-    const priceBySymbolMap = tokenIds.reduce<Map<string, number>>((acc, id) => {
+
+    return tokenIds.reduce<Map<string, number>>((acc, id) => {
       const { usd: price } = pricesResponse[id] || { usd: 0 }
       const { symbol } = tokenByIdMap.get(id) || { symbol: '' }
 
       return acc.set(symbol.toUpperCase(), price)
     }, new Map())
-
-    return priceBySymbolMap
   }
 
   const { data: pricesMap, mutate: refresh } = useSWR(
-    `useCoingeckoPrices`,
+    `useCoingeckoPrices-${tokenByIdMap.size}`,
     fetcher,
     {
       refreshInterval: COMMON_REFRESH_INTERVAL,

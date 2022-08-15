@@ -23,7 +23,6 @@ interface IProps {
     getPrice: number
     subscribeToMoreFunction: () => () => void
   }
-  getFundingRateQueryRefetch: () => void
   getMarkPriceQuery: {
     getMarkPrice: {
       symbol: string

@@ -79,7 +79,7 @@ export const Input = styled(({ style, ...props }) => (
 export const ListCard = styled.div`
   width: ${(props) => props.width || '100%'};
   height: ${(props) => props.height || '20rem'};
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 1rem;
   display: flex;
   justify-content: flex-start;

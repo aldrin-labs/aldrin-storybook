@@ -8,17 +8,18 @@ import { InvisibleInput } from '@sb/compositions/Pools/components/Popups/index.s
 const SlippageButton = styled(Button)`
   width: 32%;
   height: 2.5em;
-  background: ${({ theme }) => theme.colors.gray7};
+  background: ${({ theme }) => theme.colors.white5};
   border: 1px solid
     ${({ theme, isActive }: { isActive: boolean; theme: DefaultTheme }) =>
-      isActive ? theme.colors.blue7 : theme.colors.gray7};
+      isActive ? theme.colors.blue3 : theme.colors.white5};
+  transition: all 0.3s ease-out;
 `
 
 const CustomSlippageContainer = styled(RowContainer)`
   position: relative;
   border-radius: 8px;
   height: 2.5em;
-  background: ${({ theme }) => theme.colors.gray7};
+  background: ${({ theme }) => theme.colors.white5};
   border: 1px solid
     ${({
       theme,
@@ -30,10 +31,12 @@ const CustomSlippageContainer = styled(RowContainer)`
       theme: DefaultTheme
     }) =>
       !isCustomSlippageCorrect
-        ? theme.colors.red7
+        ? theme.colors.red3
         : isActive
-        ? theme.colors.blue7
-        : theme.colors.gray7};
+        ? theme.colors.blue3
+        : theme.colors.white5};
+
+  transition: all 0.3s ease-out;
 `
 
 const CustomSlippageInput = styled(InvisibleInput)`

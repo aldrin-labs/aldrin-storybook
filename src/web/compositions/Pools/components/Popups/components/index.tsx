@@ -21,6 +21,7 @@ import Arrow from '@icons/arrowBottom.svg'
 
 import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
 import { BlueText } from './index.styles'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 
 export const InputWithCoins = ({
   theme,
@@ -45,7 +46,7 @@ export const InputWithCoins = ({
     <Row style={{ position: 'relative' }} padding="1rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="2rem">
-        <Text color="gray1">{symbol}</Text>
+        <Text color="white1">{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="2rem">
         <InvisibleInput
@@ -76,10 +77,7 @@ export const InputWithCoins = ({
       </TokenContainer>
       <TokenContainer right="2rem" bottom="2rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <TokenIcon
-            mint={getTokenMintAddressByName(symbol)}
-            size={32}
-          />
+          <TokenIcon mint={getTokenMintAddressByName(symbol)} size={32} />
           <Text
             style={{ marginLeft: '0.5rem' }}
             fontSize="2rem"
@@ -94,7 +92,7 @@ export const InputWithCoins = ({
           {needAlreadyInPool && (
             <>
               {' '}
-              <Text color="gray1" fontSize="1.2rem">
+              <Text color="white1" fontSize="1.2rem">
                 Already in pool:
               </Text>
               &nbsp;
@@ -108,7 +106,7 @@ export const InputWithCoins = ({
               &nbsp;
             </>
           )}
-          <Text color="gray1" fontSize="1.2rem">
+          <Text color="white1" fontSize="1.2rem">
             &nbsp;Max:
           </Text>
           &nbsp;
@@ -132,7 +130,7 @@ export const InputWithTotal = ({
     <Row style={{ position: 'relative' }} padding="1rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="2rem">
-        <Text color="gray1">Total</Text>
+        <Text color="white1">Total</Text>
       </TokenContainer>
       <TokenContainer left="2rem" bottom="2rem">
         <Text fontSize="2rem" fontFamily="Avenir Next Demi">
@@ -173,7 +171,7 @@ export const InputWithSelector = ({
     <Row style={{ position: 'relative' }} padding="2rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="3rem">
-        <Text color={theme.colors.gray1}>{symbol}</Text>
+        <Text color={theme.colors.white1}>{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
@@ -186,10 +184,7 @@ export const InputWithSelector = ({
       </TokenContainer>
       <TokenContainer style={{ cursor: 'pointer' }} right="2rem" bottom="3rem">
         <Row style={{ flexWrap: 'nowrap' }} onClick={openSelectCoinPopup}>
-          <TokenIcon
-            mint={getTokenMintAddressByName(symbol)}
-            size={32}
-          />
+          <TokenIcon mint={getTokenMintAddressByName(symbol)} size={32} />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize="2rem"
@@ -203,7 +198,7 @@ export const InputWithSelector = ({
       {!isSelectToken && (
         <TokenContainer right="2rem" top="3rem">
           <Row style={{ flexWrap: 'nowrap' }}>
-            <Text color={theme.colors.gray1} fontSize="1.2rem">
+            <Text color={theme.colors.white1} fontSize="1.2rem">
               &nbsp;Max:
             </Text>
             &nbsp;
@@ -225,6 +220,7 @@ export const SimpleInput = ({
   disabled,
   onChange,
   placeholder,
+  formatter = INPUT_FORMATTERS.DECIMAL,
 }: {
   theme: DefaultTheme
   value: string | number
@@ -232,29 +228,27 @@ export const SimpleInput = ({
   disabled?: boolean
   maxBalance: number
   placeholder: string
+  formatter?: (e: string | number, prevValue: string | number) => string
   onChange: (value: string | number) => void
 }) => {
   return (
     <Row style={{ position: 'relative' }} padding="2rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="3rem">
-        <Text color="gray1">{symbol}</Text>
+        <Text color="white1">{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
           disabled={disabled}
-          type="number"
+          type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(formatter(e.target.value, value))}
           placeholder={placeholder}
         />
       </TokenContainer>
       <TokenContainer right="2rem" bottom="3rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <TokenIcon
-            mint={getTokenMintAddressByName(symbol)}
-            size={32}
-          />
+          <TokenIcon mint={getTokenMintAddressByName(symbol)} size={32} />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize="2rem"
@@ -266,7 +260,7 @@ export const SimpleInput = ({
       </TokenContainer>
       <TokenContainer right="2rem" top="3rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color="gray1" fontSize="1.2rem">
+          <Text color="white1" fontSize="1.2rem">
             &nbsp;Max:
           </Text>
           &nbsp;

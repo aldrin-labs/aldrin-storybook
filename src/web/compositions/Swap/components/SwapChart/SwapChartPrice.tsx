@@ -1,15 +1,20 @@
 import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
+import { Row } from '@sb/components/Layout'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { stripByAmount } from '@core/utils/numberUtils'
 
 import HalfArrowsIcon from '@icons/halfArrows.svg'
 
 import { getEstimatedPrice } from '../../utils'
+import {
+  PricesSymbolsContainer,
+  SymbolText,
+  TokenIconsContainer,
+} from './styles'
 
 interface SwapChartPriceProps {
   inputSymbol: string
@@ -46,8 +51,17 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
   )
 
   return (
-    <RowContainer justify="space-between">
-      <Row align="center">
+    <PricesSymbolsContainer justify="space-between">
+      <Row>
+        <SymbolText color="white1" size="md" weight={700}>
+          {stripByAmount(estimatedPrice)}{' '}
+          <SymbolText color="white2" size="md" weight={600}>
+            {isInputPriceShowField ? outputSymbol : inputSymbol} per{' '}
+            {isInputPriceShowField ? inputSymbol : outputSymbol}
+          </SymbolText>
+        </SymbolText>
+      </Row>
+      <TokenIconsContainer align="center">
         <TokenIcon
           mint={
             isInputPriceShowField
@@ -57,11 +71,11 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
           size={16}
           margin="0 0.2em 0 0"
         />
-        <InlineText color="gray1" size="md" weight={500}>
+        <InlineText color="white2" size="md" weight={500}>
           {isInputPriceShowField ? inputSymbol : outputSymbol}
         </InlineText>
-        <Row margin="0 0.5em">
-          <InlineText color="gray3" size="md" weight={500}>
+        <Row style={{ margin: '0 0.5em' }}>
+          <InlineText color="white3" size="md" weight={500}>
             /
           </InlineText>
         </Row>
@@ -78,24 +92,15 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
           {isInputPriceShowField ? outputSymbol : inputSymbol}
         </InlineText>
         <Row
-          margin="0 0 0 0.5em"
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', margin: '0 1em 0 0.5em' }}
           onClick={() =>
             setPriceShowField(isInputPriceShowField ? 'output' : 'input')
           }
         >
           <SvgIcon src={HalfArrowsIcon} width="0.8em" height="0.8em" />
         </Row>
-      </Row>
-      <Row>
-        <InlineText color="red3" size="md" weight={500}>
-          {stripByAmount(estimatedPrice)}{' '}
-          <InlineText color="gray1" size="md" weight={500}>
-            {isInputPriceShowField ? outputSymbol : inputSymbol}
-          </InlineText>
-        </InlineText>
-      </Row>
-    </RowContainer>
+      </TokenIconsContainer>
+    </PricesSymbolsContainer>
   )
 }
 

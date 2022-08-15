@@ -51,7 +51,7 @@ const createChart = ({
           },
           ticks: {
             align: 'center',
-            color: theme.colors.gray1,
+            color: theme.colors.white1,
             maxRotation: 0,
             font: {
               size: 12,
@@ -69,7 +69,7 @@ const createChart = ({
           ticks: {
             padding: 15,
             callback: (value) => `$${stripByAmountAndFormat(value)}`,
-            color: theme.colors.gray1,
+            color: theme.colors.white1,
             font: {
               size: 12,
               family: MAIN_FONT,
@@ -137,6 +137,7 @@ const createTotalVolumeLockedChart = ({
 }: ChartParams) => {
   // const theme = useTheme()
   if (container) {
+    // eslint-disable-next-line no-param-reassign
     container.height = CHART_HEIGHT
   }
   const ctx = container?.getContext('2d')
@@ -179,7 +180,7 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: theme.colors.green6,
+        borderColor: theme.colors.green1,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,
@@ -192,7 +193,13 @@ const createTotalVolumeLockedChart = ({
   chart.options.scales.x?.grid?.display = false
   chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.suggestedMin = 0
-  setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
+  setTimeout(() => {
+    try {
+      chart?.update()
+    } catch (e) {
+      console.warn('Unable to update chart:', e)
+    }
+  }) // TODO: Remove after flickering issue
   return chart
 }
 
@@ -258,7 +265,13 @@ const createTradingVolumeChart = ({
   chart.options.scales.x?.grid?.display = false
   chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
-  setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
+  setTimeout(() => {
+    try {
+      chart?.update()
+    } catch (e) {
+      console.warn('Unable to update chart:', e)
+    }
+  }) // TODO: Remove after flickering issue
 
   return chart
 }

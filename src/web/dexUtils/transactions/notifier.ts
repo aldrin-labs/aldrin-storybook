@@ -12,7 +12,7 @@ export const getNotifier =
     const { type, transactionId, status: transactionStatus, persist } = status
 
     if (!messages || !messages[transactionStatus]) {
-      console.log(
+      console.error(
         'no messages for getNotifier or no message for status',
         transactionStatus
       )

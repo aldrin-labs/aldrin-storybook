@@ -31,7 +31,7 @@ export const ModalBlock = styled(BlockContent)`
 `
 
 export const TokenInfo = styled.div`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: ${BORDER_RADIUS.lg};
   margin: 10px 0 10px 12px;
   padding: 16px 12px;
@@ -86,13 +86,13 @@ export const TokenInfoText = styled(Text)`
 `
 
 export const TokenPrice = styled(TokenInfoText)`
-  color: ${(props) => props.theme.colors.green4};
+  color: ${(props) => props.theme.colors.green2};
   font-weight: 400;
 `
 
 export const TokenInfoName = styled(InlineText)`
   font-size: 13px;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   font-weight: 400;
 `
 
@@ -115,7 +115,7 @@ export const TokenSymbols = styled.h2`
   font-weight: bold;
   font-size: ${FONT_SIZES.lg};
   line-height: 1.6;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   margin: 0 0 0 20px;
 `
 
@@ -186,7 +186,7 @@ export const PoolStatsTitle = styled.h4`
   line-height: 1.25;
   letter-spacing: -0.63px;
   margin: 7px 0 20px;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   span {
     font-weight: normal;
   }
@@ -234,7 +234,7 @@ export const LiquidityBlock = styled.div`
     content: 'Liquidity';
     font-weight: bold;
     font-size: 20px;
-    color: ${(props) => props.theme.colors.gray1};
+    color: ${(props) => props.theme.colors.white1};
     transform: rotate(-90deg);
     position: absolute;
     left: -70px;
@@ -256,7 +256,7 @@ export const FarmingBlock = styled(LiquidityBlock)`
   }
 
   @media (min-width: ${BREAKPOINTS.lg}) {
-    border-left: 1px solid ${(props) => props.theme.colors.gray10};
+    border-left: 1px solid ${(props) => props.theme.colors.white6};
     padding-left: 90px;
     margin-left: -30px;
     margin-top: 0;
@@ -354,4 +354,8 @@ export const NoFarmingBlock = styled.div`
 
 export const TooltipText = styled(Text)`
   margin: 5px 0;
+`
+
+export const Link = styled.a`
+  color: ${(props) => props.theme.colors.blue3};
 `

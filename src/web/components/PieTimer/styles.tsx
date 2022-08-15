@@ -41,7 +41,7 @@ const PieTimerContainer = styled.div`
     animation: timer 15s infinite linear;
     background: conic-gradient(
       rgba(0, 0, 0, 0) var(--percentage),
-      ${({ theme }) => theme.colors.gray7} 0
+      ${({ theme }) => theme.colors.white6} 0
     );
     z-index: 2;
   }
@@ -69,14 +69,14 @@ const PieTimerCircleInside = styled.div`
   width: 0.8em;
   height: 0.8em;
   border-radius: 50%;
-  background: ${({ theme }) => theme.colors.gray7};
+  background: ${({ theme }) => theme.colors.white6};
   z-index: 3;
 `
 
 const SmalletPieTimerCircleInside = styled(PieTimerCircleInside)`
   width: 0.4em;
   height: 0.4em;
-  border: 1px solid ${({ theme }) => theme.colors.gray4};
+  border: 1px solid ${({ theme }) => theme.colors.white4};
 `
 
 export { PieTimerContainer, PieTimerCircleInside, SmalletPieTimerCircleInside }

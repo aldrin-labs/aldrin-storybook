@@ -40,7 +40,6 @@ const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyles }) => (
 
 const ConnectWalletButton = ({
   wallet,
-  theme,
   height,
   id,
   buttonStyles = {},

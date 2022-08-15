@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 
 const Text = styled.span`
-  color: ${(props) => props.theme.colors.red4};
+  color: ${(props) => props.theme.colors.red3};
   font-family: Avenir Next Demi;
   font-size: 1.4rem;
   height: 2rem;

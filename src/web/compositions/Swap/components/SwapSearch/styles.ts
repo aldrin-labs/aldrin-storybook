@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { Input } from '@sb/components/Input'
 import { InlineText } from '@sb/components/Typography'
+import { Append, InputContainer } from "@sb/components/Input/styles"
 
 export const Container = styled.div`
   width: 100%;
@@ -12,9 +13,9 @@ export const Container = styled.div`
   ${(props: { listOpened: boolean }) =>
     props.listOpened &&
     `
-    .inputWrapper { 
-      border-bottom-left-radius: 0; 
-      border-bottom-right-radius: 0; 
+    .inputWrapper {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
       box-shadow: 0px 8px 8px -2px ${props.theme.colors.shadowColor};
     }
 
@@ -24,22 +25,36 @@ export const Container = styled.div`
 export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
+<<<<<<< HEAD
   border: 0.1rem solid ${(props) => props.theme.colors.gray6};
   background: ${(props) => props.theme.colors.gray7};
   height: 100%;
+=======
+  border: 0.1rem solid ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.white6};
+  height: 4.6em;
+  padding: 0 1.8em;
+>>>>>>> 938534b05632d2dc063dac5f7e27001efe037d5c
 
-  div {
+  ${InputContainer} {
+    display: flex;
     width: 100%;
   }
 
+  ${Append} {
+    padding: 0;
+  }
+
   input {
-    font-size: ${FONT_SIZES.sm};
+    font-size: ${FONT_SIZES.xsm};
     font-weight: normal;
     width: 100%;
     height: 100%;
+    padding: 0;
+    margin-left: 1.8em;
 
     &::placeholder {
-      color: ${(props) => props.theme.colors.gray2};
+      color: ${(props) => props.theme.colors.white3};
     }
   }
 `
@@ -47,27 +62,27 @@ export const SearchInput = styled(Input)`
 export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
-  background: ${(props) => props.theme.colors.gray8};
-  border-bottom-left-radius: ${BORDER_RADIUS.md};
-  border-bottom-right-radius: ${BORDER_RADIUS.md};
+  border-bottom-left-radius: ${BORDER_RADIUS.lg};
+  border-bottom-right-radius: ${BORDER_RADIUS.lg};
+  background: ${(props) => props.theme.colors.white6};
   z-index: 20;
   padding: 10px 0;
   box-shadow: 0px 8px 8px -2px ${(props) => props.theme.colors.shadowColor};
 `
 
-export const SwapItem = styled.div`
+export const SwapRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   padding: 15px 24px;
   cursor: pointer;
-  color: ${(props) => props.theme.colors.gray0};
-  background: ${(props) => props.theme.colors.gray8};
+  color: ${(props) => props.theme.colors.white1};
+  background: ${(props) => props.theme.colors.white6};
 
   &:hover,
   &.focused {
-    background: ${(props) => props.theme.colors.gray6};
+    background: ${(props) => props.theme.colors.white5};
     transition: all 0.4s ease-out;
   }
 `
@@ -77,4 +92,19 @@ export const TokenName = styled(InlineText)``
 export const NoData = styled.div`
   padding: 20px 0;
   text-align: center;
+`
+
+export const CloseButton = styled.button`
+  cursor: pointer;
+  border: none;
+  height: 2.25em;
+  width: 3.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) => props.theme.colors.white3};
+  background-color: ${(props) => props.theme.colors.white5};
+  border-radius: 8px;
+  font-weight: bold;
+  margin-left: 1.8em;
 `

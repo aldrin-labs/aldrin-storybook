@@ -15,7 +15,7 @@ export const SubTitle = styled(BlockSubtitle)`
   white-space: nowrap;
   margin: 0 1em 0 0;
   line-height: 1;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   font-size: 0.85em;
 `
 

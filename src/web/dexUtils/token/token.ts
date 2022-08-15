@@ -1,4 +1,3 @@
-import BN from 'bn.js'
 import * as BufferLayout from '@solana/buffer-layout'
 import {
   Account,
@@ -14,6 +13,7 @@ import type {
   TransactionSignature,
 } from '@solana/web3.js'
 import assert from 'assert'
+import BN from 'bn.js'
 import { Buffer } from 'buffer'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
@@ -59,6 +59,7 @@ export class u64 extends BN {
 
     const zeroPad = Buffer.alloc(8)
     b.copy(zeroPad)
+
     return zeroPad
   }
 
@@ -1436,7 +1437,7 @@ export class Token {
     destination: PublicKey,
     owner: PublicKey,
     multiSigners: Array<Account>,
-    amount: number | u64
+    amount: number | u64 | string
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
