@@ -179,11 +179,7 @@ const THEMES = {
       shadowColor: 'rgba(169, 169, 178, 1)',
       header: '#FAFAFA',
       border1: 'rgba(169, 169, 178, 0.3)',
-<<<<<<< HEAD
-      border2: '#302F41',
-=======
       PURewardsBackground: 'rgba(0, 181, 94, 0.2)',
->>>>>>> 938534b05632d2dc063dac5f7e27001efe037d5c
     },
   },
 }

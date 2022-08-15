@@ -54,7 +54,7 @@ export const SRootRow = styled(RootRow)`
 `
 export const Container = styled.div<ContainerProps>`
   width: 100%;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: column;

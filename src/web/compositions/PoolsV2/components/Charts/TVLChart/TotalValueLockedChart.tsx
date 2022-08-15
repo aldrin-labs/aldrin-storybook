@@ -127,11 +127,11 @@ export const TVLChart: React.FC = () => {
     <ChartContainer>
       <ChartMask />
       <TooltipContainer padding="6px">
-        <InlineText color="gray0" size="xs">
+        <InlineText color="white1" size="xs">
           TVL {isMouseOverTheChart ? `at ${balanceData.date}` : `Now`}
         </InlineText>
-        <ValueTitle color="gray0" weight={600}>
-          <InlineText color="gray1">$</InlineText>{' '}
+        <ValueTitle color="white1" weight={600}>
+          <InlineText color="white3">$</InlineText>{' '}
           {isMouseOverTheChart ? `${balanceData.balance}` : `${firstBalance}`}
         </ValueTitle>
       </TooltipContainer>

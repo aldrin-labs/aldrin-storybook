@@ -64,7 +64,7 @@ export const FilterButton = styled(Button)<FilterButtonType>`
   color: ${(props) => props.theme.colors.gray3};
   border: none;
   background-color: ${(props) =>
-    props.isActive ? props.theme.colors.violet2 : props.theme.colors.gray7};
+    props.isActive ? props.theme.colors.violet2 : props.theme.colors.white6};
   border-radius: 0.6em;
   color: ${(props) =>
     props.isActive ? props.theme.colors.violet4 : props.theme.colors.gray13};
@@ -98,7 +98,7 @@ export const FilterRow = styled(RootRow)`
 export const GrayContainer = styled.div`
   width: 90%;
   position: relative;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: column;

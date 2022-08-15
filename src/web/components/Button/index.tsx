@@ -132,9 +132,9 @@ const VARIANTS = {
   `,
 
   violet: css`
-    background: ${(props) => props.theme.colors.blue6};
+    background: ${(props) => rgba(props.theme.colors.blue1, 0.15)};
     border: none;
-    color: ${(props) => props.theme.colors.blue2};
+    color: ${(props) => props.theme.colors.blue1};
     white-space: nowrap;
     font-weight: 600;
     line-height: 100%;

@@ -78,8 +78,8 @@ export const Container = styled.div<SwitcherContainerType>`
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
-  color: ${(props) => props.theme.colors.gray0};
-  background: ${(props) => props.theme.colors.gray7};
+  color: ${(props) => props.theme.colors.white3};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.rg};
   font-size: ${FONT_SIZES.md};
   padding: 0.2em;
@@ -97,10 +97,10 @@ export const Container = styled.div<SwitcherContainerType>`
 export const SwitcherButton = styled(Button)<StyledSwitcher>`
   padding: ${PADDINGS.lg};
   background: ${(props) =>
-    props.isActive ? props.theme.colors.gray5 : 'transparent'};
+    props.isActive ? props.theme.colors.white5 : 'transparent'};
   white-space: nowrap;
   color: ${(props) =>
-    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
+    props.isActive ? props.theme.colors.white1 : props.theme.colors.white3};
   border-radius: ${BORDER_RADIUS.md};
   outline: none;
   border: none;

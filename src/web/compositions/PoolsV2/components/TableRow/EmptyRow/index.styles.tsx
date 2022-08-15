@@ -9,7 +9,7 @@ type StyledInlineTextProps = {
 
 export const Container = styled.div`
   width: 100%;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   margin-bottom: 1em;
   height: auto;

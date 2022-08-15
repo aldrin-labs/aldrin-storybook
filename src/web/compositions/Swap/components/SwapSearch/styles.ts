@@ -2,8 +2,8 @@ import { BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Input } from '@sb/components/Input'
+import { Append, InputContainer } from '@sb/components/Input/styles'
 import { InlineText } from '@sb/components/Typography'
-import { Append, InputContainer } from "@sb/components/Input/styles"
 
 export const Container = styled.div`
   width: 100%;
@@ -25,16 +25,10 @@ export const Container = styled.div`
 export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
-<<<<<<< HEAD
-  border: 0.1rem solid ${(props) => props.theme.colors.gray6};
-  background: ${(props) => props.theme.colors.gray7};
-  height: 100%;
-=======
   border: 0.1rem solid ${(props) => props.theme.colors.white6};
   background: ${(props) => props.theme.colors.white6};
   height: 4.6em;
   padding: 0 1.8em;
->>>>>>> 938534b05632d2dc063dac5f7e27001efe037d5c
 
   ${InputContainer} {
     display: flex;

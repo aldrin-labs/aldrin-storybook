@@ -24,7 +24,7 @@ import {
 } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
-  const [tableView, setTableView] = useState('yourPositions')
+  const [tableView, setTableView] = useState('classicLiquidity')
   const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
