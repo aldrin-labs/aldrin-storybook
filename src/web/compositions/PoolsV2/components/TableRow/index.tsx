@@ -62,30 +62,30 @@ export const TableRow = ({
           <SpacedColumn height="100%">
             <Row>
               <ArrowsIcon />
-              <InlineText size="sm" weight={400} color="gray3">
+              <InlineText size="sm" weight={400} color="white2">
                 Liquidity
               </InlineText>
             </Row>
 
             <InlineText size="xmd" weight={600} color="gray0">
-              <InlineText color="gray1">$</InlineText> 10.42m
+              <InlineText color="white3">$</InlineText> 10.42m
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
-            <InlineText size="sm" weight={400} color="gray3">
+            <InlineText size="sm" weight={400} color="white2">
               Volume 7d
             </InlineText>
             <InlineText size="xmd" weight={600} color="gray0">
-              <InlineText color="gray1">$</InlineText> 102.24k
+              <InlineText color="white3">$</InlineText> 102.24k
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
-            <InlineText size="sm" weight={400} color="gray3">
+            <InlineText size="sm" weight={400} color="white2">
               <DarkTooltip
                 title={<InlineText color="gray0">tooltip</InlineText>}
               >
                 <span>
-                  <TooltipIcon margin="0" color="gray3" /> Rewards
+                  <TooltipIcon margin="0" color="white2" /> Rewards
                 </span>
               </DarkTooltip>
             </InlineText>
@@ -125,7 +125,7 @@ export const TableRow = ({
             </Row>
           </SpacedColumn>
           <SpacedColumn height="100%">
-            <InlineText size="sm" weight={400} color="gray3">
+            <InlineText size="sm" weight={400} color="white2">
               <DarkTooltip
                 title={
                   <InlineText color="gray0">
@@ -148,7 +148,7 @@ export const TableRow = ({
                 }
               >
                 <span>
-                  <TooltipIcon margin="0" color="gray3" /> APR
+                  <TooltipIcon margin="0" color="white2" /> APR
                 </span>
               </DarkTooltip>
             </InlineText>

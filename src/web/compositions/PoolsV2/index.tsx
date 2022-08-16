@@ -50,6 +50,7 @@ export const PoolsComponent: React.FC = () => {
             isUserHavePositions={isUserHavePositions}
             tableView={tableView}
             setTableView={setTableView}
+            setIsFiltersShown={setIsFiltersShown}
           />
           <ButtonsContainer>
             <SButton

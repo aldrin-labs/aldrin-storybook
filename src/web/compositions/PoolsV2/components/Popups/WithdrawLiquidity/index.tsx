@@ -75,7 +75,7 @@ export const WithdrawLiquidity = ({
               <Column height="auto" width="60%">
                 <Box padding="1em" height="6em">
                   <InlineText size="sm" weight={300} color="gray1">
-                    <TooltipIcon color="gray1" margin="0 5px 0 0" />
+                    <TooltipIcon color="white3" margin="0 5px 0 0" />
                     Estimated Earnings if you stay
                   </InlineText>
                   <Row width="100%">

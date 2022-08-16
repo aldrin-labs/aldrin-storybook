@@ -153,7 +153,7 @@ const VARIANTS = {
   `,
 
   green: css`
-    background: ${(props) => props.theme.colors.green0};
+    background: ${(props) => rgba(props.theme.colors.green0, 0.15)};
     border: none;
     color: ${(props) => props.theme.colors.green1};
     white-space: nowrap;
