@@ -55,17 +55,17 @@ export const PositionInfo = ({
                   <RootColumn width="100%" height="65%">
                     <GrayBox align="flex-start" height={grayBoxHeight}>
                       <Row width="100%">
-                        <InlineText size="sm" weight={400} color="gray1">
+                        <InlineText size="sm" weight={400} color="white2">
                           Your Liquidity
                         </InlineText>
-                        <TooltipIcon color="gray1" />
+                        <TooltipIcon color="white2" />
                       </Row>
                       <Row>
-                        <InlineText size="xmd" weight={400} color="gray1">
+                        <InlineText size="xmd" weight={400} color="white3">
                           $
                         </InlineText>
                         &nbsp;
-                        <InlineText size="xmd" weight={600} color="gray0">
+                        <InlineText size="xmd" weight={600} color="white1">
                           10.52k
                         </InlineText>
                       </Row>
@@ -110,17 +110,17 @@ export const PositionInfo = ({
                   <RootColumn width="100%" height="65%">
                     <GrayBox align="flex-start" height={grayBoxHeight}>
                       <Row width="100%">
-                        <InlineText size="sm" weight={400} color="gray1">
+                        <InlineText size="sm" weight={400} color="white2">
                           Fees Earned
                         </InlineText>
-                        <TooltipIcon color="gray1" />
+                        <TooltipIcon color="white2" />
                       </Row>
                       <Row>
-                        <InlineText size="xmd" weight={400} color="gray1">
+                        <InlineText size="xmd" weight={400} color="white3">
                           $
                         </InlineText>
                         &nbsp;
-                        <InlineText size="xmd" weight={600} color="gray0">
+                        <InlineText size="xmd" weight={600} color="white1">
                           105.2k
                         </InlineText>
                       </Row>
@@ -168,17 +168,17 @@ export const PositionInfo = ({
                 <RootColumn width="100%" height="65%">
                   <GrayBox align="flex-start" height={grayBoxHeight}>
                     <Row width="100%">
-                      <InlineText size="sm" weight={400} color="gray1">
+                      <InlineText size="sm" weight={400} color="white2">
                         Rewards
                       </InlineText>
-                      <TooltipIcon color="gray1" />
+                      <TooltipIcon color="white2" />
                     </Row>
                     <Row>
-                      <InlineText size="xmd" weight={400} color="gray1">
+                      <InlineText size="xmd" weight={400} color="white3">
                         $
                       </InlineText>
                       &nbsp;
-                      <InlineText size="xmd" weight={600} color="gray0">
+                      <InlineText size="xmd" weight={600} color="white1">
                         1.52k
                       </InlineText>
                     </Row>

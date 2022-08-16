@@ -114,10 +114,10 @@ export const PNLChart = ({
       </Row>
       <TotalVolumeLockedChartInner />
       <Row width="100%">
-        <InlineText color="white3" weight={400} size="esm">
+        <InlineText color="white3" weight={400} size="es">
           Past
         </InlineText>
-        <InlineText color="white3" weight={400} size="esm">
+        <InlineText color="white3" weight={400} size="es">
           Future
         </InlineText>
       </Row>

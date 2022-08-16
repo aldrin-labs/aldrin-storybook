@@ -1,4 +1,5 @@
 import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
+import { rgba } from 'polished'
 import styled, { css } from 'styled-components'
 
 import { Button, PADDINGS } from '@sb/components/Button'
@@ -66,7 +67,7 @@ const VARIANTS = {
       margin-left: 0.5em;
       border-radius: 5px;
       padding: 0.5em;
-      background: ${(props) => props.theme.colors.gray17};
+      background: ${(props) => rgba(props.theme.colors.white4, 0.25)};
       color: ${(props) => props.theme.colors.gray3};
       min-width: 15px;
       font-weight: 600;

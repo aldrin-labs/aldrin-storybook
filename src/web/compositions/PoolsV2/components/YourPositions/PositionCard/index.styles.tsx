@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import bg from './assets/bg.png'
+
 type TokenContainerProps = {
   isFirstIcon?: boolean
 }
@@ -22,30 +24,25 @@ export const Card = styled.div<CardProps>`
   width: 100%;
   height: ${(props) => (props.isPositionViewDetailed ? '13.5em' : '9.5em')};
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1em;
-  background: linear-gradient(
-    40deg,
-    rgba(203, 66, 93, 0.7) 0%,
-    rgba(157, 57, 138, 0.8) 100%
-  );
-  border-radius: 15px;
-  padding: 0.8em;
-  box-shadow: 2px 17px 70px 3px rgba(174, 46, 33, 0.4);
-  backdrop-filter: contrast(3);
-`
-
-export const InnerBlock = styled.div`
-  display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  border: 1px solid ${(props) => props.theme.colors.gray14};
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
+  margin-bottom: 1em;
+  background-image: url(${bg});
+  background-size: cover;
+  background-repeat: no-repeat;
+  backdrop-filter: opacity(0.5);
+  background-color: #fff;
+  border-radius: 15px;
   padding: 0.8em;
+`
+
+export const InnerBlock = styled.div`
+  width: 100%;
+  height: 3em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `
 
 export const TokenContainer = styled.div<TokenContainerProps>`
@@ -57,4 +54,10 @@ export const TokenContainer = styled.div<TokenContainerProps>`
 `
 export const TokensBackground = styled.div`
   opacity: 0.1;
+`
+export const HeaderRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 `

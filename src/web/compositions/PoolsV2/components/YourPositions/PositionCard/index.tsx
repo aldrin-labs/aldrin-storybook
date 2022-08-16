@@ -4,7 +4,7 @@ import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
-import { RIN_MINT } from '@sb/dexUtils/utils'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { TooltipIcon } from '../../Icons'
 import {
@@ -12,13 +12,8 @@ import {
   LinkToDiscord,
   LinkToTwitter,
 } from '../../Socials'
-import {
-  TokenContainer,
-  Card,
-  ContainerWithBack,
-  InnerBlock,
-  TokensBackground,
-} from './index.styles'
+import { IconsContainer } from '../../TokenIconsContainer/index.styles'
+import { Card, ContainerWithBack, HeaderRow, InnerBlock } from './index.styles'
 
 export const PositionCard = ({
   isPositionViewDetailed,
@@ -28,13 +23,22 @@ export const PositionCard = ({
   return (
     <ContainerWithBack>
       <Card isPositionViewDetailed={isPositionViewDetailed}>
-        <InnerBlock>
-          <InlineText color="gray0" weight={600}>
-            • RIN/USDC •
+        <HeaderRow>
+          <IconsContainer>
+            <TokenIcon mint={getTokenMintAddressByName('RIN')} size={24} />{' '}
+            <TokenIcon mint={getTokenMintAddressByName('USDC')} size={24} />{' '}
+          </IconsContainer>{' '}
+          <InlineText color="white1" weight={600}>
+            RIN/USDC
           </InlineText>
+        </HeaderRow>
+
+        <InnerBlock>
           <RootRow margin="0">
-            <InlineText size="xsm">APR</InlineText>{' '}
-            <InlineText color="gray0" weight={600}>
+            <InlineText color="white1" size="esm">
+              APR
+            </InlineText>
+            <InlineText color="white1" weight={600}>
               125.42%
             </InlineText>
           </RootRow>
@@ -44,17 +48,6 @@ export const PositionCard = ({
             <LinkToDiscord $variant="withoutBack" />
           </RootRow>
         </InnerBlock>
-        <TokensBackground>
-          <TokenContainer isFirstIcon>
-            <TokenIcon
-              size={160}
-              mint="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-            />
-          </TokenContainer>
-          <TokenContainer>
-            <TokenIcon size={160} mint={RIN_MINT} />
-          </TokenContainer>
-        </TokensBackground>
       </Card>
       <Button
         $width="xl"
