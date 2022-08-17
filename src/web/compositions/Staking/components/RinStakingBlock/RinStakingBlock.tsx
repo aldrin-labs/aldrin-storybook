@@ -1,15 +1,17 @@
-import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useFarmInfo } from '@sb/dexUtils/farming'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
+import { useRinStakingApr } from '@sb/dexUtils/staking/hooks/useRinStakingApr'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import AldrinLogo from '@icons/Aldrin.svg'
@@ -37,17 +39,28 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       getDexTokensPricesQuery: { getDexTokensPrices },
     } = props
 
+    const { data: farms } = useFarmInfo()
     const { data: poolInfo } = useStakingPoolInfo()
 
+    const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+
     const [totalStakedRIN] = useAccountBalance({
-      publicKey: poolInfo
-        ? new PublicKey(poolInfo.poolInfo.stakingVault)
-        : undefined,
+      publicKey: farm ? farm.stakeVault : undefined,
+    })
+
+    const rinHarvest = farm?.harvests.find(
+      (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
+    )
+
+    const { data: apr } = useRinStakingApr({
+      totalStaked: totalStakedRIN,
+      harvest: rinHarvest,
     })
 
     const tokenName = getTokenNameByMintAddress(
-      poolInfo?.currentFarmingState.farmingTokenMint
-    )
+      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+    ) // getTokenNameByMintAddress(farm?.stakeMint.toString())
+
     const rinPrice =
       getDexTokensPrices?.find((v) => v.symbol === tokenName)?.price || 0
 
@@ -59,8 +72,6 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       (totalStakedRIN / (poolInfo?.rinCirculationSupply || totalStakedRIN)) *
       100
 
-    const totalApr = poolInfo?.poolInfo.apr.totalStakingAPR || 0
-
     return (
       <StakingBlock>
         <LogoWrap>
@@ -71,7 +82,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
         <BlockContent>
           <RowContainer justify="space-between">
             <BlockTitle>Stake RIN</BlockTitle>
-            <NumberWithLabel value={totalApr} label="APR" />
+            <NumberWithLabel value={apr || 0} label="APR" />
           </RowContainer>
           <ContentBlock>
             <RowContainer

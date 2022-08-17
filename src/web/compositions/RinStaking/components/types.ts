@@ -26,6 +26,7 @@ export type StakingInfoProps = {
   stakingPool: StakingPool
   treasuryDailyRewards: number
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  getStakingInfoQuery: { getStakingInfo: any } // TODO: type
 }
 
 export interface StakingFormProps {
@@ -35,4 +36,5 @@ export interface StakingFormProps {
   isUnstakeLocked: boolean
   unlockAvailableDate: number
   mint: string
+  tokenPrice: number
 }

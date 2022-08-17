@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
 
@@ -8,17 +7,10 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { signTransactions } from '@sb/dexUtils/send'
+import { initializeFarmingV2 } from '@sb/dexUtils/farming'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import {
-  getPoolsProgramAddress,
-  SendTransactionStatus,
-  SendTransactionDetails,
-  buildInitializeFarmingTransaction,
-} from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
@@ -86,53 +78,59 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       if (!values.farming.token.account) {
         throw new Error('No token account selected')
       }
-      const [transaction, signers] = await buildInitializeFarmingTransaction({
-        farmingTokenMint: new PublicKey(values.farming.token.mint),
-        farmingTokenAccount: new PublicKey(values.farming.token.account),
-        tokenAmount: new BN(
-          (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(0)
+      const result = await initializeFarmingV2({
+        stakeMint: new PublicKey(
+          '7viVXMsJyMcdWMkZG3nRUYQtKALTR81XTEcKthXVsXjR'
         ),
-        periodLength: new BN(HOUR),
-        tokensPerPeriod: new BN(
-          (tokensPerPeriod * tokensMultiplier).toFixed(0)
-        ),
-        noWithdrawPeriodSeconds: new BN(0),
-        vestingPeriodSeconds:
-          values.farming.vestingEnabled && values.farming.vestingPeriod
-            ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
-            : new BN(0),
-        pool: new PublicKey(pool.swapToken),
+        // farmingTokenMint: new PublicKey(values.farming.token.mint),
+        // farmingTokenAccount: new PublicKey(values.farming.token.account),
+        // tokenAmount: new BN(
+        //   (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(0)
+        // ),
+        // periodLength: new BN(HOUR),
+        // tokensPerPeriod: new BN(
+        //   (tokensPerPeriod * tokensMultiplier).toFixed(0)
+        // ),
+        // noWithdrawPeriodSeconds: new BN(0),
+        // vestingPeriodSeconds:
+        //   values.farming.vestingEnabled && values.farming.vestingPeriod
+        //     ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
+        //     : new BN(0),
+        // pool: new PublicKey(pool.swapToken),
         wallet,
         connection,
-        programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
+        // programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       })
 
-      setFarmingTransactionStatus('signing')
-      const [signedTransaction] = await signTransactions({
-        transactionsAndSigners: [{ transaction, signers }],
-        connection,
-        wallet,
-      })
+      // setFarmingTransactionStatus('signing')
+      // const [signedTransaction] = await signTransactions({
+      //   transactionsAndSigners: [{ transaction, signers }],
+      //   connection,
+      //   wallet,
+      // })
 
-      setFarmingTransactionStatus('sending')
+      // setFarmingTransactionStatus('sending')
 
-      const result = await sendSignedSignleTransaction({
-        transaction: signedTransaction,
-        connection,
-        wallet,
-      })
+      // const { transactionId, status } = await sendSignedSignleTransaction({
+      //   transaction: signedTransaction,
+      //   connection,
+      //   wallet,
+      // })
 
-      setFarmingTxId(result.transactionId)
+      // setFarmingTxId(txId)
 
-      if (result.status === SendTransactionStatus.CONFIRMED) {
+      if (result === 'success') {
         onExtend()
+      } else {
+        setFarmingTransactionStatus('error')
       }
 
-      setFarmingTransactionStatus(
-        result.details?.includes(SendTransactionDetails.TIMEOUT)
-          ? 'timeout'
-          : result.status
-      )
+      // setFarmingTransactionStatus(
+      //   result.details?.includes(SendTransactionDetails.TIMEOUT)
+      //     ? 'timeout'
+      //     : result.status
+      // )
+      setFarmingTransactionStatus(result)
     } catch (e) {
       console.warn('Unable to create farming: ', e)
       setFarmingTransactionStatus('error')
