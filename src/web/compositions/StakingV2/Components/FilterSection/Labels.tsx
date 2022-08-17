@@ -26,10 +26,12 @@ export const LabelComponent = ({
   checkbox = false,
   variant,
   tooltipText,
+  NFT,
 }: {
   checkbox?: boolean
   variant: VariantType
   tooltipText: any
+  NFT?: boolean
 }) => {
   const [checked, setChecked] = useState(true)
 
@@ -41,6 +43,7 @@ export const LabelComponent = ({
       hoverColor={variant.hoverStyle.color}
       hoverBackground={variant.hoverStyle.backgroundColor}
       background={variant.labelStyle.backgroundColor}
+      NFT={NFT}
     >
       {checkbox && (
         <CheckboxContainer>

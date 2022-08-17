@@ -82,7 +82,7 @@ export const TableRow = ({
     <RootRow margin="10px 0">
       <Container width="100%">
         <StretchedRow>
-          <RootColumn height="100%">
+          <RootColumn width="15%" height="100%">
             <Row>
               <TokenIconsContainer
                 // mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
@@ -93,13 +93,45 @@ export const TableRow = ({
               </InlineText>
             </Row>
             <LabelsRow>
-              <LabelComponent
-                tooltipText={<LabelsTooltips type="New" period="5 days" />}
-                variant={
-                  POOL_CARD_LABELS.find((el) => el.text === 'Auto-Compound') ||
-                  POOL_CARD_LABELS[0]
-                }
-              />
+              {token === 'RIN' && (
+                <LabelComponent
+                  tooltipText={<LabelsTooltips type="New" period="5 days" />}
+                  variant={
+                    POOL_CARD_LABELS.find(
+                      (el) => el.text === 'Auto-Compound'
+                    ) || POOL_CARD_LABELS[0]
+                  }
+                />
+              )}
+              {token === 'SOL' && (
+                <LabelComponent
+                  tooltipText={<LabelsTooltips type="New" period="5 days" />}
+                  variant={
+                    POOL_CARD_LABELS.find((el) => el.text === 'Liquid') ||
+                    POOL_CARD_LABELS[0]
+                  }
+                />
+              )}
+              {token === 'PLD' || token === 'RPC' || token === 'PU238' ? (
+                <>
+                  <LabelComponent
+                    tooltipText={<LabelsTooltips type="New" period="5 days" />}
+                    variant={
+                      POOL_CARD_LABELS.find((el) => el.text === 'Plutonians') ||
+                      POOL_CARD_LABELS[0]
+                    }
+                  />
+                  <LabelComponent
+                    tooltipText={<LabelsTooltips type="New" period="5 days" />}
+                    NFT={true}
+                    variant={
+                      POOL_CARD_LABELS.find(
+                        (el) => el.text === 'NFT Rewards'
+                      ) || POOL_CARD_LABELS[0]
+                    }
+                  />
+                </>
+              ) : null}
             </LabelsRow>
           </RootColumn>
           <SpacedColumn height="100%">

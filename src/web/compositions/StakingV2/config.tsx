@@ -91,4 +91,9 @@ export const POOL_CARD_LABELS = [
     text: 'NFT Rewards',
     hoverStyle: LABEL_TYPES.green,
   },
+  {
+    labelStyle: LABEL_TYPES.default,
+    text: 'Liquid',
+    hoverStyle: LABEL_TYPES.blue,
+  },
 ]

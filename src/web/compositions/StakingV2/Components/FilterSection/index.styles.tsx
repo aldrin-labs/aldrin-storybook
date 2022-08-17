@@ -10,6 +10,7 @@ type LabelContainerProps = {
   background: string
   hoverBackground?: string
   hoverColor: string
+  NFT?: boolean
 }
 
 type SCheckboxProps = {
@@ -93,6 +94,7 @@ export const LabelContainer = styled.div<LabelContainerProps>`
   cursor: pointer;
   margin-right: 1em;
   transition: 0.5s;
+  min-width: ${(props) => (props.NFT ? '7.5em' : '')};
 
   &:hover {
     label {
