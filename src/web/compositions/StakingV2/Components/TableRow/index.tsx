@@ -7,7 +7,7 @@ import { InlineText } from '@sb/components/Typography'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { POOL_CARD_LABELS } from '../../config'
-import { RootRow, RootColumn, SpacedColumn } from '../../Index.styles'
+import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { LabelComponent } from '../FilterSection/Labels'
 import { TooltipIcon, PlusIcon, ArrowsIcon } from '../Icons'
 import { Row } from '../Popups/index.styles'
