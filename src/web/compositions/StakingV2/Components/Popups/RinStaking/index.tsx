@@ -1,31 +1,22 @@
 import React, { useState } from 'react'
 
-import { Button } from '@sb/components/Button'
-import { Modal } from '@sb/components/Modal'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { InlineText } from '@sb/components/Typography'
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import {
-  CheckboxContainer,
-  HiddenCheckbox,
-  Icon,
-  StyledCheckbox,
-} from '../../FilterSection/index.styles'
-import { PlusIcon, TooltipIcon } from '../../Icons'
-import { HeaderComponent } from '../Header'
-import { Box, Column, Row } from '../index.styles'
-import { ModalContainer } from '../WithdrawLiquidity/index.styles'
-import { StakeContainer } from './StakeContainer'
-import { UnstakeContainer } from './UnstakeContainer'
-import { BigNumber, FormWrap } from './index.styles'
 import { Block, BlockContentStretched } from '@sb/components/Block'
 import { FlexBlock, StretchedBlock } from '@sb/components/Layout'
+import { Modal } from '@sb/components/Modal'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText } from '@sb/components/Typography'
 import { ImagesPath } from '@sb/compositions/Chart/components/Inputs/Inputs.utils'
-import InfoIcon from '../Icons/Icon.svg'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
+import { HeaderComponent } from '../Header'
+import InfoIcon from '../Icons/Icon.svg'
+import { Column, Row } from '../index.styles'
+import { ModalContainer } from '../WithdrawLiquidity/index.styles'
+import { BigNumber } from './index.styles'
+import { StakeContainer } from './StakeContainer'
+import { UnstakeContainer } from './UnstakeContainer'
 
 export const RinStaking = ({
   onClose,
@@ -40,16 +31,18 @@ export const RinStaking = ({
   const [isBalanceShowing, setIsBalanceShowing] = useState(true)
 
   const wallet = useWallet()
+
   return (
     <ModalContainer needBlur>
       <Modal open={open} onClose={onClose}>
         <HeaderComponent arrow close={onClose} token="RIN" />
-        <Column height="calc(100% - 11em)" margin="2em 0">
+        <Column height="calc(100% - 10em)" margin="0 0 3em">
           <Column height="auto" width="100%">
             <StakeContainer />
 
             <Row width="100%" margin="1.25em 0">
               <Block
+                margin="0 8px 0 0"
                 style={{
                   flex: 1,
                 }}
@@ -83,6 +76,7 @@ export const RinStaking = ({
               </Block>
 
               <Block
+                margin="0 0 0 8px"
                 style={{
                   flex: 1,
                 }}

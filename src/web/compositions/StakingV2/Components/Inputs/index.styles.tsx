@@ -7,7 +7,7 @@ import { InlineText } from '@sb/components/Typography'
 export const InvisibleInput = styled.input`
   width: 100%;
   background: inherit;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   outline: none;
   border: none;
 
@@ -17,7 +17,7 @@ export const InvisibleInput = styled.input`
   font-weight: 600;
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.gray3};
+    color: ${(props) => props.theme.colors.white3};
   }
 `
 export const InputContainer = styled.div`

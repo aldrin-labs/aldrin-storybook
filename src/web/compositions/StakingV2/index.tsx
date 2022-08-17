@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { Page } from '@sb/components/Layout'
 
-import TestSvg from './Components/Icons/test.svg'
+import CoinsBg from './Components/Icons/coins.webp'
 import { RinStaking } from './Components/Popups/RinStaking/index'
 import { SolStaking } from './Components/Popups/SolStaking/index'
 import { TableRow } from './Components/TableRow'
@@ -12,6 +12,7 @@ import {
   TotalStakedCard,
   TotalStakedRow,
   TotalStaked,
+  ImageContainer,
 } from './index.styles'
 
 export const StakingPage: React.FC = () => {
@@ -30,9 +31,9 @@ export const StakingPage: React.FC = () => {
             <ThinHeading>Total Staked</ThinHeading>
             <TotalStaked>$ 4.42m</TotalStaked>
           </TotalStakedCard>
-          <div>
-            <img src={TestSvg} />
-          </div>
+          <ImageContainer>
+            <img alt="rin" src={CoinsBg} width="100%" height="100%" />
+          </ImageContainer>
         </TotalStakedRow>
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
@@ -48,7 +49,7 @@ export const StakingPage: React.FC = () => {
           setPLDPopup={setPLD}
           setRPCPopup={setRPC}
           setPU238Popup={setPU238}
-          token="SOL"
+          token="stSOL"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
@@ -56,7 +57,7 @@ export const StakingPage: React.FC = () => {
           setPLDPopup={setPLD}
           setRPCPopup={setRPC}
           setPU238Popup={setPU238}
-          token="SOL"
+          token="mSOL"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}

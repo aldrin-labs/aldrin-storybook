@@ -1,4 +1,5 @@
 import { BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
+import { rgba } from 'polished'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -15,6 +16,7 @@ type ContainerProps = {
 export const LabelsRow = styled(RootRow)`
   margin: 10px 0 0 0;
   align-items: flex-start;
+  justify-content: flex-start;
   div {
     margin: 0 0 5px 0;
   }
@@ -88,7 +90,7 @@ export const StretchedRow = styled(RootRow)`
 `
 
 export const StyledLink = styled(Link)`
-  background: ${(props) => props.theme.colors.green0};
+  background: ${(props) => rgba(props.theme.colors.green0, 0.15)};
   border: none;
   color: ${(props) => props.theme.colors.green1};
   white-space: nowrap;

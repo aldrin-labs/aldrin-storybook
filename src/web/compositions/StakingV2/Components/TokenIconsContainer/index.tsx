@@ -9,13 +9,11 @@ export const TokenIconsContainer = ({
   token,
   mint,
   size = 32,
-
   elementSize = 'lg',
 }: {
   token: string
   mint?: string
   size?: number
-
   elementSize?: 'sm' | 'lg'
 }) => {
   console.log('token:', token)

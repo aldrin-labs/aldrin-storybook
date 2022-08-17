@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -8,13 +9,7 @@ import { RIN_MINT } from '@core/solana'
 
 import { AmountInput } from '../../Inputs'
 import { Container } from '../index.styles'
-import {
-  FirstInputContainer,
-  InputsContainer,
-  PositionatedIconContainer,
-  SecondInputContainer,
-} from './index.styles'
-import { Button } from '@sb/components/Button'
+import { FirstInputContainer, InputsContainer } from './index.styles'
 
 export const StakeContainer = () => {
   const wallet = useWallet()
@@ -63,10 +58,10 @@ export const StakeContainer = () => {
         onClick={() => {
           // connect wallet
         }}
-        $variant={'violet'}
+        $variant="violet"
         $width="xl"
         $padding="xxxl"
-        $fontSize="sm"
+        $fontSize="md"
       >
         {!wallet.connected ? 'Connect Wallet to Stake RIN' : <>Stake RIN</>}
       </Button>

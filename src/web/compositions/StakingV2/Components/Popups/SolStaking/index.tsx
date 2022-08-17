@@ -2,25 +2,15 @@ import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import {
-  CheckboxContainer,
-  HiddenCheckbox,
-  Icon,
-  StyledCheckbox,
-} from '../../FilterSection/index.styles'
-import { PlusIcon, TooltipIcon } from '../../Icons'
+import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Row } from '../index.styles'
+import { Switcher } from '../Switcher/index'
 import { ModalContainer } from '../WithdrawLiquidity/index.styles'
 import { ValuesContainer } from './DepositContainer'
-import { PeriodButton, PeriodSwitcher } from './index.styles'
-import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
-
-import { Switcher } from '../Switcher/index'
 
 export const SolStaking = ({
   onClose,
@@ -32,7 +22,7 @@ export const SolStaking = ({
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
   const [isUserVerified, setIsUserVerified] = useState(false)
   const [period, setPeriod] = useState('7D')
-  //Added
+  // Added
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [amount, setAmount] = useState('')
   const [amountGet, setAmountGet] = useState('')
@@ -48,17 +38,17 @@ export const SolStaking = ({
   return (
     <ModalContainer needBlur>
       <Modal open={open} onClose={onClose}>
-        <HeaderComponent arrow close={onClose} token="SOL" />
+        <HeaderComponent arrow close={onClose} token="mSOL" />
         <Column height="auto" margin="2em 0">
           <Row width="100%" margin="2em 0 1em 0">
-            <NumberWithLabel value={0} label="Epoch"></NumberWithLabel>
-            <NumberWithLabel value={12} label="APY"></NumberWithLabel>
+            <NumberWithLabel value={0} label="Epoch" />
+            <NumberWithLabel value={12} label="APY" />
           </Row>
           <Switcher
             isStakeModeOn={isStakeModeOn}
             setIsStakeModeOn={toggleStakeMode}
           />
-          <InlineText size="sm">
+          <InlineText color="white2" size="sm">
             Stake SOL and use mSOL while earning rewards
           </InlineText>
           <Column height="auto" width="100%" margin="1em 0 2.4em 0">

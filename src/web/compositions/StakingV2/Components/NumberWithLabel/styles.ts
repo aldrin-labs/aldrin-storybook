@@ -1,4 +1,5 @@
 import { FONT_SIZES, BORDER_RADIUS } from '@variables/variables'
+import { rgba } from 'polished'
 import styled from 'styled-components'
 
 type LabelType = {
@@ -8,8 +9,8 @@ type LabelType = {
 }
 
 export const Container = styled.div`
-  background: ${(props) => props.theme.colors.green8};
-  color: ${(props) => props.theme.colors.green4};
+  background: ${(props) => rgba(props.theme.colors.green1, 0.15)};
+  color: ${(props) => props.theme.colors.green1};
   display: flex;
   flex-direction: row;
   align-items: center;

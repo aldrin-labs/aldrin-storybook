@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
+import { rgba } from 'polished'
 import styled from 'styled-components'
 
 import { PADDINGS } from '@sb/components/Button'
@@ -84,8 +85,7 @@ export const StretchedRow = styled(RootRow)`
 `
 
 export const LabelContainer = styled.div<LabelContainerProps>`
-  background: ${(props) =>
-    rgba(props.theme.colors[props.hoverBackground || props.background], 0.25)};
+  background: ${(props) => rgba(props.theme.colors[props.background], 0.15)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,7 +94,7 @@ export const LabelContainer = styled.div<LabelContainerProps>`
   position: relative;
   cursor: pointer;
   margin-right: 1em;
-  transition: 0.5s;
+  transition: all 0.5s;
   min-width: ${(props) => (props.NFT ? '7.5em' : '')};
 
   &:hover {
@@ -107,7 +107,10 @@ export const LabelContainer = styled.div<LabelContainerProps>`
       }
     }
     background: ${(props) =>
-      props.theme.colors[props.hoverBackground || props.background]};
+      rgba(
+        props.theme.colors[props.hoverBackground || props.background],
+        0.25
+      )};
   }
 `
 export const HiddenCheckbox = styled.input`
@@ -149,12 +152,13 @@ export const Icon = styled.svg<IconProps>`
   display: ${(props) => (props.checked ? 'block' : 'none')};
 `
 export const Label = styled.label<LabelProps>`
-  color: ${(props) => props.theme.colors[props.color || 'gray13']};
+  color: ${(props) => props.theme.colors[props.color || 'white2']};
   cursor: pointer;
   font-size: ${FONT_SIZES.sm};
   font-weight: 700;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 
   svg {
     path {

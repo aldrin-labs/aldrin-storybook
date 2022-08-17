@@ -1,14 +1,14 @@
 import styled from 'styled-components'
 
-type CircleIconContainerType = {
-  size?: string
+type InputsContainerType = {
+  margin?: string
 }
 
 type PeriodButtonType = {
   isActive: boolean
 }
 
-export const InputsContainer = styled.div`
+export const InputsContainer = styled.div<InputsContainerType>`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -17,7 +17,7 @@ export const InputsContainer = styled.div`
   position: relative;
   border-radius: 0.8em;
   padding: 0.8em 0;
-  margin: 0.5em 0 0 0;
+  margin: ${(props) => props.margin || '0.5em 0 0 0'};
   background: ${(props) => props.theme.colors.gray7};
 `
 
@@ -32,10 +32,8 @@ export const FirstInputContainer = styled.div`
   padding: 0.8em;
   border-radius: 1em;
   margin-bottom: 0.8em;
-  border: 1px solid ${(props) => props.theme.colors.border2};
-  background: ${(props) => props.theme.colors.gray8};
-
-  /* border-bottom: 1px solid ${(props) => props.theme.colors.border2}; */
+  border: 1px solid ${(props) => props.theme.colors.white5};
+  background: ${(props) => props.theme.colors.white5};
 `
 
 export const SecondInputContainer = styled.div`
@@ -55,14 +53,14 @@ export const PeriodSwitcher = styled.div`
   display: flex;
   flex-direction: row;
   width: auto;
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 0.5em;
   height: auto;
 `
 export const PeriodButton = styled.div<PeriodButtonType>`
   width: 1.5em;
   background: ${(props) =>
-    props.isActive ? props.theme.colors.border2 : props.theme.colors.gray8};
+    props.isActive ? props.theme.colors.border2 : props.theme.colors.white5};
   border-radius: 0.5em;
   height: 1.5em;
   padding: 0.3em;

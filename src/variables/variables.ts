@@ -106,7 +106,7 @@ export const UCOLORS = {
   blue1: '#B4B1F9FF',
   blue0: '#E7E6FDFF',
   gray9: '#0B0B12FF',
-  gray8: '#14131FFF',
+  white5: '#14131FFF',
   gray7: '#181824FF',
   gray6: '#212030FF',
   gray5: '#2F2F40FF',

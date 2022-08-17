@@ -1,14 +1,15 @@
 import React from 'react'
 
 import { EscapeButton } from '@sb/components/EscapeButton'
+import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import {
   LinkToTwitter,
   LinkToDiscord,
   LinkToCoinMarketcap,
 } from '../../Socials'
-import { TokenIconsContainer } from '../../TokenIconsContainer'
 import { Header, Row } from '../index.styles'
 
 export const HeaderComponent = ({
@@ -23,8 +24,12 @@ export const HeaderComponent = ({
   return (
     <Header>
       <Row>
-        <TokenIconsContainer />
-        <InlineText size="xmd" weight={600} color="gray0">
+        <TokenIcon
+          margin="0 1em 0"
+          mint={getTokenMintAddressByName(`${token}`)}
+          size={36}
+        />
+        <InlineText size="xmd" weight={600} color="white2">
           {token} Staking
         </InlineText>
       </Row>

@@ -4,7 +4,7 @@ import { Button } from '@sb/components/Button'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 
-import { POOL_CARD_LABELS } from '../../config'
+import { STAKING_CARD_LABELS } from '../../config'
 import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { LabelComponent } from '../FilterSection/Labels'
 import { TooltipIcon } from '../Icons'
@@ -18,7 +18,6 @@ import {
   StretchedRow,
   StyledLink,
 } from './index.styles'
-import { LabelsTooltips } from './Tooltips'
 
 export const TableRow = ({
   token,
@@ -38,7 +37,10 @@ export const TableRow = ({
   let HeaderRowText: string = ''
 
   switch (token) {
-    case 'SOL':
+    case 'mSOL':
+      HeaderRowText = 'Epoch'
+      break
+    case 'stSOL':
       HeaderRowText = 'Epoch'
       break
     case 'RIN':
@@ -92,39 +94,61 @@ export const TableRow = ({
             <LabelsRow>
               {token === 'RIN' && (
                 <LabelComponent
-                  tooltipText={<LabelsTooltips type="New" period="5 days" />}
                   variant={
-                    POOL_CARD_LABELS.find(
+                    STAKING_CARD_LABELS.find(
                       (el) => el.text === 'Auto-Compound'
-                    ) || POOL_CARD_LABELS[0]
+                    ) || STAKING_CARD_LABELS[0]
                   }
                 />
               )}
-              {token === 'SOL' && (
-                <LabelComponent
-                  tooltipText={<LabelsTooltips type="New" period="5 days" />}
-                  variant={
-                    POOL_CARD_LABELS.find((el) => el.text === 'Liquid') ||
-                    POOL_CARD_LABELS[0]
-                  }
-                />
+              {token === 'mSOL' && (
+                <>
+                  {' '}
+                  <LabelComponent
+                    variant={
+                      STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
+                      STAKING_CARD_LABELS[0]
+                    }
+                  />{' '}
+                  <LabelComponent
+                    variant={
+                      STAKING_CARD_LABELS.find(
+                        (el) => el.text === 'Marinade'
+                      ) || STAKING_CARD_LABELS[0]
+                    }
+                  />
+                </>
+              )}
+              {token === 'stSOL' && (
+                <>
+                  <LabelComponent
+                    variant={
+                      STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
+                      STAKING_CARD_LABELS[0]
+                    }
+                  />
+                  <LabelComponent
+                    variant={
+                      STAKING_CARD_LABELS.find((el) => el.text === 'Lido') ||
+                      STAKING_CARD_LABELS[0]
+                    }
+                  />
+                </>
               )}
               {token === 'PLD' || token === 'RPC' || token === 'PU238' ? (
                 <>
                   <LabelComponent
-                    tooltipText={<LabelsTooltips type="New" period="5 days" />}
                     variant={
-                      POOL_CARD_LABELS.find((el) => el.text === 'Plutonians') ||
-                      POOL_CARD_LABELS[0]
+                      STAKING_CARD_LABELS.find(
+                        (el) => el.text === 'Plutonians'
+                      ) || STAKING_CARD_LABELS[0]
                     }
                   />
                   <LabelComponent
-                    tooltipText={<LabelsTooltips type="New" period="5 days" />}
-                    NFT
                     variant={
-                      POOL_CARD_LABELS.find(
+                      STAKING_CARD_LABELS.find(
                         (el) => el.text === 'NFT Rewards'
-                      ) || POOL_CARD_LABELS[0]
+                      ) || STAKING_CARD_LABELS[0]
                     }
                   />
                 </>
@@ -134,25 +158,25 @@ export const TableRow = ({
           <SpacedColumn height="100%">
             {/* <Row> */}
             {/* <ArrowsIcon /> */}
-            <InlineText size="sm" weight={400} color="gray3">
+            <InlineText size="sm" weight={400} color="white2">
               Total Staked
             </InlineText>
             {/* </Row> */}
 
             <InlineText size="xmd" weight={600} color="gray0">
-              <InlineText color="gray1">$</InlineText> 10.42m
+              <InlineText color="white2">$</InlineText> 10.42m
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
-            <InlineText size="sm" weight={400} color="gray3">
+            <InlineText size="sm" weight={400} color="white2">
               {HeaderRowText}
             </InlineText>
             <InlineText size="xmd" weight={600} color="gray0">
-              <InlineText color="gray1">$</InlineText> 102.24k
+              <InlineText color="white2">$</InlineText> 102.24k
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
-            <InlineText size="sm" weight={400} color="gray3">
+            <InlineText size="sm" weight={400} color="white2">
               <DarkTooltip
                 title={
                   <InlineText color="gray0">
@@ -175,7 +199,7 @@ export const TableRow = ({
                 }
               >
                 <span>
-                  <TooltipIcon margin="0" color="gray3" /> APR
+                  <TooltipIcon margin="0" color="white2" /> APR
                 </span>
               </DarkTooltip>
             </InlineText>
@@ -197,7 +221,7 @@ export const TableRow = ({
             ) : (
               <Button
                 onClick={() => {
-                  token === 'SOL'
+                  token === 'mSOL'
                     ? setIsSolStakingPopupOpen(true)
                     : setIsRinStakingPopupOpen(true)
                 }}

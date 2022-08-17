@@ -54,7 +54,7 @@ export const Header = styled.div`
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid ${(props) => props.theme.colors.gray8};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white5};
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     flex-direction: row;
@@ -80,7 +80,8 @@ export const Box = styled.div<BoxType>`
   border-radius: 0.5em;
   width: ${(props) => props.width || '100%'};
   height: ${(props) => props.height || '4.5em'};
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -97,7 +98,7 @@ export const Column = styled.div<ColumnType>`
   margin: ${(props) => props.margin || '0'};
 `
 export const Container = styled.div`
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.white5};
   width: auto;
   height: auto;
   display: flex;

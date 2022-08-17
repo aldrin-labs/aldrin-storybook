@@ -52,48 +52,35 @@ export const FILTER_LABELS = [
   },
 ]
 
-export const POOL_CARD_LABELS = [
-  {
-    labelStyle: LABEL_TYPES.default,
-    text: 'Locked',
-    icon: (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M1.33334 10.1933V3.80668C1.33334 2.92001 1.84668 2.70668 2.47334 3.33335L4.20001 5.06001C4.46001 5.32001 4.88668 5.32001 5.14001 5.06001L7.52668 2.66668C7.78668 2.40668 8.21334 2.40668 8.46668 2.66668L10.86 5.06001C11.12 5.32001 11.5467 5.32001 11.8 5.06001L13.5267 3.33335C14.1533 2.70668 14.6667 2.92001 14.6667 3.80668V10.2C14.6667 12.2 13.3333 13.5333 11.3333 13.5333H4.66668C2.82668 13.5267 1.33334 12.0333 1.33334 10.1933Z"
-          stroke="#A9A9B2"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-    hoverStyle: LABEL_TYPES.locked,
-  },
-  { labelStyle: LABEL_TYPES.default, text: 'New', hoverStyle: LABEL_TYPES.red },
+export const STAKING_CARD_LABELS = [
   {
     labelStyle: LABEL_TYPES.default,
     text: 'Auto-Compound',
-    hoverStyle: LABEL_TYPES.blue,
+    hoverStyle: LABEL_TYPES.default,
   },
   {
     labelStyle: LABEL_TYPES.default,
     text: 'Plutonians',
-    hoverStyle: LABEL_TYPES.yellow,
+    hoverStyle: LABEL_TYPES.default,
   },
   {
     labelStyle: LABEL_TYPES.default,
     text: 'NFT Rewards',
-    hoverStyle: LABEL_TYPES.green,
+    hoverStyle: LABEL_TYPES.default,
   },
   {
     labelStyle: LABEL_TYPES.default,
     text: 'Liquid',
-    hoverStyle: LABEL_TYPES.blue,
+    hoverStyle: LABEL_TYPES.default,
+  },
+  {
+    labelStyle: LABEL_TYPES.default,
+    text: 'Lido',
+    hoverStyle: LABEL_TYPES.default,
+  },
+  {
+    labelStyle: LABEL_TYPES.default,
+    text: 'Marinade',
+    hoverStyle: LABEL_TYPES.default,
   },
 ]

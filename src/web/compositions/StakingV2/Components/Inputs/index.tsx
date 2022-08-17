@@ -37,12 +37,12 @@ export const AmountInput = ({
   return (
     <InputContainer>
       <StretchedBlock width="xl">
-        <InlineText weight={400} size="sm" color="gray1">
+        <InlineText weight={400} size="sm" color="white3">
           {title}
         </InlineText>
         <CenteredRow onClick={onMaxAmountClick}>
           <WalletIcon />
-          <StyledInlineText weight={600} size="sm" color="gray1">
+          <StyledInlineText weight={600} size="sm" color="white2">
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}
           </StyledInlineText>
         </CenteredRow>

@@ -18,17 +18,18 @@ export const Container = styled.div`
   display: flex;
   flex-wrap: nowrap;
   margin: 0 0 2rem 0;
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.white5};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   justify-content: space-between;
 `
 export const Button = styled.button<StyledSwitcher>`
   width: 49.5%;
   background: ${(props) =>
-    props.isActive ? props.theme.colors.gray5 : props.theme.colors.gray8};
+    props.isActive ? props.theme.colors.white4 : props.theme.colors.white5};
   padding: 0.5rem;
   color: ${(props) =>
-    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
-  font-size: ${FONT_SIZES.sm};
+    props.isActive ? props.theme.colors.white1 : props.theme.colors.white3};
+  font-size: ${FONT_SIZES.md};
   outline: none;
   border: none;
   border-radius: 1rem;

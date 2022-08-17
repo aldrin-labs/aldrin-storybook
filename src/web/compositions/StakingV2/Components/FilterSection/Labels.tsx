@@ -26,12 +26,10 @@ export const LabelComponent = ({
   checkbox = false,
   variant,
   tooltipText,
-  NFT,
 }: {
   checkbox?: boolean
   variant: VariantType
-  tooltipText: any
-  NFT?: boolean
+  tooltipText?: any
 }) => {
   const [checked, setChecked] = useState(true)
 
@@ -43,7 +41,6 @@ export const LabelComponent = ({
       hoverColor={variant.hoverStyle.color}
       hoverBackground={variant.hoverStyle.backgroundColor}
       background={variant.labelStyle.backgroundColor}
-      NFT={NFT}
     >
       {checkbox && (
         <CheckboxContainer>
@@ -69,13 +66,15 @@ export const LabelComponent = ({
       >
         {variant.icon || variant.text}
       </Label>
-      <DarkTooltip
-        title={<InlineText color="white1">{tooltipText}</InlineText>}
-      >
-        <span>
-          <TooltipIcon color={variant.labelStyle.color} />
-        </span>
-      </DarkTooltip>
+      {variant.tooltipText && (
+        <DarkTooltip
+          title={<InlineText color="white1">{tooltipText}</InlineText>}
+        >
+          <span>
+            <TooltipIcon color={variant.labelStyle.color} />
+          </span>
+        </DarkTooltip>
+      )}
     </LabelContainer>
   )
 }

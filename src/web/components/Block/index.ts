@@ -13,7 +13,7 @@ export const Block = styled.div<BlockProps>`
   background: ${(props: BlockProps) =>
     props.inner ? props.theme.colors.white4 : props.theme.colors.white5};
   border-radius: 12px;
-  margin: ${(props) => props.margin || '8px'};
+  margin: ${(props) => props.margin || '0'};
   height: 100%;
   position: relative;
   ${({ $backgroundImage: backgroundImage }: BlockProps) =>

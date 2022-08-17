@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { Button, PADDINGS } from '@sb/components/Button'
 import { StretchedBlock, WideContent } from '@sb/components/Layout'
 
+import bg from './Components/Icons/bg.png'
+
 type FilterButtonType = {
   isActive: boolean
 }
@@ -120,35 +122,36 @@ export const TotalStakedRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2em;
-  margin-bottom: 3em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 `
 
 export const TotalStakedCard = styled.div`
   overflow: hidden;
   position: relative;
   width: 24%;
-  height: 6em;
+  height: 7em;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background-image: linear-gradient(25deg, #d64c7f, #ee4758 50%);
+  background-image: url(${bg});
+  background-size: cover;
   border-radius: 18px;
-  padding: 0.8em;
-  box-shadow: 2px 17px 70px 3px rgba(174, 46, 33, 0.4);
-
+  padding: 0.8em 1em;
+  box-shadow: -3px 3px 35px 10px rgba(145, 41, 122, 0.3);
   @media only screen and (max-width: 600px) {
     width: 70%;
   }
 `
 
 export const ThinHeading = styled.div`
-  font-family: 'Prompt';
   font-style: normal;
   font-weight: 300;
   font-size: 14px;
   line-height: 20px;
+  margin-bottom: 0.6em;
+
   /* identical to box height, or 143% */
 
   letter-spacing: -0.0015em;
@@ -164,11 +167,19 @@ export const TotalStaked = styled.div`
   font-weight: 700;
   font-size: 40px;
   line-height: 48px;
-  /* identical to box height, or 120% */
-
   letter-spacing: 0.0037em;
 
   /* Dark Mode/D1 */
 
   color: #fafafa;
+`
+export const ImageContainer = styled.div`
+  width: 150px;
+  height: 150px;
+  position: relative;
+
+  img {
+    position: absolute;
+    left: 20%;
+  }
 `
