@@ -21,22 +21,15 @@ import {
   StyledLink,
 } from './index.styles'
 import { LabelsTooltips } from './Tooltips'
-import { Link } from 'react-router-dom'
 
 export const TableRow = ({
   token,
   setIsRinStakingPopupOpen,
   setIsSolStakingPopupOpen,
-  setPLDPopup,
-  setRPCPopup,
-  setPU238Popup,
 }: {
   token: string
   setIsRinStakingPopupOpen: (a: boolean) => void
   setIsSolStakingPopupOpen: (a: boolean) => void
-  setRPCPopup: (a: boolean) => void
-  setPLDPopup: (a: boolean) => void
-  setPU238Popup: (a: boolean) => void
 }) => {
   let HeaderRowText: string = ''
 
