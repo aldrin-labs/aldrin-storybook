@@ -32,6 +32,7 @@ export const TableRow = ({
             <TokenIconsContainer
               needElement
               mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
+              size={32}
             />
             <InlineText size="md" weight={600} color="gray0">
               RIN/USDC
