@@ -69,7 +69,9 @@ export const LabelComponent = ({
       >
         {variant.icon || variant.text}
       </Label>
-      <DarkTooltip title={<InlineText color="gray0">{tooltipText}</InlineText>}>
+      <DarkTooltip
+        title={<InlineText color="white1">{tooltipText}</InlineText>}
+      >
         <span>
           <TooltipIcon color={variant.labelStyle.color} />
         </span>

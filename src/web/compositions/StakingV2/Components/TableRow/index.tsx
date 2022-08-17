@@ -1,15 +1,13 @@
 import React from 'react'
 
 import { Button } from '@sb/components/Button'
-import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { POOL_CARD_LABELS } from '../../config'
-import { RootRow, RootColumn, SpacedColumn } from '../../Index.styles'
+import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { LabelComponent } from '../FilterSection/Labels'
-import { TooltipIcon, PlusIcon, ArrowsIcon } from '../Icons'
+import { TooltipIcon } from '../Icons'
 import { Row } from '../Popups/index.styles'
 import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
@@ -21,7 +19,6 @@ import {
   StyledLink,
 } from './index.styles'
 import { LabelsTooltips } from './Tooltips'
-import { Link } from 'react-router-dom'
 
 export const TableRow = ({
   token,
@@ -76,7 +73,7 @@ export const TableRow = ({
       routes = ''
   }
 
-  let stakingRoute = `staking/plutonians/${routes}`
+  const stakingRoute = `staking/plutonians/${routes}`
 
   return (
     <RootRow margin="10px 0">
@@ -123,7 +120,7 @@ export const TableRow = ({
                   />
                   <LabelComponent
                     tooltipText={<LabelsTooltips type="New" period="5 days" />}
-                    NFT={true}
+                    NFT
                     variant={
                       POOL_CARD_LABELS.find(
                         (el) => el.text === 'NFT Rewards'

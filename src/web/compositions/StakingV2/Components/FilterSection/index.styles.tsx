@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { PADDINGS } from '@sb/components/Button'
 
-import { RootRow } from '../../Index.styles'
+import { RootRow } from '../../index.styles'
 
 type LabelContainerProps = {
   background: string
@@ -84,7 +84,8 @@ export const StretchedRow = styled(RootRow)`
 `
 
 export const LabelContainer = styled.div<LabelContainerProps>`
-  background: ${(props) => props.theme.colors[props.background || 'gray16']};
+  background: ${(props) =>
+    rgba(props.theme.colors[props.hoverBackground || props.background], 0.25)};
   display: flex;
   justify-content: center;
   align-items: center;

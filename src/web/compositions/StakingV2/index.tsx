@@ -2,18 +2,17 @@ import React, { useState } from 'react'
 
 import { Page } from '@sb/components/Layout'
 
+import TestSvg from './Components/Icons/test.svg'
+import { RinStaking } from './Components/Popups/RinStaking/index'
+import { SolStaking } from './Components/Popups/SolStaking/index'
+import { TableRow } from './Components/TableRow'
 import {
-  RootRow,
   StyledWideContent,
   ThinHeading,
   TotalStakedCard,
   TotalStakedRow,
   TotalStaked,
 } from './index.styles'
-import { TableRow } from './Components/TableRow'
-import TestSvg from './Components/Icons/test.svg'
-import { SolStaking } from './Components/Popups/SolStaking/index'
-import { RinStaking } from './Components/Popups/RinStaking/index'
 
 export const StakingPage: React.FC = () => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
