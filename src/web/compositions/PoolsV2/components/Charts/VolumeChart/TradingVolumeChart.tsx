@@ -136,11 +136,11 @@ export const VolumeChart = () => {
   return (
     <ChartContainer>
       <TooltipContainer padding="8px">
-        <InlineText color="gray0" size="xs">
+        <InlineText color="white1" size="xs">
           Volume {isMouseOverTheChart ? `${date}` : `All Time`}
         </InlineText>
-        <ValueTitle color="gray0" size="xl" weight={600}>
-          <InlineText color="gray1">$</InlineText>{' '}
+        <ValueTitle color="white1" size="xl" weight={600}>
+          <InlineText color="white3">$</InlineText>{' '}
           {isMouseOverTheChart ? `${balanceData.balance}` : `${firstBalance}`}
         </ValueTitle>
       </TooltipContainer>

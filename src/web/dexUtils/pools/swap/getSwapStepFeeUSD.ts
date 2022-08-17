@@ -1,51 +1,39 @@
+import { SwapStep } from '@aldrin_exchange/swap_hook'
+import { TokenInfoMap } from '@solana/spl-token-registry'
+
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
-import { getFeesAmount } from '@core/solana'
-
-import { SwapStep, SwapRoute } from './getSwapRoute'
+import { removeDecimalsFromBN } from '@core/utils/helpers'
 
 export const getSwapStepFeesAmount = ({
   swapStep,
   pricesMap,
+  tokenInfosMap,
 }: {
   swapStep: SwapStep
   pricesMap: Map<string, number>
+  tokenInfosMap: TokenInfoMap
 }) => {
-  switch (swapStep.ammLabel) {
-    case 'Aldrin': {
-      const amountInFee = getFeesAmount({
-        pool: swapStep.pool,
-        amount: swapStep.swapAmountIn,
-      })
+  const { feeAmount, feeMint } = swapStep
+  const { decimals } = tokenInfosMap.get(feeMint.toString()) || { decimals: 0 }
+  const symbol = getTokenNameByMintAddress(feeMint.toString())
+  const inputTokenPrice = pricesMap.get(symbol) || 0
 
-      const mint = swapStep.isSwapBaseToQuote
-        ? swapStep.pool.tokenA
-        : swapStep.pool.tokenB
-
-      const symbol = getTokenNameByMintAddress(mint)
-
-      const inputTokenPrice = pricesMap.get(symbol) || 0
-
-      return amountInFee * inputTokenPrice
-    }
-    case 'Serum': {
-      return 0
-    }
-    default: {
-      return 0
-    }
-  }
+  return removeDecimalsFromBN(feeAmount, decimals) * inputTokenPrice
 }
 
 export const getSwapRouteFeesAmount = ({
-  swapRoute,
+  swapSteps,
+  tokenInfosMap,
   pricesMap,
 }: {
-  swapRoute: SwapRoute
+  swapSteps: SwapStep[]
+  tokenInfosMap: TokenInfoMap
   pricesMap: Map<string, number>
 }) => {
-  return swapRoute.reduce(
-    (acc, swapStep) => acc + getSwapStepFeesAmount({ swapStep, pricesMap }),
+  return swapSteps.reduce(
+    (acc, swapStep) =>
+      acc + getSwapStepFeesAmount({ swapStep, pricesMap, tokenInfosMap }),
     0
   )
 }

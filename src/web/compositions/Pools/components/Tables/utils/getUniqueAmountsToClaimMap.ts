@@ -1,10 +1,6 @@
 import { BN } from 'bn.js'
 
-import {
-  FarmingCalc,
-  FarmingState,
-  FarmingTicket,
-} from '@sb/dexUtils/common/types'
+import { FarmingCalc, FarmingState } from '@sb/dexUtils/common/types'
 
 interface FamingStateClaimable {
   farmingTokenMint: string
@@ -12,11 +8,9 @@ interface FamingStateClaimable {
 }
 
 export const getUniqueAmountsToClaimMap = ({
-  farmingTickets,
   farmingStates = [],
   calcAccounts = new Map<string, FarmingCalc[]>(),
 }: {
-  farmingTickets: FarmingTicket[]
   farmingStates?: FarmingState[]
   calcAccounts?: Map<string, FarmingCalc[]>
 }) => {

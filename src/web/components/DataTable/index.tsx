@@ -68,6 +68,7 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
     <AutoSizer disableHeight>
       {({ width }) => (
         <Table
+          className={name}
           width={Math.max(MOBILE_WIDTH, width)}
           height={
             sortedData.length

@@ -29,10 +29,10 @@ export const ExtendedFiltersSection = () => {
       <RootRow margin="15px auto" width="90%">
         <Container>
           <StretchedRow>
-            <InlineText weight={700} size="sm" color="gray13">
+            <InlineText weight={700} size="sm" color="white2">
               TVL
             </InlineText>
-            <InlineText size="sm" color="gray13">
+            <InlineText size="sm" color="white2">
               from <InlineText color="gray0">${value[0]}</InlineText> to{' '}
               <InlineText color="gray0">${value[1]}</InlineText>
             </InlineText>
@@ -49,7 +49,7 @@ export const ExtendedFiltersSection = () => {
         </Container>
         <Container width="40%">
           <StretchedRow>
-            <InlineText weight={700} size="sm" color="gray13">
+            <InlineText weight={700} size="sm" color="white2">
               Sort by
             </InlineText>
           </StretchedRow>

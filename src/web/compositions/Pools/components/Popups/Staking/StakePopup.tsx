@@ -27,7 +27,6 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import {
   formatNumbersForState,
@@ -36,7 +35,7 @@ import {
 import { useWallet } from '@sb/dexUtils/wallet'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
-import { filterOpenFarmingStates } from '@core/solana'
+import { filterOpenFarmingStates, getPoolsProgramAddress } from '@core/solana'
 import { estimatedTime } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
@@ -227,7 +226,7 @@ const Popup = (props: StakePopupProps) => {
             <Row align="flex-start">
               <span
                 style={{
-                  color: theme.colors.green7,
+                  color: theme.colors.green3,
                   fontFamily: 'Avenir Next Demi',
                 }}
               >
@@ -241,7 +240,7 @@ const Popup = (props: StakePopupProps) => {
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.colors.green7,
+            color: theme.colors.green3,
           }}
         >
           {CREATE_FARMING_TICKET_SOL_FEE} SOL
@@ -254,7 +253,7 @@ const Popup = (props: StakePopupProps) => {
               theme={theme}
               margin="0 0 0 2rem"
               fontSize="5rem"
-              color={theme.colors.gray0}
+              color={theme.colors.white1}
             />
           </Row>
           <Row width="80%" align="flex-start" direction="column">

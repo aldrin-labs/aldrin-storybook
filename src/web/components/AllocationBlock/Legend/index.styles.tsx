@@ -7,7 +7,7 @@ import { Row, WhiteTitle } from '@sb/compositions/AnalyticsRoute/index.styles'
 const TokenAllocationProgressBarContainer = styled(({ ...props }) => (
   <Row {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white3};
   border-radius: 35px;
 `
 

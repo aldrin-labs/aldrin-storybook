@@ -1,8 +1,6 @@
 import { FONT_SIZES, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
-import { THEME_DARK } from '@sb/compositions/App/themes'
-
 import { Button } from '../Button'
 import { Row } from '../Layout'
 
@@ -11,29 +9,32 @@ export const FooterContainer = styled.div`
   border-top-style: solid;
   border-top-color: ${(props) => props.theme.colors.border1};
   display: flex;
+  flex-shrink: 0;
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  min-height: 9em;
+  height: 9em;
   padding: 0 3em;
-  background: ${(props) => props.theme.colors.gray9};
+  background: ${(props) => props.theme.colors.header};
 
   @media (max-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
   }
 `
+
 export const MediaContainer = styled(Row)`
   width: 25%;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
+
   @media (max-width: 1000px) {
     width: 100%;
   }
 `
 
 export const FooterButton = styled(Button)`
-  color: ${(props) => props.theme.colors.gray3};
+  color: ${(props) => props.theme.colors.white2};
   background: transparent;
   border: none;
   padding: 0.5em;
@@ -41,10 +42,7 @@ export const FooterButton = styled(Button)`
   transition: 0.3s;
 
   &:hover {
-    color: ${(props) =>
-      props.theme.name === THEME_DARK
-        ? props.theme.colors.white
-        : props.theme.colors.gray8};
+    color: ${(props) => props.theme.colors.white4};
   }
 
   &:last-child {
@@ -57,12 +55,13 @@ export const FooterButton = styled(Button)`
 `
 
 export const Copyright = styled.div`
-  color: ${(props) => props.theme.colors.gray3};
-  margin-top: 0.25em;
+  color: ${(props) => props.theme.colors.white2};
+  margin-top: 0.5em;
   font-size: 12px;
 `
 
 export const FooterLeft = styled.div`
   display: flex;
   flex-direction: column;
+  font-family: Avenir Next, sans-serif;
 `

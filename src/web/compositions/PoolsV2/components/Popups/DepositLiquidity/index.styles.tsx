@@ -14,7 +14,7 @@ export const CircleIconContainer = styled.div<CircleIconContainerType>`
   align-items: center;
   width: ${(props) => props.size || '2em'};
   height: ${(props) => props.size || '2em'};
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: 50%;
   font-family: Avenir Next Bold;
   color: ${(props) => props.theme.colors.gray0};
@@ -48,7 +48,7 @@ export const InputsContainer = styled.div`
   border-radius: 0.8em;
   padding: 0.8em 0;
   margin: 0.5em 0 0 0;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
 `
 
 export const FirstInputContainer = styled.div`
@@ -78,14 +78,14 @@ export const PeriodSwitcher = styled.div`
   display: flex;
   flex-direction: row;
   width: auto;
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 0.5em;
   height: auto;
 `
 export const PeriodButton = styled.div<PeriodButtonType>`
   width: 1.5em;
   background: ${(props) =>
-    props.isActive ? props.theme.colors.border2 : props.theme.colors.gray8};
+    props.isActive ? props.theme.colors.border2 : props.theme.colors.white5};
   border-radius: 0.5em;
   height: 1.5em;
   padding: 0.3em;

@@ -20,7 +20,7 @@ type TooltipContainerProps = {
 export const ChartContainer = styled.div`
   width: 90%;
   position: relative;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: row;
@@ -61,7 +61,7 @@ export const Canvas = styled.canvas<CanvasProps>`
   margin: auto;
   margin-bottom: ${(props) => props.bottom || '-7px'};
   margin-left: ${(props) => props.left || '0px'};
-  border-left: 1px solid ${(props) => props.theme.colors.gray8};
+  border-left: 1px solid ${(props) => props.theme.colors.white5};
   padding: ${(props) => (props.needPadding ? '0 0 0 8px' : '0')};
 `
 

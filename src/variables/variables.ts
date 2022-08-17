@@ -150,6 +150,7 @@ export const BREAKPOINTS = {
   lg: '1024px',
   xl: '1200px',
   xxl: '1400px',
+  xxxl: '1560px',
 }
 
 export const SIZE = {
@@ -161,6 +162,7 @@ export const WIDTH = {
   sm: '10%',
   qu: '20%',
   md: '30%',
+  xmd: '40%',
   hf: '50%',
   rg: '49%',
   lg: '60%',

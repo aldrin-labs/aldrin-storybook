@@ -7,7 +7,6 @@ import {
 } from '@project-serum/serum'
 import { TokenInfo } from '@solana/spl-token-registry'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
-import marketsList from 'aldrin-registry/src/markets.json'
 import tokensList from 'aldrin-registry/src/tokens.json'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
@@ -17,6 +16,7 @@ import { OrderWithMarket } from '@sb/dexUtils/send'
 
 import { toMap } from '@core/collection'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { AWESOME_MARKETS } from '@core/utils/awesomeMarkets/dictionaries'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
 
@@ -39,8 +39,9 @@ import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
 
 export const tokensMap = toMap(tokensList, (token) => token.address)
-export const marketsMap = toMap(marketsList, (market) =>
-  market.name.replace('/', '_')
+export const aldrinTokensMapBySymbol = toMap(
+  tokensList,
+  (token) => token.symbol
 )
 
 export const ALL_TOKENS_MINTS = tokensList.map((el) => {
@@ -84,7 +85,7 @@ export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
 
 const _IGNORE_DEPRECATED = false
 
-const USE_MARKETS = _IGNORE_DEPRECATED
+export const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
       {
@@ -97,6 +98,32 @@ const USE_MARKETS = _IGNORE_DEPRECATED
       },
     ].concat(MARKETS)
 // : MARKETS
+
+export const marketsMap = toMap(AWESOME_MARKETS.concat(USE_MARKETS), (market) =>
+  market.name.replace('/', '_')
+)
+
+export const marketsWithMints = USE_MARKETS.concat(AWESOME_MARKETS)
+  .filter((market) => !market.deprecated && !market.delisted)
+  .map((market) => {
+    const marketName = market.name
+    const [base, quote] = marketName.split('/')
+
+    const { address: baseMintAddress } = aldrinTokensMapBySymbol.get(base) || {
+      address: '',
+    }
+    const { address: quoteMintAddress } = aldrinTokensMapBySymbol.get(
+      quote
+    ) || {
+      address: '',
+    }
+
+    return {
+      ...market,
+      baseMintAddress,
+      quoteMintAddress,
+    }
+  })
 
 export interface RawMarketData {
   name: string
@@ -562,7 +589,7 @@ export const useOpenOrdersPubkeys = (): string[] => {
 
 // Want the balances table to be fast-updating, dont want open orders to flicker
 // TODO: Update to use websocket
-export function useOpenOrdersAccounts(fast = false) {
+export function useOpenOrdersAccounts() {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
@@ -660,8 +687,8 @@ export function useAllOpenOrdersAccounts() {
   )
 }
 
-export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts] = useOpenOrdersAccounts(fast)
+export function useSelectedOpenOrdersAccount() {
+  const [accounts] = useOpenOrdersAccounts()
 
   if (!accounts) {
     return null
@@ -918,7 +945,7 @@ export function useSelectedBaseCurrencyBalances() {
 
 export function useOpenOrders(): OrderWithMarket[] | null {
   const { market, marketName } = useMarket()
-  const [openOrdersAccounts] = useOpenOrdersAccounts(false)
+  const [openOrdersAccounts] = useOpenOrdersAccounts()
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   if (!market || !openOrdersAccounts || !bidOrderbook || !askOrderbook) {
     return null
@@ -1086,8 +1113,7 @@ export const getTokenName = ({
     return '--'
   }
 
-  const tokenName =
+  return (
     tokensInfoMap.get(address)?.symbol || getTokenNameByMintAddress(address)
-
-  return tokenName
+  )
 }

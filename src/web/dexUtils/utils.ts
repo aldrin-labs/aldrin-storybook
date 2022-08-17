@@ -27,7 +27,7 @@ export const CCAIListingTime = 1623333600
 
 export const isCCAITradingEnabled = () => Date.now() / 1000 > CCAIListingTime
 
-export async function sleep(ms) {
+export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
@@ -59,7 +59,7 @@ export function getDecimalCount(value) {
   // includes e-7
   if (value <= 0.00000001) return 8
   if (value <= 0.0000001) return 7
-  if (!isNaN(value) && Math.floor(value) !== value && !!value)
+  if (!Number.isNaN(value) && Math.floor(value) !== value && !!value)
     return value.toString().split('.')[1].length || 0
   return 0
 }
@@ -75,6 +75,7 @@ export function useLocalStorageState<T>(
     if (storedState) {
       return JSON.parse(storedState)
     }
+
     return defaultState
   })
 
@@ -158,15 +159,9 @@ export function convertDataURIToBinary(base64: string) {
 }
 
 export const stripInputNumber = (
-  e: React.ChangeEvent<HTMLInputElement>,
-  prevValue: number | string
+  e: React.ChangeEvent<HTMLInputElement>
 ) => {
   let value = `${e.target.value}`
-
-  // check numbers only and 1 dot
-  // if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
-  //   return prevValue
-  // }
 
   // add 0 if first symbol is dot
   if (value[0] === '.') {
@@ -188,8 +183,7 @@ export const formatNumberWithSpaces = (n: number | string) => {
     stringValue = `${stringValue.slice(0, stringValue.length - 1)}.`
   }
 
-  const res = formatNumberToUSFormat(stringValue).replaceAll(',', ' ')
-  return res
+  return formatNumberToUSFormat(stringValue).replaceAll(',', ' ')
 }
 
 export const formatNumbersForState = (n: number | string) => {
@@ -197,7 +191,5 @@ export const formatNumbersForState = (n: number | string) => {
     return ''
   }
 
-  const num = n.toString()
-  const res = num.replaceAll(' ', '')
-  return res
+  return n.toString().replaceAll(' ', '')
 }

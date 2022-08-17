@@ -13,11 +13,13 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { getMinimumReceivedAmountFromSwap } from '@core/solana'
+import {
+  getMinimumReceivedAmountFromSwap,
+  getPoolsProgramAddress,
+} from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,

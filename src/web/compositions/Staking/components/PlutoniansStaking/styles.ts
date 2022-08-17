@@ -57,8 +57,8 @@ export const StakePoolButtonContainer = styled.div`
 `
 
 export const StakePoolLink = styled(Link)`
-  background: ${(props) => props.theme.colors.gray4};
-  color: ${(props) => props.theme.colors.gray0};
+  background: ${(props) => props.theme.colors.white3};
+  color: ${(props) => props.theme.colors.white1};
   border-radius: ${BORDER_RADIUS.md};
   text-decoration: none;
   padding: 10px;
@@ -67,8 +67,8 @@ export const StakePoolLink = styled(Link)`
   font-size: 0.9em;
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
-    color: ${(props) => props.theme.colors.primaryWhite};
+    background: ${(props) => props.theme.colors.persistent.blue1};
+    color: ${(props) => props.theme.colors.persistent.white1};
   }
 `
 

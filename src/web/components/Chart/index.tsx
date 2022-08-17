@@ -152,7 +152,7 @@ export const SingleChart = (props: SingleChartProps) => {
       <iframe
         allowFullScreen
         style={{ borderWidth: 0 }}
-        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}&isMobile=${isMobile}${
+        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=serum-${themeMode}&isMobile=${isMobile}${
           wallet.connected ? `&user_id=${wallet.publicKey}` : ''
         }`}
         height="100%"
@@ -176,7 +176,7 @@ const ChartTitle = styled.span`
   width: calc(100% - 20rem);
   white-space: pre-line;
   text-align: left;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   text-transform: capitalize;
   font-size: 1.3rem;
   line-height: 1rem;

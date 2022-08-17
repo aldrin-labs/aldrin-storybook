@@ -16,6 +16,7 @@ import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTota
 import { msToNextHour } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 
+import { useThemeName } from '../../../App/themes'
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
 import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
@@ -31,23 +32,26 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
   const theme = useTheme()
+  const themeName = useThemeName()
+
+  const reDraw = () => {
+    try {
+      chartRef.current = createTotalVolumeLockedChart({
+        container: canvasRef.current,
+        data,
+        chart: chartRef.current,
+        theme,
+      })
+    } catch (e) {
+      console.warn('Erorr on chart update:', e)
+      chartRef.current = null
+      setTimeout(reDraw, 1_000)
+    }
+  }
+
   useEffect(() => {
     if (!canvasRef.current) {
       return () => {}
-    }
-    const reDraw = () => {
-      try {
-        chartRef.current = createTotalVolumeLockedChart({
-          container: canvasRef.current,
-          data,
-          chart: chartRef.current,
-          theme,
-        })
-      } catch (e) {
-        console.warn('Erorr on chart update:', e)
-        chartRef.current = null
-        setTimeout(reDraw, 1_000)
-      }
     }
 
     if (data.length > 0) {
@@ -59,6 +63,11 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
     }
   }, [JSON.stringify(data)])
 
+  useEffect(() => {
+    if (chartRef.current) {
+      reDraw()
+    }
+  }, [theme, themeName])
   return (
     <div>
       <Canvas height="250" ref={canvasRef} />
@@ -78,7 +87,7 @@ const TotalVolumeLockedChartInner = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
   })
 )(ChartInner)
 

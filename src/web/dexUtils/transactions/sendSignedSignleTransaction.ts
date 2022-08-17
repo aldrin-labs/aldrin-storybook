@@ -9,14 +9,15 @@ export const sendSignedSignleTransaction = async (
   const { successMessage = 'Transaction confirmed' } = params
 
   const messages = {
-    initializingTx: ['Doin tx', 'Initializing a transaction...'],
     confirming: 'Confirming transaction...',
     confirmed: successMessage,
     failed: 'Operation failed',
   }
 
+  const onStatusChange = params.onStatusChange || getNotifier(messages)
+
   return sendSingle({
     ...params,
-    onStatusChange: getNotifier(messages),
+    onStatusChange,
   })
 }

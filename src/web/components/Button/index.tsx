@@ -6,18 +6,19 @@ import {
   WIDTH,
   UCOLORS,
 } from '@variables/variables'
+import { rgba } from 'polished'
 import styled, { css } from 'styled-components'
 
 import RinLogo from '@icons/blueRINLogo.svg'
 
 const VARIANTS = {
   primary: css`
-    background: ${(props) => props.theme.colors.blue3};
-    border-color: ${(props) => props.theme.colors.blue3};
+    background: ${(props) => props.theme.colors.persistent.blue1};
+    border-color: ${(props) => props.theme.colors.persistent.blue1};
 
     &:disabled {
-      background: ${(props) => props.theme.colors.gray2};
-      border-color: ${(props) => props.theme.colors.gray2};
+      background: ${(props) => props.theme.colors.white2};
+      border-color: ${(props) => props.theme.colors.white2};
     }
   `,
   secondary: css`
@@ -69,8 +70,8 @@ const VARIANTS = {
 
   'outline-white': css`
     background: transparent;
-    border-color: ${(props) => props.theme.colors.white};
-    color: ${(props) => props.theme.colors.white};
+    border-color: ${(props) => props.theme.colors.white1};
+    color: ${(props) => props.theme.colors.white1};
 
     &:disabled {
       color: ${COLORS.hint};
@@ -107,6 +108,17 @@ const VARIANTS = {
     font-size: ${FONT_SIZES.xs};
   `,
 
+  blue: css`
+    color: ${({ theme }) => theme.colors.blue1};
+    font-weight: 600;
+    background: rgba(94, 85, 242, 0.15);
+  `,
+
+  red: css`
+    color: ${({ theme }) => theme.colors.red1};
+    background: ${({ theme }) => rgba(theme.colors.red1, 0.15)};
+  `,
+
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
     background: ${COLORS.cardsBack};
@@ -120,9 +132,9 @@ const VARIANTS = {
   `,
 
   violet: css`
-    background: ${(props) => props.theme.colors.blue6};
+    background: ${(props) => rgba(props.theme.colors.blue1, 0.15)};
     border: none;
-    color: ${(props) => props.theme.colors.blue2};
+    color: ${(props) => props.theme.colors.blue1};
     white-space: nowrap;
     font-weight: 600;
     line-height: 100%;
@@ -141,7 +153,7 @@ const VARIANTS = {
   `,
 
   green: css`
-    background: ${(props) => props.theme.colors.green0};
+    background: ${(props) => rgba(props.theme.colors.green0, 0.15)};
     border: none;
     color: ${(props) => props.theme.colors.green1};
     white-space: nowrap;

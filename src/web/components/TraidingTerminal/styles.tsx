@@ -31,7 +31,7 @@ export const TitleForInput = styled.div`
   border-bottom-left-radius: 0.3rem;
   border-right: none;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   background-color: none;
   font-size: 1.1rem;
   font-family: Avenir Next Demi;
@@ -215,8 +215,8 @@ export const TradeInput = styled.input`
   border-radius: 0.7rem;
   border-top-right-radius: ${(props) => props.haveSelector && '0'};
   border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
-  color: ${(props) => props.theme.colors.gray0};
-  background-color: ${(props) => props.theme.colors.gray5};
+  color: ${(props) => props.theme.colors.white1};
+  background-color: ${(props) => props.theme.colors.white4};
   font-size: 1.3rem;
 
   font-weight: bold;
@@ -234,7 +234,7 @@ export const TradeInput = styled.input`
   }
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.gray1};
+    color: ${(props) => props.theme.colors.white1};
     font-family: Avenir Next Medium;
   }
 
@@ -308,7 +308,7 @@ export const Coin = styled(TradingItemTitle)`
 `
 
 export const UpdatedCoin = styled(Coin)`
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 
   font-size: 1.2rem;
 
@@ -340,7 +340,7 @@ export const SendButton = styled(StyledTab)`
   color: #fff;
   background: ${(props) =>
     props.type === 'buy'
-      ? props.theme.colors.green7 || '#29AC80'
+      ? props.theme.colors.green3 || '#29AC80'
       : props.theme.colors.red3 || '#DD6956'};
   box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: 1rem;
@@ -357,7 +357,7 @@ export const SendButton = styled(StyledTab)`
   &:hover {
     background-color: ${(props) =>
       props.type === 'buy'
-        ? props.theme.colors.green7 || '#29AC80'
+        ? props.theme.colors.green3 || '#29AC80'
         : props.theme.colors.red3 || '#DD6956'};
   }
 `
@@ -431,7 +431,7 @@ export const BlueInputTitle = styled(SeparateInputTitle)`
 
 export const AbsoluteInputTitle = styled(Coin)`
   left: 1rem;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   font-size: 1.2rem;
   width: 0;
   white-space: nowrap;
@@ -447,8 +447,8 @@ export const PercentageTab = styled.button`
   height: 3rem;
   width: 15%;
   border-radius: 1.2rem;
-  background: ${(props) => props.theme.colors.gray5};
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
+  border: 0.1rem solid ${(props) => props.theme.colors.white4};
   font-family: Avenir Next Medium;
   font-size: 1.3rem;
   letter-spacing: 0.01rem;
@@ -456,8 +456,8 @@ export const PercentageTab = styled.button`
   outline: none;
   cursor: pointer;
   &:focus {
-    background: ${(props) => props.theme.colors.gray3};
-    border: ${(props) => `0.1rem solid ${props.theme.colors.gray3}`};
+    background: ${(props) => props.theme.colors.white2};
+    border: ${(props) => `0.1rem solid ${props.theme.colors.white2}`};
     font-family: Avenir Next Demi;
     color: #f8faff;
   }
@@ -517,7 +517,7 @@ export const Placeholder = styled.div`
   font-size: 1.2rem;
   width: 100%;
   height: ${(props) => props.height || '4rem'};
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 1rem;
   padding: 0 2rem;
   font-family: Avenir Next Medium;

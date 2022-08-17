@@ -46,7 +46,7 @@ export const StyledTextDiv = styled.div`
 
 export const RootRow = styled(Row)`
   margin: 40px 0;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 2rem;
   padding: 2rem;
 `
@@ -282,7 +282,7 @@ export const StakingInput = styled(Input)`
   width: 100%;
 
   &:focus {
-    border: 0.1rem solid ${COLORS.gray2};
+    border: 0.1rem solid ${COLORS.white2};
   }
 
   ${InputEl} {

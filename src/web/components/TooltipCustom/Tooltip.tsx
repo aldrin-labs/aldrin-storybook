@@ -26,11 +26,11 @@ export const Tooltip = styled(({ ...props }) => (
   top: 150%;
   padding: 0.4rem 2rem;
   background: ${(props) => props.theme.colors.tooltip};
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
   border-radius: 1.6rem;
   box-shadow: 0px 0px 1.6rem rgba(8, 22, 58, 0.1);
   z-index: 10;
-  font-size: 1.2rem;
+  font-size: 12px;
 `
 
 export const DarkTooltip = styled((props) => {
@@ -52,16 +52,15 @@ export const DarkTooltip = styled((props) => {
 })`
   & .tooltip {
     background: ${(props) => props.theme.colors.tooltip};
-    color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white1};
     font-family: Avenir Next Medium;
-    font-size: 13px;
+    font-size: 12px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: right;
     letter-spacing: -0.523077px;
     border-radius: 1.2rem;
-    font-size: 1.3rem;
     opacity: 1;
     max-width: ${(props) => props.maxWidth || 'auto'};
   }

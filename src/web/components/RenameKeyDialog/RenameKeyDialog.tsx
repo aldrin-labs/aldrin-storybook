@@ -116,9 +116,9 @@ const RenameKeyDialogComponent = ({
                   style={{ marginLeft: '0rem' }}
                 />
               </Grid>
-              {error ? (
+              {error && (
                 <ErrorText style={{ paddingTop: '.5rem' }}>{error}</ErrorText>
-              ) : null}
+              )}
             </FormControl>
             <Grid
               container

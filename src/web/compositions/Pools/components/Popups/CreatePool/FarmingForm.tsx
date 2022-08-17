@@ -136,7 +136,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             placeholder="from 7 to 60"
             append={
               <InputAppendContainer>
-                <InlineText color="gray1" weight={600}>
+                <InlineText color="white1" weight={600}>
                   Days
                 </InlineText>
               </InputAppendContainer>
@@ -163,7 +163,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         )}
       {farming.farmingPeriod && !form.errors.farming?.farmingPeriod && (
         <>
-          <InlineText color="gray1" size="sm" weight={600}>
+          <InlineText color="white1" size="sm" weight={600}>
             Farming will end at{' '}
             {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
           </InlineText>
@@ -192,7 +192,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             data-testid="farming-initial-liquidity-lock-period-field"
             append={
               <InputAppendContainer>
-                <InlineText color="gray1" weight={600}>
+                <InlineText color="white1" weight={600}>
                   % per Day
                 </InlineText>
               </InputAppendContainer>
@@ -210,7 +210,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             disabled={!farming.vestingEnabled}
             append={
               <InputAppendContainer>
-                <InlineText color="gray1" weight={600}>
+                <InlineText color="white1" weight={600}>
                   Days
                 </InlineText>
               </InputAppendContainer>

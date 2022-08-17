@@ -1,3 +1,4 @@
+import { rgba } from 'polished'
 import ReactSlider from 'react-slider'
 import styled from 'styled-components'
 
@@ -15,9 +16,9 @@ export const StyledThumb = styled.div`
   line-height: 40px;
   width: 16px;
   text-align: center;
-  background-color: ${(props) => props.theme.colors.gray0};
+  background-color: ${(props) => props.theme.colors.white1};
   color: #fff;
-  border: 0.3em solid ${(props) => props.theme.colors.blue3};
+  border: 0.3em solid ${(props) => props.theme.colors.blue2};
   border-radius: 50%;
   cursor: grab;
   transform: translateY(-7px);
@@ -28,9 +29,9 @@ export const StyledTrack = styled.div<StyledTrackProps>`
   bottom: 0;
   background: ${(props) =>
     props.index === 2
-      ? props.theme.colors.gray5
+      ? props.theme.colors.white4
       : props.index === 1
-      ? props.theme.colors.blue4
-      : props.theme.colors.gray5};
+      ? rgba(props.theme.colors.blue2, 0.8)
+      : props.theme.colors.white4};
   border-radius: 999px;
 `

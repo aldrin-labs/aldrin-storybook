@@ -15,13 +15,13 @@ import {
 const MainTitle = styled.h2`
   font-size: 2.4rem;
   font-family: Avenir Next Demi;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 const Text = styled.span`
   font-size: 1.4rem;
   font-family: Avenir Next;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 const Link = styled.a`

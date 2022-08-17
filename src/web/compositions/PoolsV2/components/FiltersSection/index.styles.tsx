@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
+import { rgba } from 'polished'
 import styled from 'styled-components'
 
 import { PADDINGS } from '@sb/components/Button'
@@ -54,7 +55,7 @@ export const SRootRow = styled(RootRow)`
 `
 export const Container = styled.div<ContainerProps>`
   width: 100%;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: column;
@@ -83,7 +84,7 @@ export const StretchedRow = styled(RootRow)`
 `
 
 export const LabelContainer = styled.div<LabelContainerProps>`
-  background: ${(props) => props.theme.colors[props.background || 'gray16']};
+  background: ${(props) => rgba(props.theme.colors[props.background], 0.15)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,7 +105,10 @@ export const LabelContainer = styled.div<LabelContainerProps>`
       }
     }
     background: ${(props) =>
-      props.theme.colors[props.hoverBackground || props.background]};
+      rgba(
+        props.theme.colors[props.hoverBackground || props.background],
+        0.25
+      )};
   }
 `
 export const HiddenCheckbox = styled.input`
@@ -169,7 +173,9 @@ export const Label = styled.label<LabelProps>`
 `
 export const SortByLabel = styled.div<SortByLabelProps>`
   background: ${(props) =>
-    props.isActive ? props.theme.colors.gray14 : props.theme.colors.gray15};
+    props.isActive
+      ? rgba(props.theme.colors.white1, 0.15)
+      : rgba(props.theme.colors.white1, 0.05)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -180,5 +186,7 @@ export const SortByLabel = styled.div<SortByLabelProps>`
   margin-right: 1em;
   font-size: ${FONT_SIZES.sm};
   color: ${(props) =>
-    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray13};
+    props.isActive
+      ? props.theme.colors.white1
+      : rgba(props.theme.colors.white1, 0.7)};
 `

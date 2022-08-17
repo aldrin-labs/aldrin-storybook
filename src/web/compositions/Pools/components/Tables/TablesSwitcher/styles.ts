@@ -20,12 +20,12 @@ export const TableModeButton = styled.button`
   border: none;
   border-bottom: ${(props: TableModeButtonProps) =>
     props.isActive
-      ? `.2rem solid ${props.theme.colors.gray0}`
+      ? `.2rem solid ${props.theme.colors.white1}`
       : `.3rem solid transparent`};
 
   background: inherit;
   color: ${(props: TableModeButtonProps) =>
-    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
+    props.isActive ? props.theme.colors.white1 : props.theme.colors.white1};
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
   outline: none;
@@ -70,7 +70,7 @@ export const InputWrap = styled.div`
 export const SearchInput = styled(Input)`
   margin-right: 10px;
   flex: 1;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.white4};
   border-radius: ${BORDER_RADIUS.lg};
 
   @media (min-width: ${BREAKPOINTS.md}) {
@@ -92,7 +92,7 @@ export const AddPoolButton = styled(Button)`
   justify-content: center;
   font-weight: bold;
   font-size: ${FONT_SIZES.md};
-  background-color: ${(props) => props.theme.colors.blue3};
+  background-color: ${(props) => props.theme.colors.persistent.blue1};
   border: none;
   color: white;
   transition: 0.3s;
@@ -112,7 +112,7 @@ export const IconWrap = styled.div`
   height: 1.8rem;
   svg {
     path {
-      fill: ${(props) => props.theme.colors.gray1};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 `

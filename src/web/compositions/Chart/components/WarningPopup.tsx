@@ -21,7 +21,7 @@ export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 60rem;
   height: auto;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -66,7 +66,7 @@ export const BlueButton = styled(
   border: none;
 
   background-color: ${(props) =>
-    !props.disabled ? props.theme.colors.blue5 : props.theme.colors.disabled};
+    !props.disabled ? props.theme.colors.blue3 : props.theme.colors.disabled};
   color: #fff;
 `
 

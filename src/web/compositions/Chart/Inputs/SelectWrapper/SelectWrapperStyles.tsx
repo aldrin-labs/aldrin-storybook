@@ -15,13 +15,17 @@ export const StyledGrid = styled(Grid)`
   font-family: Avenir Next Medium;
   position: absolute;
   z-index: 900;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   min-width: ${(props) => (props.isAdvancedSelectorMode ? '160rem' : '90rem')};
   height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '61rem')};
   border-radius: 2rem;
   overflow: hidden;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.white4};
   filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
+
+  .ReactVirtualized__Table__rowColumn {
+    overflow: visible !important;
+  }
 
   @media (max-width: 600px) {
     top: 19rem;
@@ -68,8 +72,8 @@ export const StyledHeader = styled(RowContainer)`
   flex-direction: row;
   flex-wrap: normal;
   align-items: center;
-  border-bottom: ${(props) => props.theme.colors.gray5};
-  background: ${(props) => props.theme.colors.gray10};
+  border-bottom: ${(props) => props.theme.colors.white4};
+  background: ${(props) => props.theme.colors.white6};
 
   @media (max-width: 600px) {
     display: none;
@@ -104,7 +108,7 @@ export const StyledColumn = styled.div`
 export const StyledAutoSizer = styled(AutoSizer)`
   .pairSelectorRow:hover,
   .pairSelectorRow:focus {
-    background: ${(props) => props.theme.colors.gray5};
+    background: ${(props) => props.theme.colors.white4};
   }
 `
 
@@ -133,12 +137,12 @@ export const OrderBookGrid = styled(Grid)`
 export const StyledInput = styled(Input)`
   width: 100%;
   height: 5rem;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   font-family: Avenir Next Medium;
   font-size: 1.5rem;
-  color: ${(props) => props.theme.colors.gray1};
-  border-bottom: 0.1rem solid ${(props) => props.theme.colors.gray10};
-  border-top: 0.1rem solid ${(props) => props.theme.colors.gray10};
+  color: ${(props) => props.theme.colors.white1};
+  border-bottom: 0.1rem solid ${(props) => props.theme.colors.white6};
+  border-top: 0.1rem solid ${(props) => props.theme.colors.white6};
   padding: 0 2rem;
   @media (max-width: 600px) {
     height: 10rem;
@@ -151,7 +155,7 @@ export const TableFooter = styled(Grid)`
   width: 100%;
   position: relative;
   z-index: 1000;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   @media (max-width: 600px) {
     display: none;
   }
@@ -165,14 +169,14 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
     padding: 0.2rem 0.75rem;
     border: none;
     background: ${(props) =>
-      props.isSelected ? props.theme.colors.blue3 : props.theme.colors.gray6};
+      props.isSelected ? props.theme.colors.blue3 : props.theme.colors.white5};
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>
       props.isSelected ? 'Avenir Next' : 'Avenir Next'};
     font-size: 1.4rem;
     margin: 0.6rem 0.55rem;
-    color: ${(props) => (props.isSelected ? '#fff' : props.theme.colors.gray1)};
+    color: ${(props) => (props.isSelected ? '#fff' : props.theme.colors.white1)};
     width: auto;
     height: auto;
   }
@@ -180,7 +184,7 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
 
 export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   text-transform: none;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
   font-size: 2.5rem;
   margin-bottom: 0;
   @media (max-width: 600px) {
@@ -205,7 +209,7 @@ export const BlueButton = styled(
   font-size: ${(props) => (props.isMobile ? '2.5rem' : '1.4rem')};
   height: ${(props) => (props.isMobile ? '9.5rem' : '4.5rem')};
   text-transform: capitalize;
-  background-color: ${(props) => props.background || props.theme.colors.blue5};
+  background-color: ${(props) => props.background || props.theme.colors.blue3};
   border-radius: 1rem;
   border-color: none;
   cursor: pointer;
@@ -215,10 +219,10 @@ export const BlueButton = styled(
 export const TextField = styled.input`
   width: 100%;
   height: ${(props) => props.height || '3.5rem'};
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border: none;
   border-radius: 0.5rem;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   font-family: Avenir Next Medium;
   font-size: 1.4rem;
   padding: 0 2rem;
@@ -229,7 +233,7 @@ export const TextField = styled.input`
   margin-top: 1rem;
 
   &:focus {
-    border: ${(props) => `0.1rem solid ${props.theme.colors.blue5}`};
+    border: ${(props) => `0.1rem solid ${props.theme.colors.blue3}`};
   }
   &::placeholder {
     padding-top: 1rem;
@@ -254,9 +258,9 @@ export const StyledRowContainer = styled(RowContainer)`
 export const StyledTextArea = styled.textarea`
   width: 100%;
   height: ${(props) => props.height || '3.5rem'};
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 0.5rem;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   font-family: Avenir Next Medium;
   font-size: 1.4rem;
   padding: 0 2rem;
@@ -277,7 +281,7 @@ export const StyledTextArea = styled.textarea`
     }
   }
   &:focus {
-    border: ${(props) => `0.1rem solid ${props.theme.colors.blue5}`};
+    border: ${(props) => `0.1rem solid ${props.theme.colors.blue3}`};
   }
 `
 
@@ -295,7 +299,7 @@ export const SubmitButton = styled.button`
   width: 100%;
   height: 4.5rem;
   background: ${(props) =>
-    props.isDisabled ? props.theme.colors.disabled : props.theme.colors.blue5};
+    props.isDisabled ? props.theme.colors.disabled : props.theme.colors.blue3};
   font-size: 1.4rem;
   text-transform: capitalize;
   border-radius: 1rem;
@@ -318,7 +322,7 @@ export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: ${(props) => props.width || '91rem'};
   height: ${(props) => props.height || 'auto'};
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -341,7 +345,7 @@ export const StyledPaperMediumWidth = styled(Paper)`
   border-radius: 2rem;
   width: 60rem;
   height: auto;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -375,7 +379,7 @@ export const TextArea = styled.div`
   justify-content: flex-start;
 `
 export const StyledLabel = styled.label`
-  color: ${(props) => props.color || props.theme.colors.gray1};
+  color: ${(props) => props.color || props.theme.colors.white1};
   font-size: 1.5rem;
   font-family: Avenir Next Medium;
   white-space: nowrap;
@@ -389,7 +393,7 @@ export const ExpandIconContainer = styled.div`
 
   svg {
     path {
-      fill: ${(props) => props.theme.colors.gray1};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 `

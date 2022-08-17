@@ -105,8 +105,8 @@ export const TerminalHeader = styled.div`
   width: 100%;
   display: flex;
   position: relative;
-  background-color: ${(props) => props.theme.colors.gray10};
-  border-bottom: ${(props) => props.theme.colors.gray6};
+  background-color: ${(props) => props.theme.colors.white6};
+  border-bottom: ${(props) => props.theme.colors.white5};
 
   @media (max-width: 600px) {
     display: none;
@@ -129,7 +129,7 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
 ))`
   height: 100%;
   border-right: ${(props) =>
-    props.needBorderRight && `0.1rem solid ${props.theme.colors.gray5}`};
+    props.needBorderRight && `0.1rem solid ${props.theme.colors.white4}`};
 `
 export const BuyTerminal = styled(FullHeightGrid)`
   @media (max-width: 600px) {
@@ -168,15 +168,14 @@ export const TerminalModeButton = styled(
   font-weight: normal;
   letter-spacing: 0.05rem;
   width: 12.5%;
-  color: ${(props) =>
-    props.active ? props.theme.colors.white : props.theme.colors.gray1};
-  background-color: ${(props) => props.theme.colors.gray10};
-  border-right: ${(props) => props.theme.colors.gray5};
+  color: ${(props) => props.theme.colors.white1};
+  background-color: ${(props) => props.theme.colors.white6};
+  border-right: ${(props) => props.theme.colors.white4};
   border-left: ${(props) => props.borderLeft || 'none'};
   font-family: ${(props) =>
     props.active ? 'Avenir Next Demi' : 'Avenir Next Medium'};
   border-bottom: ${(props) =>
-    props.active ? `0.2rem solid ${props.theme.colors.gray1}` : 'none'};
+    props.active ? `0.2rem solid ${props.theme.colors.white1}` : 'none'};
   border-top: none;
   text-transform: none;
   white-space: nowrap;
@@ -239,18 +238,18 @@ export const SettingsLabel = styled(LeverageLabel)`
   font-size: 1.1rem;
   font-family: Avenir Next Medium;
   cursor: pointer;
-  color: ${(props) => props.theme.colors.gray1 || '#7284a0'};
+  color: ${(props) => props.theme.colors.white1 || '#7284a0'};
 `
 
 export const StyledSelect = styled.select`
   width: 100%;
   background: ${(props) =>
-    (!props.disabled && props.theme.colors.gray5) || '#16253D'};
-  border: ${(props) => props.theme.colors.gray1 || '.1rem solid #e0e5ec'};
+    (!props.disabled && props.theme.colors.white4) || '#16253D'};
+  border: ${(props) => props.theme.colors.white1 || '.1rem solid #e0e5ec'};
   border-radius: 0.2rem;
   padding: 0.2rem;
   margin: 0 0.5rem;
-  color: ${(props) => props.theme.colors.gray1 || '#7284a0'};
+  color: ${(props) => props.theme.colors.white1 || '#7284a0'};
   font-weight: bold;
   font-size: 1rem;
   text-align: center;

@@ -5,7 +5,7 @@ export const SearchInput = styled.input`
   position: absolute;
   font-family: Avenir Next;
   border: none;
-  background-color: ${(props) => props.theme.colors.gray7};
+  background-color: ${(props) => props.theme.colors.white6};
   border-radius: 0.6em;
   width: 100%;
   height: 100%;

@@ -124,7 +124,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
           </ReverseInputContainer>
         )}
 
-        {needButtons ? (
+        {needButtons && (
           <InputRowContainer
             style={{
               height: '4rem',
@@ -167,7 +167,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               </AmountTooltip>
             </PercentageTabsContainer>
           </InputRowContainer>
-        ) : null}
+        )}
       </InputRowContainer>
     </>
   )

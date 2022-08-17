@@ -24,7 +24,7 @@ import {
 } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
-  const [tableView, setTableView] = useState('yourPositions')
+  const [tableView, setTableView] = useState('classicLiquidity')
   const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
@@ -50,6 +50,7 @@ export const PoolsComponent: React.FC = () => {
             isUserHavePositions={isUserHavePositions}
             tableView={tableView}
             setTableView={setTableView}
+            setIsFiltersShown={setIsFiltersShown}
           />
           <ButtonsContainer>
             <SButton

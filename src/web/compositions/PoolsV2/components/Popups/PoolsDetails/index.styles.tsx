@@ -13,7 +13,7 @@ export const GrayBox = styled.div<GrayBoxType>`
   flex-direction: column;
   justify-content: space-between;
   align-items: ${(props) => props.align || 'center'};
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: ${BORDER_RADIUS.rg};
   padding: 0.5em 1em;
 `

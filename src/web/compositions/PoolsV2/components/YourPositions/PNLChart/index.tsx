@@ -91,14 +91,14 @@ export const PNLChart = ({
   return (
     <RootColumn height={isPositionViewDetailed ? '15em' : '12em'} width="63%">
       <Row width="100%">
-        <InlineText color="gray1" weight={400} size="esm">
+        <InlineText color="white2" weight={400} size="esm">
           P&L
         </InlineText>
         <TooltipIcon color="gray1" />
       </Row>
       <Row width="100%">
         <Row>
-          <InlineText color="gray1" weight={600} size="md">
+          <InlineText color="white3" weight={600} size="md">
             $
           </InlineText>
           &nbsp;
@@ -107,17 +107,17 @@ export const PNLChart = ({
           </InlineText>
         </Row>
         <Row>
-          <InlineText color="gray1" weight={600} size="sm">
+          <InlineText color="white2" weight={600} size="sm">
             + 23.4%
           </InlineText>
         </Row>
       </Row>
       <TotalVolumeLockedChartInner />
       <Row width="100%">
-        <InlineText color="gray3" weight={400} size="esm">
+        <InlineText color="white3" weight={400} size="esm">
           Past
         </InlineText>
-        <InlineText color="gray3" weight={400} size="esm">
+        <InlineText color="white3" weight={400} size="esm">
           Future
         </InlineText>
       </Row>

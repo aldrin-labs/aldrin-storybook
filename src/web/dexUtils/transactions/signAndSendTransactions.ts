@@ -1,4 +1,8 @@
-import { SendTransactionStatus, signTransactions } from '@core/solana'
+import {
+  SendTransactionStatus,
+  signTransactions,
+  WithStatusChange,
+} from '@core/solana'
 
 import { sendSignedTransactions } from '.'
 import { getNotifier } from './notifier'
@@ -12,7 +16,7 @@ const defaultMessages = {
 }
 
 export const signAndSendTransactions = async (
-  params: SendTransactionsParams
+  params: SendTransactionsParams & WithStatusChange
 ) => {
   const {
     transactionsAndSigners,
@@ -21,13 +25,20 @@ export const signAndSendTransactions = async (
     successMessage,
     messages = defaultMessages,
     commitment,
+    swapStatus, // @todo temp
+    setSwapStatus,
+    onStatusChange,
   } = params
 
   try {
-    const clearPendingSignNotification = getNotifier(messages)({
-      status: SendTransactionStatus.PENDING_SIGN,
-      persist: true,
-    })
+    let clearPendingSignNotification
+
+    if (!swapStatus) {
+      clearPendingSignNotification = getNotifier(messages)({
+        status: SendTransactionStatus.PENDING_SIGN,
+        persist: true,
+      })
+    }
 
     const signedTransactions = await signTransactions(
       transactionsAndSigners,
@@ -35,13 +46,21 @@ export const signAndSendTransactions = async (
       wallet
     )
 
-    await clearPendingSignNotification()
+    if (setSwapStatus) {
+      setSwapStatus('initialize')
+    }
+
+    if (clearPendingSignNotification) {
+      await clearPendingSignNotification()
+    }
 
     return await sendSignedTransactions(signedTransactions, connection, {
       successMessage,
       commitment,
+      onStatusChange,
     })
   } catch (e: any) {
+    console.warn('transaction failed: ', e)
     return `${e?.message.toString()}`.includes('cancelled')
       ? 'cancelled'
       : 'failed'

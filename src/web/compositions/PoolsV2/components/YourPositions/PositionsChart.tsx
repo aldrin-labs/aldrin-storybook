@@ -14,14 +14,14 @@ export const PositionsCharts = () => {
       <Row width="49%">
         <GrayContainer>
           <Row width="100%">
-            <InlineText color="gray1" weight={400} size="esm">
+            <InlineText color="white2" weight={400} size="esm">
               Total P&L
             </InlineText>
-            <TooltipIcon color="gray1" />
+            <TooltipIcon color="white2" />
           </Row>
           <Row width="100%">
             <Row>
-              <InlineText color="gray1" weight={600} size="xlmd">
+              <InlineText color="white3" weight={600} size="xlmd">
                 $
               </InlineText>
               &nbsp;
@@ -30,14 +30,14 @@ export const PositionsCharts = () => {
               </InlineText>
             </Row>
 
-            <InlineText color="gray1" weight={600} size="sm">
+            <InlineText color="white2" weight={600} size="sm">
               + 23.4%
             </InlineText>
           </Row>
         </GrayContainer>
         <GrayContainer>
           <Row width="100%">
-            <InlineText color="gray1" weight={400} size="esm">
+            <InlineText color="white2" weight={400} size="esm">
               Top Performing Pool
             </InlineText>
             <TokenIconsContainer

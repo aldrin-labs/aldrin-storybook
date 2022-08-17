@@ -1,4 +1,5 @@
 import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
+import { rgba } from 'polished'
 import styled from 'styled-components'
 
 import { Button, PADDINGS } from '@sb/components/Button'
@@ -61,13 +62,15 @@ export const ButtonsContainer = styled(StretchedBlock)`
   }
 `
 export const FilterButton = styled(Button)<FilterButtonType>`
-  color: ${(props) => props.theme.colors.gray3};
+  color: ${(props) => props.theme.colors.white3};
   border: none;
   background-color: ${(props) =>
-    props.isActive ? props.theme.colors.violet2 : props.theme.colors.gray7};
+    props.isActive
+      ? rgba(props.theme.colors.violet2, 0.15)
+      : props.theme.colors.white6};
   border-radius: 0.6em;
   color: ${(props) =>
-    props.isActive ? props.theme.colors.violet4 : props.theme.colors.gray13};
+    props.isActive ? props.theme.colors.violet2 : props.theme.colors.white3};
   font-size: ${FONT_SIZES.sm};
   padding: 0.66em 1.5em;
   display: flex;
@@ -98,7 +101,7 @@ export const FilterRow = styled(RootRow)`
 export const GrayContainer = styled.div`
   width: 90%;
   position: relative;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: column;

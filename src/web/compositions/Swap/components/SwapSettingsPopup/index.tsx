@@ -55,17 +55,12 @@ export const SwapSettingsPopup = ({
     }
   }
 
-  const resetState = () => {
-    setLocalSlippage('')
-  }
-
   const closeWithUpdatingSlippage = () => {
     if (+localSlippage > 0) {
       setSlippage(+localSlippage)
     }
 
-    resetState()
-    close()
+    setTimeout(() => close(), 0)
   }
 
   const isSlippageMatchWithButtons = slippageButtonsValues.includes(
@@ -86,7 +81,7 @@ export const SwapSettingsPopup = ({
           Swap Info
         </InlineText>
 
-        <EscapeButton close={close} />
+        <EscapeButton onClose={close} />
       </RowContainer>
       <RowContainer
         direction="column"
@@ -121,9 +116,7 @@ export const SwapSettingsPopup = ({
               <SlippageButton
                 isActive={isActive}
                 onClick={() => {
-                  setSlippage(value)
-                  resetState()
-                  close()
+                  setLocalSlippage(value)
                 }}
                 $variant="none"
               >
@@ -161,7 +154,6 @@ export const SwapSettingsPopup = ({
               if (e.key === 'Enter') {
                 if (+localSlippage > 0) {
                   closeWithUpdatingSlippage()
-                  setTimeout(() => close(), 0) // idk why but without timeout it doesn't work
                 }
               }
             }}

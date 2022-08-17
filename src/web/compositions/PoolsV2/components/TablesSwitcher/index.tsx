@@ -7,10 +7,12 @@ export const TablesSwitcher = ({
   setTableView,
   tableView,
   isUserHavePositions,
+  setIsFiltersShown,
 }: {
   setTableView: (a: string) => void
   tableView: string
   isUserHavePositions: boolean
+  setIsFiltersShown: (a: boolean) => void
 }) => {
   return (
     <Container>
@@ -37,6 +39,7 @@ export const TablesSwitcher = ({
           isActive={tableView === 'yourPositions'}
           onClick={() => {
             setTableView('yourPositions')
+            setIsFiltersShown(false)
           }}
         >
           <YourPositionsIcon isActive={tableView === 'yourPositions'} /> Your

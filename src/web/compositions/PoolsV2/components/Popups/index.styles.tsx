@@ -28,7 +28,7 @@ export const StyledModal = styled.div`
     width: 39em;
     margin: 0;
     border-radius: 1.5em 1.5em 0 0;
-    background: ${(props) => props.theme.colors.gray7};
+    background: ${(props) => props.theme.colors.white6};
     padding: 0 1.5em;
     height: 90%;
   }
@@ -54,7 +54,7 @@ export const Header = styled.div`
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid ${(props) => props.theme.colors.gray8};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white5};
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     flex-direction: row;
@@ -97,7 +97,7 @@ export const Column = styled.div<ColumnType>`
   margin: ${(props) => props.margin || '0'};
 `
 export const Container = styled.div`
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.white5};
   width: auto;
   height: auto;
   display: flex;

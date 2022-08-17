@@ -1,8 +1,9 @@
 import { Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { defaultOptions } from '@sb/dexUtils/ProgramsMultiton'
 import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { defaultOptions } from '@core/solana'
 
 const LookupJSON = require('./lookup.json')
 
