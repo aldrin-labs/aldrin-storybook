@@ -114,7 +114,7 @@ const THEMES = {
       yellow4: THEME_COLORS.YD4,
 
       background1: THEME_COLORS.BGD1,
-
+      modal: '#14141F',
       logo: '#F5F5FB',
       border: '#302F41',
       block: '#383b45',

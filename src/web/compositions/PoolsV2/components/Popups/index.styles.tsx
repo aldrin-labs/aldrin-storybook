@@ -28,7 +28,7 @@ export const StyledModal = styled.div`
     width: 39em;
     margin: 0;
     border-radius: 1.5em 1.5em 0 0;
-    background: ${(props) => props.theme.colors.white6};
+    background: ${(props) => props.theme.colors.modal};
     padding: 0 1.5em;
     height: 90%;
   }
@@ -80,7 +80,7 @@ export const Box = styled.div<BoxType>`
   border-radius: 0.5em;
   width: ${(props) => props.width || '100%'};
   height: ${(props) => props.height || '4.5em'};
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white6};
   display: flex;
   flex-direction: column;
   align-items: flex-start;

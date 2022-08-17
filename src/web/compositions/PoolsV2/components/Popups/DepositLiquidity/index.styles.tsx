@@ -25,7 +25,7 @@ export const PositionatedIconContainer = styled(CircleIconContainer)`
   position: absolute;
   left: 50%;
   top: 50%;
-  border: 1px solid ${(props) => props.theme.colors.border2};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white4};
   transform: translate(-50%, -50%);
   z-index: 2;
 
@@ -44,7 +44,7 @@ export const InputsContainer = styled.div`
   align-items: center;
   flex-direction: column;
   position: relative;
-  border: 1px solid ${(props) => props.theme.colors.border2};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   border-radius: 0.8em;
   padding: 0.8em 0;
   margin: 0.5em 0 0 0;
@@ -60,7 +60,7 @@ export const FirstInputContainer = styled.div`
   flex-wrap: nowrap;
   justify-content: space-between;
   padding: 0 0 0.8em 0;
-  border-bottom: 1px solid ${(props) => props.theme.colors.border2};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white4};
 `
 
 export const SecondInputContainer = styled.div`

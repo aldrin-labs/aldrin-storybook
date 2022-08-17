@@ -18,8 +18,9 @@ import { getRandomInt } from '@core/utils/helpers'
 
 import { TooltipIcon } from '../../Icons'
 import { Row } from '../../Popups/index.styles'
-import { CanvasContainer } from './index.styles'
+import { CanvasContainer, SRootColumn } from './index.styles'
 import { createPNLChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
+import { ChartMask } from './index.styles'
 
 const ChartInner: React.FC = (props) => {
   const { getTotalVolumeLockedHistoryQuery } = props
@@ -62,7 +63,7 @@ const ChartInner: React.FC = (props) => {
 
   return (
     <CanvasContainer>
-      <canvas id="tvl-chart-inner" height="250" width="100%" ref={canvasRef} />
+      <canvas id="tvl-chart-inner" height="250" width="10%" ref={canvasRef} />
     </CanvasContainer>
   )
 }
@@ -79,7 +80,7 @@ const TotalVolumeLockedChartInner = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: ({ theme }: { theme: DefaultTheme }) => theme.colors.white,
+    loaderColor: ({ theme }: { theme: DefaultTheme }) => theme.colors.white1,
   })
 )(ChartInner)
 
@@ -89,7 +90,8 @@ export const PNLChart = ({
   isPositionViewDetailed: boolean
 }) => {
   return (
-    <RootColumn height={isPositionViewDetailed ? '15em' : '12em'} width="63%">
+    <SRootColumn height={isPositionViewDetailed ? '15em' : '12em'} width="63%">
+      <ChartMask />
       <Row width="100%">
         <InlineText color="white2" weight={400} size="esm">
           P&L
@@ -121,6 +123,6 @@ export const PNLChart = ({
           Future
         </InlineText>
       </Row>
-    </RootColumn>
+    </SRootColumn>
   )
 }

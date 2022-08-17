@@ -10,8 +10,6 @@ import {
   endOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 
-import { stripByAmountAndFormat } from '@core/utils/numberUtils'
-
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
@@ -80,13 +78,13 @@ const createChart = ({
           enabled: true,
           intersect: false,
           callbacks: {
-            label: (model: any) => {
-              // set data to custom tooltip
-              setBalanceData({
-                balance: stripByAmountAndFormat(model.raw.y.toFixed(0)),
-                date: model.label,
-              })
-            },
+            // label: (model: any) => {
+            //   // set data to custom tooltip
+            //   setBalanceData({
+            //     balance: stripByAmountAndFormat(model.raw.y.toFixed(0)),
+            //     date: model.label,
+            //   })
+            // },
           },
         },
       },
@@ -139,15 +137,14 @@ export const createPNLChart = ({
     throw Error('Not a canvas:')
   }
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 200)
-  gradient.addColorStop(0, 'rgba(135, 52, 120, 0.45)')
-  gradient.addColorStop(0.55, 'rgba(157, 52, 129, 0)')
+  const gradient = ctx.createLinearGradient(0, 0, 0, 230)
+  gradient.addColorStop(0, 'rgba(0, 255, 133, 1)')
+  gradient.addColorStop(0.55, 'rgba(193, 193, 193, 0)')
 
-  const borderGradient = ctx.createLinearGradient(650, 0, 0, 0)
-  borderGradient.addColorStop(0.9, 'rgba(99, 53, 84, 1)')
-  borderGradient.addColorStop(0.5, 'rgba(151, 51, 135, 1)')
-  borderGradient.addColorStop(0.25, 'rgba(200, 89, 77, 1)')
-  borderGradient.addColorStop(0.0, 'rgba(217, 62, 56, 1)')
+  const borderGradient = ctx.createLinearGradient(350, 0, 0, 0)
+  borderGradient.addColorStop(0.9, 'rgba(0, 255, 133, 1)')
+  borderGradient.addColorStop(0.5, 'rgba(201, 218, 209, 1)')
+  borderGradient.addColorStop(0.25, 'rgba(0, 255, 133, 1)')
 
   const transformedData = getEmptyData()
     .map((value) => ({
@@ -177,14 +174,14 @@ export const createPNLChart = ({
     datasets: [
       {
         fill: 'origin',
-        tension: 0.5,
+        tension: 0.3,
         borderColor: borderGradient,
         backgroundColor: gradient,
         borderWidth: 4,
         borderCapStyle: 'square',
         pointRadius: 0,
         pointHoverRadius: 6,
-        pointHoverBorderColor: '#9C338D',
+        pointHoverBorderColor: 'rgba(0, 255, 133, 1)',
         pointHoverBackgroundColor: '#FAFAFA',
         pointHoverBorderWidth: 4,
         hoverBackgroundColor: 'rgba(14, 2, 236, 0.75)',
