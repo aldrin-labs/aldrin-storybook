@@ -162,7 +162,6 @@ export const ThinHeading = styled.div`
 `
 
 export const TotalStaked = styled.div`
-  font-family: 'Prompt';
   font-style: normal;
   font-weight: 700;
   font-size: 40px;

@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
+import { compose } from 'recompose'
 
 import { Page } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 
 import CoinsBg from './Components/Icons/coins.webp'
 import { RinStaking } from './Components/Popups/RinStaking/index'
@@ -15,13 +20,15 @@ import {
   ImageContainer,
 } from './index.styles'
 
-export const StakingPage: React.FC = () => {
+const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
   const [isSolStakingPopupOpen, setIsSolStakingPopupOpen] = useState(false)
 
   const [PLD, setPLD] = useState(false)
   const [RPC, setRPC] = useState(false)
   const [PU238, setPU238] = useState(false)
+
+  console.log({ getStakingInfoQuery })
 
   return (
     <Page>
@@ -99,3 +106,20 @@ export const StakingPage: React.FC = () => {
     </Page>
   )
 }
+// TODO: types
+export default compose(
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  }),
+  queryRendererHoc({
+    query: getStakingInfo,
+    name: 'getStakingInfoQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
+)(StakingPage)
