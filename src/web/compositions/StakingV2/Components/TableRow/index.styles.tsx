@@ -78,7 +78,6 @@ export const Container = styled.div<ContainerProps>`
 
 export const StretchedRow = styled(RootRow)`
   width: 700px;
-  flex-direction: column;
   flex-direction: row;
   margin: 0;
 

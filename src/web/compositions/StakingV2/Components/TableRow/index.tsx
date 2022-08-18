@@ -18,7 +18,6 @@ import {
   StretchedRow,
   StyledLink,
   SRow,
-  Block,
 } from './index.styles'
 
 export const TableRow = ({
@@ -151,62 +150,62 @@ export const TableRow = ({
               ) : null}
             </LabelsRow>
           </RootColumn>
-          <Block>
-            <SpacedColumn height="100%">
-              {/* <Row> */}
-              {/* <ArrowsIcon /> */}
-              <InlineText size="sm" weight={400} color="white2">
-                Total Staked
-              </InlineText>
-              {/* </Row> */}
+          {/* <Block> */}
+          <SpacedColumn height="100%">
+            {/* <Row> */}
+            {/* <ArrowsIcon /> */}
+            <InlineText size="sm" weight={400} color="white2">
+              Total Staked
+            </InlineText>
+            {/* </Row> */}
 
-              <InlineText size="xmd" weight={600} color="gray0">
-                <InlineText color="white2">$</InlineText> 10.42m
+            <InlineText size="xmd" weight={600} color="gray0">
+              <InlineText color="white2">$</InlineText> 10.42m
+            </InlineText>
+          </SpacedColumn>
+          <SpacedColumn height="100%">
+            <InlineText size="sm" weight={400} color="white2">
+              {HeaderRowText}
+            </InlineText>
+            <InlineText size="xmd" weight={600} color="gray0">
+              <InlineText color="white2">$</InlineText> 102.24k
+            </InlineText>
+          </SpacedColumn>
+          <SpacedColumn height="100%">
+            <InlineText size="sm" weight={400} color="white2">
+              <DarkTooltip
+                title={
+                  <InlineText color="gray0">
+                    <p>
+                      Estimation for growth of your deposit over a year
+                      projected on current farming rewards and past 7d trading
+                      activity.
+                    </p>
+                    <p>
+                      Farming APR:{' '}
+                      <InlineText weight={600} color="green4">
+                        119.90%
+                      </InlineText>{' '}
+                      Trading APR:{' '}
+                      <InlineText weight={600} color="green4">
+                        5.34%
+                      </InlineText>
+                    </p>
+                  </InlineText>
+                }
+              >
+                <span>
+                  <TooltipIcon margin="0" color="white2" /> APR
+                </span>
+              </DarkTooltip>
+            </InlineText>
+            <SpacedColumn>
+              <InlineText size="xmd" weight={600} color="green1">
+                125.24%
               </InlineText>
             </SpacedColumn>
-            <SpacedColumn height="100%">
-              <InlineText size="sm" weight={400} color="white2">
-                {HeaderRowText}
-              </InlineText>
-              <InlineText size="xmd" weight={600} color="gray0">
-                <InlineText color="white2">$</InlineText> 102.24k
-              </InlineText>
-            </SpacedColumn>
-            <SpacedColumn height="100%">
-              <InlineText size="sm" weight={400} color="white2">
-                <DarkTooltip
-                  title={
-                    <InlineText color="gray0">
-                      <p>
-                        Estimation for growth of your deposit over a year
-                        projected on current farming rewards and past 7d trading
-                        activity.
-                      </p>
-                      <p>
-                        Farming APR:{' '}
-                        <InlineText weight={600} color="green4">
-                          119.90%
-                        </InlineText>{' '}
-                        Trading APR:{' '}
-                        <InlineText weight={600} color="green4">
-                          5.34%
-                        </InlineText>
-                      </p>
-                    </InlineText>
-                  }
-                >
-                  <span>
-                    <TooltipIcon margin="0" color="white2" /> APR
-                  </span>
-                </DarkTooltip>
-              </InlineText>
-              <SpacedColumn>
-                <InlineText size="xmd" weight={600} color="green1">
-                  125.24%
-                </InlineText>
-              </SpacedColumn>
-            </SpacedColumn>
-          </Block>
+          </SpacedColumn>
+          {/* </Block> */}
 
           <DepositRow>
             <Row width="100%">
