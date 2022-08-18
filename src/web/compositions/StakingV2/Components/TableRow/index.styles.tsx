@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { PADDINGS } from '@sb/components/Button'
 
 import { RootRow } from '../../index.styles'
+import { Row as HeaderRow } from '../Popups/index.styles'
 
 type ContainerProps = {
   width?: string
@@ -77,8 +78,8 @@ export const Container = styled.div<ContainerProps>`
 
 export const StretchedRow = styled(RootRow)`
   width: 700px;
+  flex-direction: column;
   flex-direction: row;
-  justify-content: space-between;
   margin: 0;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
@@ -114,3 +115,16 @@ export const StyledLink = styled(Link)`
     background: ${(props) => props.theme.colors.green12};
   }
 `
+
+export const SRow = styled(HeaderRow)`
+  @media (max-width: ${BREAKPOINTS.sm}) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    div {
+      margin-bottom: 0.2em;
+    }
+  }
+`
+
+export const Block = styled.div``

@@ -124,6 +124,10 @@ export const TotalStakedRow = styled.div`
   align-items: center;
   margin-top: 1em;
   margin-bottom: 1em;
+  @media only screen and (max-width: 600px) {
+    width: 90%;
+    margin: 1em auto;
+  }
 `
 
 export const TotalStakedCard = styled.div`
@@ -141,7 +145,9 @@ export const TotalStakedCard = styled.div`
   padding: 0.8em 1em;
   box-shadow: -3px 3px 35px 10px rgba(145, 41, 122, 0.3);
   @media only screen and (max-width: 600px) {
-    width: 70%;
+    width: 90%;
+    margin: 1em auto;
+    position: absolute;
   }
 `
 
@@ -171,6 +177,10 @@ export const TotalStaked = styled.div`
   /* Dark Mode/D1 */
 
   color: #fafafa;
+
+  @media only screen and (max-width: 600px) {
+    font-size: 30px;
+  }
 `
 export const ImageContainer = styled.div`
   width: 150px;
@@ -180,5 +190,11 @@ export const ImageContainer = styled.div`
   img {
     position: absolute;
     left: 20%;
+  }
+
+  @media only screen and (max-width: 600px) {
+    width: 120px;
+    height: 120px;
+    left: 60%;
   }
 `

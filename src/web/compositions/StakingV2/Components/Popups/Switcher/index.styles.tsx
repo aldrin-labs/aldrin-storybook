@@ -1,4 +1,4 @@
-import { COLORS, FONT_SIZES } from '@variables/variables'
+import { COLORS, FONTS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
 type StyledSwitcher = {
@@ -36,4 +36,5 @@ export const Button = styled.button<StyledSwitcher>`
   cursor: pointer;
   height: 5rem;
   transition: 0.5s;
+  font-family: ${FONTS.main};
 `

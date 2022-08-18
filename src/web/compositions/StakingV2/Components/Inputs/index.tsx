@@ -4,7 +4,7 @@ import { StretchedBlock } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
 import { formatNumbersForState } from '@sb/dexUtils/utils'
 
-import { stripByAmount } from '@core/utils/chartPageUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { WalletIcon } from '../Icons'
 import {
@@ -43,14 +43,14 @@ export const AmountInput = ({
         <CenteredRow onClick={onMaxAmountClick}>
           <WalletIcon />
           <StyledInlineText weight={600} size="sm" color="white2">
-            {maxAmount ? stripByAmount(maxAmount) : '0.00'}
+            {maxAmount ? stripDigitPlaces(maxAmount, 2) : '0.00'}
           </StyledInlineText>
         </CenteredRow>
       </StretchedBlock>
       <StretchedBlock width="xl" align="flex-end" margin="0.6em 0 0 0">
         <AmountInputContainer>
           <InvisibleInput
-            data-testid={`swap-${title.replaceAll(' ', '-')}-field`}
+            // data-testid={`swap-${title.replaceAll(' ', '-')}-field`}
             type="text"
             value={amount || ''}
             disabled={disabled}

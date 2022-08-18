@@ -24,7 +24,7 @@ export const ValuesContainer = ({
       <FirstInputContainer>
         <AmountInput
           title={isStakedModeOn ? 'Stake' : 'Unstake'}
-          maxAmount="0.00"
+          maxAmount={0}
           amount={0}
           onMaxAmountClick={() => {}}
           disabled={false}
@@ -43,7 +43,7 @@ export const ValuesContainer = ({
       <SecondInputContainer>
         <AmountInput
           title="Receive"
-          maxAmount="0.00"
+          maxAmount={0}
           amount={0}
           onMaxAmountClick={() => {}}
           onChange={() => {}}

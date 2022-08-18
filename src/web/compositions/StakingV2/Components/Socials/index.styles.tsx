@@ -42,23 +42,23 @@ export const VARIANTS = {
 export const StyledLink = styled.a<StyledLinkProps>`
   width: 40px;
   transition: ${TRANSITION};
-  background: ${(props) => props.theme.colors.gray6};
   border-radius: 0.5em;
   padding: 0.4em;
   ${(props) => VARIANTS[props.$variant || 'withBack']};
   margin: ${(props) => props.margin || '0'};
   height: ${(props) => props.height || '16px'};
+  transition: all 0.5s;
 
   &:hover {
     svg path:not(.not-fill) {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
 
     svg {
       defs {
         clipPath {
           rect {
-            fill: ${(props) => props.theme.colors.gray0};
+            fill: ${(props) => props.theme.colors.white1};
           }
         }
       }

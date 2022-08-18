@@ -98,7 +98,7 @@ export const Column = styled.div<ColumnType>`
   margin: ${(props) => props.margin || '0'};
 `
 export const Container = styled.div`
-  background: ${(props) => props.theme.colors.white5};
+  background: ${(props) => props.theme.colors.white4};
   width: auto;
   height: auto;
   display: flex;

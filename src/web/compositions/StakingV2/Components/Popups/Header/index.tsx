@@ -19,7 +19,7 @@ export const HeaderComponent = ({
 }: {
   token: string
   close: () => void
-  arrow: boolean
+  arrow?: boolean
 }) => {
   return (
     <Header>
@@ -37,7 +37,7 @@ export const HeaderComponent = ({
         <LinkToTwitter height="40px" />
         <LinkToDiscord height="40px" />
         <LinkToCoinMarketcap height="40px" />
-        <EscapeButton arrow={arrow} size="2.5" close={() => close()} />
+        <EscapeButton arrow={arrow} size="2.5" onClose={() => close()} />
         {/* TODO: last button should be replaced with Esc when swaps merged */}
       </Row>
     </Header>

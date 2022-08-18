@@ -11,6 +11,7 @@ import CoinsBg from './Components/Icons/coins.webp'
 import { RinStaking } from './Components/Popups/RinStaking/index'
 import { SolStaking } from './Components/Popups/SolStaking/index'
 import { TableRow } from './Components/TableRow'
+import { stakeTokens } from './config'
 import {
   StyledWideContent,
   ThinHeading,
@@ -36,36 +37,13 @@ const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
             <img alt="rin" src={CoinsBg} width="100%" height="100%" />
           </ImageContainer>
         </TotalStakedRow>
-        <TableRow
-          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-          setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          token="RIN"
-        />
-        <TableRow
-          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-          setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          token="stSOL"
-        />
-        <TableRow
-          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-          setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          token="mSOL"
-        />
-        <TableRow
-          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-          setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          token="PLD"
-        />
-        <TableRow
-          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-          setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          token="RPC"
-        />
-        <TableRow
-          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-          setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          token="PU238"
-        />
+        {stakeTokens.map((token) => (
+          <TableRow
+            setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+            setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
+            token={token}
+          />
+        ))}
       </StyledWideContent>
       {isRinStakingPopupOpen && (
         <RinStaking

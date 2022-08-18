@@ -108,7 +108,23 @@ export const PeriodButton = styled.div<PeriodButtonType>`
 `
 export const ModalContainer = styled(StyledModal)<ModalType>`
   .modal-container {
-    backdrop-filter: ${(props) => (props.needBlur ? '5px' : 'none')};
+    .modal-body {
+      @keyframes modal {
+        from {
+          transform: translate(0, 30em);
+        }
+        to {
+          transform: translate(0, 0);
+        }
+      }
+      transform-origin: center center;
+      animation-name: modal;
+      animation-duration: 500ms;
+      animation-iteration-count: 1;
+      animation-timing-function: linear;
+    }
+
+    backdrop-filter: ${(props) => (props.needBlur ? 'blur(5px)' : 'none')};
     background: ${(props) => (props.needBlur ? 'rgba(0, 0, 0, 0.5)' : 'none')};
   }
 `

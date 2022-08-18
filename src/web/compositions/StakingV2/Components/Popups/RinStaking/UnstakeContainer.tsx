@@ -19,7 +19,7 @@ export const UnstakeContainer = () => {
       <FirstInputContainer>
         <AmountInput
           title="Unstake"
-          maxAmount="0.00"
+          maxAmount={0}
           amount={0}
           onMaxAmountClick={() => {}}
           disabled={false}
@@ -34,26 +34,7 @@ export const UnstakeContainer = () => {
           }
         />
       </FirstInputContainer>
-      {/* <SecondInputContainer>
-        <AmountInput
-          title="Receive"
-          maxAmount="0.00"
-          amount={0}
-          onMaxAmountClick={() => {}}
-          onChange={() => {}}
-          appendComponent={
-            <Container>
-              <TokenIcon
-                margin="0 5px 0 0"
-                mint="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-              />
-              <InlineText color="gray0" size="md" weight={600}>
-                USDC
-              </InlineText>
-            </Container>
-          }
-        />
-      </SecondInputContainer> */}
+
       <Button
         onClick={() => {
           // connect wallet

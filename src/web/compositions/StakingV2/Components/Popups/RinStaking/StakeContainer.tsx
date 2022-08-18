@@ -19,7 +19,7 @@ export const StakeContainer = () => {
       <FirstInputContainer>
         <AmountInput
           title="Stake"
-          maxAmount="0.00"
+          maxAmount={0}
           amount={0}
           onMaxAmountClick={() => {}}
           disabled={false}
