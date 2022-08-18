@@ -215,7 +215,7 @@ export const TableRow = ({
             ) : (
               <Button
                 onClick={() => {
-                  token === 'mSOL'
+                  token === 'mSOL' || token === 'stSOL'
                     ? setIsSolStakingPopupOpen(true)
                     : setIsRinStakingPopupOpen(true)
                 }}

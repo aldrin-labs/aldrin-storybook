@@ -24,12 +24,6 @@ const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
   const [isSolStakingPopupOpen, setIsSolStakingPopupOpen] = useState(false)
 
-  const [PLD, setPLD] = useState(false)
-  const [RPC, setRPC] = useState(false)
-  const [PU238, setPU238] = useState(false)
-
-  console.log({ getStakingInfoQuery })
-
   return (
     <Page>
       <StyledWideContent>
@@ -45,49 +39,31 @@ const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
           setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          setPLDPopup={setPLD}
-          setRPCPopup={setRPC}
-          setPU238Popup={setPU238}
           token="RIN"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
           setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          setPLDPopup={setPLD}
-          setRPCPopup={setRPC}
-          setPU238Popup={setPU238}
           token="stSOL"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
           setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          setPLDPopup={setPLD}
-          setRPCPopup={setRPC}
-          setPU238Popup={setPU238}
           token="mSOL"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
           setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          setPLDPopup={setPLD}
-          setRPCPopup={setRPC}
-          setPU238Popup={setPU238}
           token="PLD"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
           setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          setPLDPopup={setPLD}
-          setRPCPopup={setRPC}
-          setPU238Popup={setPU238}
           token="RPC"
         />
         <TableRow
           setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
           setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-          setPLDPopup={setPLD}
-          setRPCPopup={setRPC}
-          setPU238Popup={setPU238}
           token="PU238"
         />
       </StyledWideContent>
