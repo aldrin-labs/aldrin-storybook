@@ -9,7 +9,11 @@ import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 
 import CoinsBg from './Components/Icons/coins.webp'
 import { RinStaking } from './Components/Popups/RinStaking/index'
-import { SolStaking } from './Components/Popups/SolStaking/index'
+import {
+  MarinadeStaking,
+  // MSolStaking,
+} from './Components/Popups/SolStaking/index'
+import { StSolStaking } from './Components/Popups/StSolStaking/index'
 import { TableRow } from './Components/TableRow'
 import { stakeTokens } from './config'
 import {
@@ -23,7 +27,8 @@ import {
 
 const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
-  const [isSolStakingPopupOpen, setIsSolStakingPopupOpen] = useState(false)
+  const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
+  const [isStSolStakingPopupOpen, setIsStSolStakingPopupOpen] = useState(false)
 
   return (
     <Page>
@@ -37,13 +42,42 @@ const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
             <img alt="rin" src={CoinsBg} width="100%" height="100%" />
           </ImageContainer>
         </TotalStakedRow>
-        {stakeTokens.map((token) => (
-          <TableRow
-            setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
-            setIsSolStakingPopupOpen={setIsSolStakingPopupOpen}
-            token={token}
-          />
-        ))}
+        <TableRow
+          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+          setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
+          setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
+          token="RIN"
+        />
+        <TableRow
+          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+          setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
+          setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
+          token="stSOL"
+        />
+        <TableRow
+          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+          setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
+          setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
+          token="mSOL"
+        />
+        <TableRow
+          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+          setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
+          setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
+          token="PLD"
+        />
+        <TableRow
+          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+          setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
+          setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
+          token="RPC"
+        />
+        <TableRow
+          setIsRinStakingPopupOpen={setIsRinStakingPopupOpen}
+          setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
+          setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
+          token="PU238"
+        />
       </StyledWideContent>
       {isRinStakingPopupOpen && (
         <RinStaking
@@ -51,10 +85,17 @@ const StakingPage: React.FC = ({ getStakingInfoQuery }) => {
           onClose={() => setIsRinStakingPopupOpen(false)}
         />
       )}
-      {isSolStakingPopupOpen && (
-        <SolStaking
-          open={isSolStakingPopupOpen}
-          onClose={() => setIsSolStakingPopupOpen(false)}
+      {isMSolStakingPopupOpen && (
+        <MarinadeStaking
+          open={isMSolStakingPopupOpen}
+          onClose={() => setIsMSolStakingPopupOpen(false)}
+          getDexTokensPricesQuery={getDexTokensPrices}
+        />
+      )}
+      {isStSolStakingPopupOpen && (
+        <StSolStaking
+          open={isStSolStakingPopupOpen}
+          onClose={() => setIsStSolStakingPopupOpen(false)}
         />
       )}
     </Page>

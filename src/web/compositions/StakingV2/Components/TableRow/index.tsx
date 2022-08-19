@@ -19,15 +19,18 @@ import {
   StyledLink,
   SRow,
 } from './index.styles'
+import { LabelsTooltips } from './Tooltips'
 
 export const TableRow = ({
   token,
   setIsRinStakingPopupOpen,
-  setIsSolStakingPopupOpen,
+  setIsStSolStakingPopupOpen,
+  setIsMSolStakingPopupOpen,
 }: {
   token: string
   setIsRinStakingPopupOpen: (a: boolean) => void
-  setIsSolStakingPopupOpen: (a: boolean) => void
+  setIsStSolStakingPopupOpen: (a: boolean) => void
+  setIsMSolStakingPopupOpen: (a: boolean) => void
 }) => {
   let HeaderRowText: string = ''
 
@@ -76,7 +79,7 @@ export const TableRow = ({
     <RootRow margin="10px 0">
       <Container width="100%">
         <StretchedRow>
-          <RootColumn width="15%" height="100%">
+          <RootColumn width="15%" height="100%" className="iconColumn">
             <SRow>
               <TokenIconsContainer
                 // mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
@@ -89,6 +92,7 @@ export const TableRow = ({
             <LabelsRow>
               {token === 'RIN' && (
                 <LabelComponent
+                  tooltipText={<LabelsTooltips type="Test2" period="5 days" />}
                   variant={
                     STAKING_CARD_LABELS.find(
                       (el) => el.text === 'Auto-Compound'
@@ -100,6 +104,7 @@ export const TableRow = ({
                 <>
                   {' '}
                   <LabelComponent
+                    tooltipText={<LabelsTooltips type="Test" period="5 days" />}
                     variant={
                       STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
                       STAKING_CARD_LABELS[0]
@@ -117,6 +122,7 @@ export const TableRow = ({
               {token === 'stSOL' && (
                 <>
                   <LabelComponent
+                    tooltipText={<LabelsTooltips type="Test" period="5 days" />}
                     variant={
                       STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
                       STAKING_CARD_LABELS[0]
@@ -133,6 +139,7 @@ export const TableRow = ({
               {token === 'PLD' || token === 'RPC' || token === 'PU238' ? (
                 <>
                   <LabelComponent
+                    tooltipText={<LabelsTooltips type="Test" period="5 days" />}
                     variant={
                       STAKING_CARD_LABELS.find(
                         (el) => el.text === 'Plutonians'
@@ -219,9 +226,17 @@ export const TableRow = ({
             ) : (
               <Button
                 onClick={() => {
-                  token === 'mSOL' || token === 'stSOL'
-                    ? setIsSolStakingPopupOpen(true)
-                    : setIsRinStakingPopupOpen(true)
+                  switch (token) {
+                    case 'RIN':
+                      setIsRinStakingPopupOpen(true)
+                      break
+                    case 'mSOL':
+                      setIsMSolStakingPopupOpen(true)
+                      break
+                    case 'stSOL':
+                      setIsStSolStakingPopupOpen(true)
+                      break
+                  }
                 }}
                 $width="xl"
                 $borderRadius="md"

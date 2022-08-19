@@ -30,6 +30,9 @@ export const RootRow = styled.div<RootRowType>`
     flex-direction: row;
     width: 100%;
   }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+  }
 `
 
 export const RootColumn = styled.div<RootRowType>`
@@ -39,10 +42,20 @@ export const RootColumn = styled.div<RootRowType>`
   justify-content: space-between;
   flex-direction: column;
   align-items: flex-start;
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
 `
 
 export const SpacedColumn = styled(RootColumn)<RootRowType>`
   justify-content: space-around;
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    justify-content: space-between;
+  }
 `
 
 export const StyledWideContent = styled(WideContent)`

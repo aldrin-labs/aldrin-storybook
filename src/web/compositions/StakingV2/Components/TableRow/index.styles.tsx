@@ -43,6 +43,10 @@ export const DepositRow = styled(RootRow)`
     flex-direction: column;
     width: 12%;
   }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    width: 100%;
+  }
 `
 export const Container = styled.div<ContainerProps>`
   width: 90%;
@@ -62,6 +66,12 @@ export const Container = styled.div<ContainerProps>`
     height: ${(props) => props.height || '8.5em'};
     justify-content: center;
     overflow: hidden;
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    height: 24em;
+    align-items: center;
+    overflow-x: none;
   }
 
   &:hover {
@@ -86,6 +96,17 @@ export const StretchedRow = styled(RootRow)`
     margin: 0;
     height: 5.5em;
     width: 100%;
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    width: 100%;
+    flex-direction: column;
+    height: 40em;
+
+    .iconColumn {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 `
 

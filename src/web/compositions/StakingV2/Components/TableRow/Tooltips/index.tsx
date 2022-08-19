@@ -13,7 +13,7 @@ export const LabelsTooltips = ({
 }) => {
   return (
     <>
-      {type === 'New' && (
+      {type === 'Test' && (
         <InlineText color="gray0">
           This pool was launched{' '}
           <InlineText color="gray0" weight={600}>
@@ -22,7 +22,7 @@ export const LabelsTooltips = ({
           ago.
         </InlineText>
       )}
-      {type === 'Locked' && (
+      {type === 'Test2' && (
         <InlineText color="gray0">
           Pool creator locked their{' '}
           <InlineText color="green4" weight={600}>

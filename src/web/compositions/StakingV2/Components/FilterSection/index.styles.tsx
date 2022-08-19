@@ -95,7 +95,6 @@ export const LabelContainer = styled.div<LabelContainerProps>`
   cursor: pointer;
   margin-right: 1em;
   transition: all 0.5s;
-  min-width: ${(props) => (props.NFT ? '7.5em' : '')};
 
   &:hover {
     label {
