@@ -46,6 +46,10 @@ export const DepositRow = styled(RootRow)`
 
   @media (max-width: ${BREAKPOINTS.md}) {
     width: 100%;
+
+    .linksRow {
+      display: none;
+    }
   }
 `
 export const Container = styled.div<ContainerProps>`
@@ -104,6 +108,7 @@ export const StretchedRow = styled(RootRow)`
     height: 40em;
 
     .iconColumn {
+      position: relative;
       flex-direction: column;
       align-items: flex-start;
     }
@@ -137,6 +142,18 @@ export const StyledLink = styled(Link)`
 `
 
 export const SRow = styled(HeaderRow)`
+  .smallLinksRow {
+    display: none;
+  }
+  @media (max-width: ${BREAKPOINTS.md}) {
+    .smallLinksRow {
+      display: block;
+      position: absolute;
+      top: 10px;
+      right: 0px;
+    }
+  }
+
   @media (max-width: ${BREAKPOINTS.sm}) {
     flex-direction: column;
     align-items: flex-start;

@@ -185,9 +185,8 @@ const Block = ({
     amountValue > 0 && fromWallet && amountValue <= fromWallet.amount
 
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
-
   return (
-    <ModalContainer needBlur>
+    <ModalContainer needBlur className="modal-container">
       <Modal open={open} onClose={onClose}>
         <HeaderComponent arrow close={onClose} token="stSOL" />
         <Column height="auto" margin="2em 0">

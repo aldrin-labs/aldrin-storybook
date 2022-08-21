@@ -88,6 +88,11 @@ export const TableRow = ({
               <InlineText size="md" weight={600} color="gray0">
                 Stake {token}
               </InlineText>
+              <Row width="100%" className="smallLinksRow">
+                <LinkToTwitter />
+                <LinkToDiscord margin="0 0.5em" />
+                <LinkToCoinMarketcap />
+              </Row>
             </SRow>
             <LabelsRow>
               {token === 'RIN' && (
@@ -157,14 +162,10 @@ export const TableRow = ({
               ) : null}
             </LabelsRow>
           </RootColumn>
-          {/* <Block> */}
           <SpacedColumn height="100%">
-            {/* <Row> */}
-            {/* <ArrowsIcon /> */}
             <InlineText size="sm" weight={400} color="white2">
               Total Staked
             </InlineText>
-            {/* </Row> */}
 
             <InlineText size="xmd" weight={600} color="gray0">
               <InlineText color="white2">$</InlineText> 10.42m
@@ -206,16 +207,12 @@ export const TableRow = ({
                 </span>
               </DarkTooltip>
             </InlineText>
-            <SpacedColumn>
-              <InlineText size="xmd" weight={600} color="green1">
-                125.24%
-              </InlineText>
-            </SpacedColumn>
+            <InlineText size="xmd" weight={600} color="green1">
+              125.24%
+            </InlineText>
           </SpacedColumn>
-          {/* </Block> */}
-
           <DepositRow>
-            <Row width="100%">
+            <Row width="100%" className="linksRow">
               <LinkToTwitter />
               <LinkToDiscord margin="0 0.5em" />
               <LinkToCoinMarketcap />
