@@ -25,15 +25,15 @@ export const HeaderComponent = ({
     <Header>
       <Row>
         <TokenIcon
-          margin="0 1em 0"
           mint={getTokenMintAddressByName(`${token}`)}
           size={36}
+          className="token-icon"
         />
         <InlineText size="xmd" weight={600} color="white2">
           {token} Staking
         </InlineText>
       </Row>
-      <Row width="36%">
+      <Row width="36%" className="links-row">
         <LinkToTwitter height="40px" />
         <LinkToDiscord height="40px" />
         <LinkToCoinMarketcap height="40px" />

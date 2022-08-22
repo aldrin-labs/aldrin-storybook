@@ -36,6 +36,13 @@ export const StyledModal = styled.div`
     height: 100%;
     width: 100%;
   }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    .rewards-row {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+  }
 `
 
 export const StyledPopupContainer = styled.div`
@@ -60,6 +67,16 @@ export const Header = styled.div`
     flex-direction: row;
     height: 7em;
   }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    height: 7.4em;
+    align-items: flex-start;
+    padding-top: 1.5em;
+
+    .links-row {
+      margin-left: 2.6em;
+    }
+  }
 `
 
 export const Row = styled.div<RowType>`
@@ -70,9 +87,46 @@ export const Row = styled.div<RowType>`
   height: ${(props) => props.height || 'auto'};
   margin: ${(props) => props.margin || '0'};
 
+  .stake-block {
+    flex: 1;
+  }
+
+  .rewards-block {
+    flex: 1;
+    margin: 0 0 0 8px;
+  }
+
+  .token-icon {
+    margin: 0 1em 0;
+  }
+
   @media (min-width: ${BREAKPOINTS.sm}) {
     flex-direction: row;
     width: ${(props) => props.width || 'auto'};
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    .stake-block {
+      min-width: 100%;
+      height: auto;
+      margin-bottom: 1em;
+    }
+
+    .rewards-block {
+      min-width: 100%;
+      height: auto;
+      margin: 0;
+    }
+
+    .token-icon {
+      margin: 0 1em 0 0;
+    }
+
+    .escape-button {
+      position: absolute;
+      top: 20px;
+      right: 0;
+    }
   }
 `
 

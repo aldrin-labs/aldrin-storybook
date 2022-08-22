@@ -42,14 +42,8 @@ export const RinStaking = ({
             <Column height="auto" width="100%">
               <StakeContainer />
 
-              <Row width="100%" margin="1.25em 0">
-                <Block
-                  margin="0 8px 0 0"
-                  style={{
-                    flex: 1,
-                  }}
-                  className="stake-block"
-                >
+              <Row width="100%" margin="1.25em 0" className="rewards-row">
+                <Block margin="0 8px 0 0" className="stake-block">
                   <BlockContentStretched>
                     <FlexBlock
                       justifyContent="space-between"
@@ -87,13 +81,7 @@ export const RinStaking = ({
                   </BlockContentStretched>
                 </Block>
 
-                <Block
-                  margin="0 0 0 8px"
-                  style={{
-                    flex: 1,
-                  }}
-                  className="rewards-block"
-                >
+                <Block className="rewards-block">
                   <BlockContentStretched>
                     <FlexBlock
                       alignItems="center"

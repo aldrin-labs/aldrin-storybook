@@ -1,4 +1,4 @@
-import { FONT_SIZES, BORDER_RADIUS } from '@variables/variables'
+import { FONT_SIZES, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
 type CircleIconContainerType = {
@@ -125,4 +125,41 @@ export const Label = styled.span<LabelType>`
   font-weight: ${(props) => props.weight || '400'};
   padding: ${(props) => props.padding || '0 0 0 0.25em'};
   font-size: ${(props) => props.size || FONT_SIZES.md};
+`
+
+export const MainContainer = styled.div`
+  @media (max-width: ${BREAKPOINTS.md}) {
+    .modal-container {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: 101;
+    }
+
+    .modal-body {
+      width: 100%;
+      height: 100%;
+      overflow-y: scroll;
+    }
+
+    .apy-row {
+      width: 100%;
+    }
+
+    .rate-row {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .rate-box {
+      margin-bottom: 1em;
+    }
+
+    .fee-box,
+    .rate-box {
+      width: 100%;
+    }
+  }
 `
