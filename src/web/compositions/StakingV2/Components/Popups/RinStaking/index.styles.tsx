@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { BREAKPOINTS } from '@variables/variables'
+
 type InputsContainerType = {
   margin?: string
 }
@@ -90,4 +92,27 @@ export const FormWrap = styled.form`
   align-items: center;
   flex-wrap: wrap;
   margin: 10px;
+`
+
+export const MainContainer = styled.div`
+  @media (max-width: ${BREAKPOINTS.md}) {
+    .modal-container {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      z-index: 101;
+    }
+
+    .modal-body {
+      width: 100%;
+      height: 100%;
+      overflow-y: scroll;
+    }
+
+    .modal-content {
+      overflow-y: scroll;
+    }
+  }
 `

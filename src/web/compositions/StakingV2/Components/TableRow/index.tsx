@@ -118,6 +118,11 @@ export const TableRow = ({
               <InlineText size="md" weight={600} color="gray0">
                 Stake {token}
               </InlineText>
+              <Row width="100%" className="smallLinksRow">
+                <LinkToTwitter />
+                <LinkToDiscord margin="0 0.5em" />
+                <LinkToCoinMarketcap />
+              </Row>
             </SRow>
             <LabelsRow>
               {token === 'RIN' && (
@@ -243,10 +248,8 @@ export const TableRow = ({
               </InlineText>
             </SpacedColumn>
           </SpacedColumn>
-          {/* </Block> */}
-
           <DepositRow>
-            <Row width="100%">
+            <Row width="100%" className="linksRow">
               <LinkToTwitter />
               <LinkToDiscord margin="0 0.5em" />
               <LinkToCoinMarketcap />

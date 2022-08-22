@@ -239,12 +239,7 @@ export const RinStaking = ({
                 </BlockContentStretched>
               </Block>
 
-              <Block
-                margin="0 0 0 8px"
-                style={{
-                  flex: 1,
-                }}
-              >
+              <Block className="rewards-block">
                 <BlockContentStretched>
                   <FlexBlock alignItems="center" justifyContent="space-between">
                     <InlineText size="sm">Compounded Rewards</InlineText>

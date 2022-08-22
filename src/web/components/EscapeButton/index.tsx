@@ -44,7 +44,7 @@ export const EscapeButton: React.FC<EscapeButtonParams> = (params) => {
   }, [])
 
   return (
-    <EscapeButtonSC size={size} onClick={onClose}>
+    <EscapeButtonSC size={size} onClick={onClose} className="escape-button">
       {arrow ? (
         <SvgIcon src={LeftArrow} />
       ) : (

@@ -46,7 +46,6 @@ export const StakeContainer = ({
           }
         />
       </FirstInputContainer>
-
       <Button
         onClick={() =>
           !wallet.connected
