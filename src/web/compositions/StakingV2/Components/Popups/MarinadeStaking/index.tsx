@@ -1,23 +1,18 @@
-import React, { useState } from 'react'
+import { MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
 import { TokenInstructions } from '@project-serum/serum'
+import React, { useState } from 'react'
 
+import { AmountInput } from '@sb/components/AmountInput'
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
-import { HeaderComponent } from '../Header'
-import { Box, Column, Row } from '../index.styles'
-import { Switcher } from '../Switcher/index'
-import { ModalContainer } from '../WithdrawLiquidity/index.styles'
-import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
-
-import { ValuesContainer } from './DepositContainer'
 import {
   notifyAboutStakeTransaction,
   notifyAboutUnStakeTransaction,
 } from '@sb/compositions/MarinadeStaking/utils'
+import { StakingBlockProps } from '@sb/compositions/StakingV2/types'
+import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import {
   useMarinadeSdk,
@@ -28,42 +23,40 @@ import {
   useUserTokenAccounts,
 } from '@sb/dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
-import { MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
-import { stripByAmount } from '@core/utils/chartPageUtils'
-import { useConnection } from '@sb/dexUtils/connection'
-import { toMap } from '@sb/utils'
 import {
   formatNumbersForState,
   formatNumberWithSpaces,
+  MSOL_MINT,
 } from '@sb/dexUtils/utils'
-import { MSolStakingBlockProps } from '../types'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
+
+import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { stripByAmount } from '@core/utils/chartPageUtils'
+
+import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
+import { HeaderComponent } from '../Header'
+import { Box, Column, Row } from '../index.styles'
+import { Switcher } from '../Switcher'
+import { ModalContainer } from '../WithdrawLiquidity/index.styles'
 import {
   FirstInputContainer,
   InputsContainer,
   PositionatedIconContainer,
   SecondInputContainer,
 } from './index.styles'
-import { AmountInput } from '@sb/components/AmountInput'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
-import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
-const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
+const SOL_GAP_AMOUNT = 0.0127 // to allow transactions pass
 
-const Block = ({
-  open,
-  onClose,
-  getDexTokensPricesQuery,
-}: {
-  open: boolean
-  onClose: () => void
-}) => {
-  // const {
-  //   getDexTokensPricesQuery: { getDexTokensPrices = [] },
-  //   open,
-  //   onClose,
-  // } = props
-  const pricesMap = toMap(getDexTokensPricesQuery, (p) => p.symbol)
+const Block: React.FC<StakingBlockProps> = (props) => {
+  const {
+    getDexTokensPricesQuery: { getDexTokensPrices = [] },
+    open,
+    onClose,
+  } = props
+
+  const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -89,10 +82,6 @@ const Block = ({
 
   const mSolPrice = mSolInfo?.stats.m_sol_price || 1
 
-  // const amountGet = isStakeModeOn
-  //   ? parseFloat(amount) / mSolPrice
-  //   : parseFloat(amount) * mSolPrice
-
   const solPrice = pricesMap.get('SOL')?.price || 0
   const usdValue = isStakeModeOn
     ? parseFloat(amount) * solPrice
@@ -102,20 +91,28 @@ const Block = ({
     const valueForState = formatNumbersForState(v)
     const value = parseFloat(valueForState)
 
-    const newGetValue = isStakeModeOn ? value / mSolPrice : value * mSolPrice
+    const newGetValue = isStakeModeOn
+      ? value / mSolPrice
+      : value * mSolPrice || 0
+
+    const formattedNewGetValue = stripByAmount(newGetValue, 4).toString()
 
     setAmount(valueForState)
-    setAmountGet(stripByAmount(newGetValue || 0, 4))
+    setAmountGet(formattedNewGetValue)
   }
 
   const setAmountTo = (v: string) => {
     const valueForState = formatNumbersForState(v)
     const value = parseFloat(valueForState)
 
-    const newFromValue = isStakeModeOn ? value * mSolPrice : value / mSolPrice
+    const newFromValue = isStakeModeOn
+      ? value * mSolPrice
+      : value / mSolPrice || 0
+
+    const formattedNewFromValue = stripByAmount(newFromValue, 4).toString()
 
     setAmountGet(valueForState)
-    setAmount(stripByAmount(newFromValue || 0, 4))
+    setAmount(formattedNewFromValue)
   }
 
   const toggleStakeMode = (value: boolean) => {

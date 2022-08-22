@@ -11,7 +11,19 @@ import { AmountInput } from '../../Inputs'
 import { Container } from '../index.styles'
 import { FirstInputContainer, InputsContainer } from './index.styles'
 
-export const StakeContainer = () => {
+export const StakeContainer = ({
+  setIsConnectWalletPopupOpen,
+  start,
+  setStakeAmount,
+  stakeAmount,
+  maxAmount,
+}: {
+  setIsConnectWalletPopupOpen: (a: boolean) => void
+  start: (a: number) => void
+  setStakeAmount: (a: string | number) => void
+  stakeAmount: number
+  maxAmount: number | string
+}) => {
   const wallet = useWallet()
 
   return (
@@ -19,11 +31,11 @@ export const StakeContainer = () => {
       <FirstInputContainer>
         <AmountInput
           title="Stake"
-          maxAmount={0}
-          amount={0}
+          maxAmount={maxAmount}
+          amount={stakeAmount}
           onMaxAmountClick={() => {}}
           disabled={false}
-          onChange={() => {}}
+          onChange={setStakeAmount}
           appendComponent={
             <Container>
               <TokenIcon margin="0 5px 0 0" mint={RIN_MINT} />
@@ -34,30 +46,13 @@ export const StakeContainer = () => {
           }
         />
       </FirstInputContainer>
-      {/* <SecondInputContainer>
-        <AmountInput
-          title="Receive"
-          maxAmount="0.00"
-          amount={0}
-          onMaxAmountClick={() => {}}
-          onChange={() => {}}
-          appendComponent={
-            <Container>
-              <TokenIcon
-                margin="0 5px 0 0"
-                mint="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-              />
-              <InlineText color="gray0" size="md" weight={600}>
-                USDC
-              </InlineText>
-            </Container>
-          }
-        />
-      </SecondInputContainer> */}
+
       <Button
-        onClick={() => {
-          // connect wallet
-        }}
+        onClick={() =>
+          !wallet.connected
+            ? setIsConnectWalletPopupOpen(true)
+            : start(stakeAmount)
+        }
         $variant="violet"
         $width="xl"
         $padding="xxxl"

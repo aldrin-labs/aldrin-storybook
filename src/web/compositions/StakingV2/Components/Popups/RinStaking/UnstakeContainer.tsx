@@ -11,7 +11,19 @@ import { AmountInput } from '../../Inputs'
 import { Container } from '../index.styles'
 import { FirstInputContainer, InputsContainer } from './index.styles'
 
-export const UnstakeContainer = () => {
+export const UnstakeContainer = ({
+  setIsConnectWalletPopupOpen,
+  end,
+  setUnstakeAmount,
+  unstakeAmount,
+  maxAmount,
+}: {
+  setIsConnectWalletPopupOpen: (a: boolean) => void
+  end: (a: number) => void
+  setUnstakeAmount: (a: string | number) => void
+  unstakeAmount: number
+  maxAmount: number | string
+}) => {
   const wallet = useWallet()
 
   return (
@@ -19,11 +31,11 @@ export const UnstakeContainer = () => {
       <FirstInputContainer>
         <AmountInput
           title="Unstake"
-          maxAmount={0}
-          amount={0}
+          maxAmount={maxAmount}
+          amount={unstakeAmount}
           onMaxAmountClick={() => {}}
           disabled={false}
-          onChange={() => {}}
+          onChange={setUnstakeAmount}
           appendComponent={
             <Container>
               <TokenIcon margin="0 5px 0 0" mint={RIN_MINT} />
@@ -36,9 +48,11 @@ export const UnstakeContainer = () => {
       </FirstInputContainer>
 
       <Button
-        onClick={() => {
-          // connect wallet
-        }}
+        onClick={() =>
+          !wallet.connected
+            ? setIsConnectWalletPopupOpen(true)
+            : end(unstakeAmount)
+        }
         $variant="violet"
         $width="xl"
         $padding="xxxl"

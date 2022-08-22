@@ -1,14 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { useFarmInfo } from '@sb/dexUtils/farming'
+
+import { FARMING_V2_TEST_TOKEN } from '@core/solana'
+import { stripToMillions } from '@core/utils/numberUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { STAKING_CARD_LABELS } from '../../config'
 import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { LabelComponent } from '../FilterSection/Labels'
 import { TooltipIcon } from '../Icons'
 import { Row } from '../Popups/index.styles'
+import { RinStaking } from '../Popups/RinStaking'
 import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
 import {
@@ -23,15 +31,24 @@ import { LabelsTooltips } from './Tooltips'
 
 export const TableRow = ({
   token,
-  setIsRinStakingPopupOpen,
   setIsStSolStakingPopupOpen,
   setIsMSolStakingPopupOpen,
+  dexTokensPricesMap,
+  stakingDataMap,
+  getStakingInfo,
 }: {
   token: string
-  setIsRinStakingPopupOpen: (a: boolean) => void
   setIsStSolStakingPopupOpen: (a: boolean) => void
   setIsMSolStakingPopupOpen: (a: boolean) => void
+  dexTokensPricesMap: Map<string, DexTokensPrices>
+  stakingDataMap: Map<string, any>
+  getStakingInfo: any // TODO
 }) => {
+  const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
+  const { data: farms } = useFarmInfo(stakingDataMap)
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
+  console.log(stakingDataMap)
   let HeaderRowText: string = ''
 
   switch (token) {
@@ -54,7 +71,7 @@ export const TableRow = ({
       HeaderRowText = 'PU238 Price'
       break
     default:
-      'Something went wrong'
+      HeaderRowText = 'Something went wrong'
   }
 
   let routes: string = ''
@@ -74,6 +91,19 @@ export const TableRow = ({
   }
 
   const stakingRoute = `staking/plutonians/${routes}`
+
+  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+
+  const RINHarvest = farm?.harvests.find(
+    (harvest) => harvest.mint === FARMING_V2_TEST_TOKEN
+  )
+
+  const stakedPercentage =
+    (farm?.stakeVaultTokenAmount /
+      (getStakingInfo?.supply || farm?.stakeVaultTokenAmount)) *
+    100
+
+  console.log({ RINHarvest })
 
   return (
     <RootRow margin="10px 0">
@@ -102,14 +132,13 @@ export const TableRow = ({
               )}
               {token === 'mSOL' && (
                 <>
-                  {' '}
                   <LabelComponent
                     tooltipText={<LabelsTooltips type="Test" period="5 days" />}
                     variant={
                       STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
                       STAKING_CARD_LABELS[0]
                     }
-                  />{' '}
+                  />
                   <LabelComponent
                     variant={
                       STAKING_CARD_LABELS.find(
@@ -157,17 +186,15 @@ export const TableRow = ({
               ) : null}
             </LabelsRow>
           </RootColumn>
-          {/* <Block> */}
           <SpacedColumn height="100%">
-            {/* <Row> */}
-            {/* <ArrowsIcon /> */}
             <InlineText size="sm" weight={400} color="white2">
               Total Staked
             </InlineText>
-            {/* </Row> */}
-
             <InlineText size="xmd" weight={600} color="gray0">
-              <InlineText color="white2">$</InlineText> 10.42m
+              <InlineText color="white2">$</InlineText>{' '}
+              {token === 'RIN'
+                ? stripToMillions(farm?.stakeVaultTokenAmount)
+                : '10.42m'}
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
@@ -175,7 +202,9 @@ export const TableRow = ({
               {HeaderRowText}
             </InlineText>
             <InlineText size="xmd" weight={600} color="gray0">
-              <InlineText color="white2">$</InlineText> 102.24k
+              {token === 'RIN'
+                ? `${stripDigitPlaces(stakedPercentage, 2)}%`
+                : '147.86%'}
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
@@ -189,11 +218,11 @@ export const TableRow = ({
                       activity.
                     </p>
                     <p>
-                      Farming APR:{' '}
+                      Farming APR:
                       <InlineText weight={600} color="green4">
                         119.90%
-                      </InlineText>{' '}
-                      Trading APR:{' '}
+                      </InlineText>
+                      Trading APR:
                       <InlineText weight={600} color="green4">
                         5.34%
                       </InlineText>
@@ -208,7 +237,9 @@ export const TableRow = ({
             </InlineText>
             <SpacedColumn>
               <InlineText size="xmd" weight={600} color="green1">
-                125.24%
+                {token === 'RIN'
+                  ? `${stripDigitPlaces(RINHarvest?.apy, 2)}%`
+                  : '125.24%'}
               </InlineText>
             </SpacedColumn>
           </SpacedColumn>
@@ -236,6 +267,8 @@ export const TableRow = ({
                     case 'stSOL':
                       setIsStSolStakingPopupOpen(true)
                       break
+                    default:
+                      break
                   }
                 }}
                 $width="xl"
@@ -250,6 +283,19 @@ export const TableRow = ({
           </DepositRow>
         </StretchedRow>
       </Container>
+      {isRinStakingPopupOpen && (
+        <RinStaking
+          open={isRinStakingPopupOpen}
+          onClose={() => setIsRinStakingPopupOpen(false)}
+          farms={farms}
+          dexTokensPricesMap={dexTokensPricesMap}
+          setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+        />
+      )}
+      <ConnectWalletPopup
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
     </RootRow>
   )
 }
