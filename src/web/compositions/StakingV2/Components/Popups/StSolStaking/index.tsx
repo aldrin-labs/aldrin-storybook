@@ -1,4 +1,4 @@
-import { SolidoSDK } from '@lidofinance/solido-sdk'
+// import { SolidoSDK } from '@lidofinance/solido-sdk'
 import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
@@ -44,45 +44,45 @@ export const StSolStaking = ({
 
   console.log({ connection })
 
-  const solidoSDK = new SolidoSDK(
-    'mainnet-beta',
-    connection,
-    'your_solana_referral_address'
-  )
+  // const solidoSDK = new SolidoSDK(
+  //   'mainnet-beta',
+  //   connection,
+  //   'your_solana_referral_address'
+  // )
 
-  const stake = async (amount: number) => {
-    // try {
-    const { transaction, stSolAccountAddress } =
-      await solidoSDK.getStakeTransaction({
-        amount, // The amount of SOL-s which need to stake
-        payerAddress: wallet.publicKey,
-      })
-    // } catch (e) {
-    //   console.log('error create transaction', e)
-    // }
+  // const stake = async (amount: number) => {
+  //   // try {
+  //   const { transaction, stSolAccountAddress } =
+  //     await solidoSDK.getStakeTransaction({
+  //       amount, // The amount of SOL-s which need to stake
+  //       payerAddress: wallet.publicKey,
+  //     })
+  //   // } catch (e) {
+  //   //   console.log('error create transaction', e)
+  //   // }
 
-    try {
-      // Do something before singing transaction
-      const signed = await wallet.signTransaction(transaction)
+  //   try {
+  //     // Do something before singing transaction
+  //     const signed = await wallet.signTransaction(transaction)
 
-      const transactionHash = await connection.sendRawTransaction(
-        signed.serialize()
-      )
+  //     const transactionHash = await connection.sendRawTransaction(
+  //       signed.serialize()
+  //     )
 
-      // Do something before confirming transaction
-      const { value: status } = await connection.confirmTransaction(
-        transactionHash
-      )
+  //     // Do something before confirming transaction
+  //     const { value: status } = await connection.confirmTransaction(
+  //       transactionHash
+  //     )
 
-      if (status?.err) {
-        throw status.err
-      }
+  //     if (status?.err) {
+  //       throw status.err
+  //     }
 
-      // Do something after getting success transaction
-    } catch (e) {
-      console.log('error sign transaction', e)
-    }
-  }
+  //     // Do something after getting success transaction
+  //   } catch (e) {
+  //     console.log('error sign transaction', e)
+  //   }
+  // }
 
   const toggleStakeMode = (value: boolean) => {
     setAmount('0')
