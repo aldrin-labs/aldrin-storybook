@@ -5,78 +5,52 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { useFarmInfo } from '@sb/dexUtils/farming'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
-import { FARMING_V2_TEST_TOKEN } from '@core/solana'
-import { stripToMillions } from '@core/utils/numberUtils'
+import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { STAKING_CARD_LABELS } from '../../config'
-import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
+import { RootColumn, RootRow, SpacedColumn } from '../../index.styles'
 import { LabelComponent } from '../FilterSection/Labels'
 import { TooltipIcon } from '../Icons'
 import { Row } from '../Popups/index.styles'
+import { MarinadeStaking } from '../Popups/MarinadeStaking'
 import { RinStaking } from '../Popups/RinStaking'
-import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from '../Socials'
+import { StSolStaking } from '../Popups/StSolStaking'
+import { LinkToCoinMarketcap, LinkToDiscord, LinkToTwitter } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
 import {
+  Container,
   DepositRow,
   LabelsRow,
-  Container,
+  SRow,
   StretchedRow,
   StyledLink,
-  SRow,
 } from './index.styles'
-import { LabelsTooltips } from './Tooltips'
 
 export const TableRow = ({
-  token,
-  setIsStSolStakingPopupOpen,
-  setIsMSolStakingPopupOpen,
+  farms,
   dexTokensPricesMap,
-  stakingDataMap,
-  getStakingInfo,
+  mSolInfo,
+  staking,
+  refreshStakingInfo,
 }: {
-  token: string
-  setIsStSolStakingPopupOpen: (a: boolean) => void
-  setIsMSolStakingPopupOpen: (a: boolean) => void
+  farms: any // TODO
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  stakingDataMap: Map<string, any>
-  getStakingInfo: any // TODO
+  mSolInfo: any // TODO
+  staking: any // TODO
+  refreshStakingInfo: RefreshFunction
 }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
-  const { data: farms } = useFarmInfo(stakingDataMap)
+  const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
+  const [isStSolStakingPopupOpen, setIsStSolStakingPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
-  console.log(stakingDataMap)
-  let HeaderRowText: string = ''
-
-  switch (token) {
-    case 'mSOL':
-      HeaderRowText = 'Epoch'
-      break
-    case 'stSOL':
-      HeaderRowText = 'Epoch'
-      break
-    case 'RIN':
-      HeaderRowText = '% of circ. supply'
-      break
-    case 'PLD':
-      HeaderRowText = 'PLD Price'
-      break
-    case 'RPC':
-      HeaderRowText = 'RPC Price'
-      break
-    case 'PU238':
-      HeaderRowText = 'PU238 Price'
-      break
-    default:
-      HeaderRowText = 'Something went wrong'
-  }
 
   let routes: string = ''
 
-  switch (token) {
+  switch (staking.token) {
     case 'PLD':
       routes = 'PLD'
       break
@@ -92,175 +66,99 @@ export const TableRow = ({
 
   const stakingRoute = `staking/plutonians/${routes}`
 
-  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
-
-  const RINHarvest = farm?.harvests.find(
-    (harvest) => harvest.mint === FARMING_V2_TEST_TOKEN
-  )
-
-  const stakedPercentage =
-    (farm?.stakeVaultTokenAmount /
-      (getStakingInfo?.supply || farm?.stakeVaultTokenAmount)) *
-    100
-
-  console.log({ RINHarvest })
+  const isPlutoniansToken =
+    staking.token === 'RPC' ||
+    staking.token === 'PU238' ||
+    staking.token === 'PLD'
 
   return (
     <RootRow margin="10px 0">
       <Container width="100%">
         <StretchedRow>
-          <RootColumn width="15%" height="100%" className="iconColumn">
+          <RootColumn
+            margin="0 0 2em 0"
+            width="15%"
+            height="100%"
+            className="iconColumn"
+          >
             <SRow>
-              <TokenIconsContainer
-                // mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
-                token={token}
-              />
-              <InlineText size="md" weight={600} color="gray0">
-                Stake {token}
+              <TokenIconsContainer token={staking.token} />
+              <InlineText size="md" weight={600} color="white2">
+                Stake {staking.token}
               </InlineText>
               <Row width="100%" className="smallLinksRow">
-                <LinkToTwitter />
-                <LinkToDiscord margin="0 0.5em" />
-                <LinkToCoinMarketcap />
+                <LinkToTwitter link={staking.socials.twitter} />
+                <LinkToDiscord
+                  link={staking.socials.discord}
+                  margin="0 0.5em"
+                />
+                <LinkToCoinMarketcap link={staking.socials.coinmarketcap} />
               </Row>
             </SRow>
             <LabelsRow>
-              {token === 'RIN' && (
+              {staking.labels.map((label: string) => (
                 <LabelComponent
-                  tooltipText={<LabelsTooltips type="Test2" period="5 days" />}
                   variant={
-                    STAKING_CARD_LABELS.find(
-                      (el) => el.text === 'Auto-Compound'
-                    ) || STAKING_CARD_LABELS[0]
+                    STAKING_CARD_LABELS.find((el) => el.text === label) ||
+                    STAKING_CARD_LABELS[0]
                   }
                 />
-              )}
-              {token === 'mSOL' && (
-                <>
-                  <LabelComponent
-                    tooltipText={<LabelsTooltips type="Test" period="5 days" />}
-                    variant={
-                      STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
-                      STAKING_CARD_LABELS[0]
-                    }
-                  />
-                  <LabelComponent
-                    variant={
-                      STAKING_CARD_LABELS.find(
-                        (el) => el.text === 'Marinade'
-                      ) || STAKING_CARD_LABELS[0]
-                    }
-                  />
-                </>
-              )}
-              {token === 'stSOL' && (
-                <>
-                  <LabelComponent
-                    tooltipText={<LabelsTooltips type="Test" period="5 days" />}
-                    variant={
-                      STAKING_CARD_LABELS.find((el) => el.text === 'Liquid') ||
-                      STAKING_CARD_LABELS[0]
-                    }
-                  />
-                  <LabelComponent
-                    variant={
-                      STAKING_CARD_LABELS.find((el) => el.text === 'Lido') ||
-                      STAKING_CARD_LABELS[0]
-                    }
-                  />
-                </>
-              )}
-              {token === 'PLD' || token === 'RPC' || token === 'PU238' ? (
-                <>
-                  <LabelComponent
-                    tooltipText={<LabelsTooltips type="Test" period="5 days" />}
-                    variant={
-                      STAKING_CARD_LABELS.find(
-                        (el) => el.text === 'Plutonians'
-                      ) || STAKING_CARD_LABELS[0]
-                    }
-                  />
-                  <LabelComponent
-                    variant={
-                      STAKING_CARD_LABELS.find(
-                        (el) => el.text === 'NFT Rewards'
-                      ) || STAKING_CARD_LABELS[0]
-                    }
-                  />
-                </>
-              ) : null}
+              ))}
             </LabelsRow>
           </RootColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="white2">
               Total Staked
             </InlineText>
-            <InlineText size="xmd" weight={600} color="gray0">
+            <InlineText size="xmd" weight={600} color="white1">
               <InlineText color="white2">$</InlineText>{' '}
-              {token === 'RIN'
-                ? stripToMillions(farm?.stakeVaultTokenAmount)
-                : '10.42m'}
+              {stripByAmountAndFormat(staking.totalStaked)}{' '}
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="white2">
-              {HeaderRowText}
+              {staking.columnName}
             </InlineText>
-            <InlineText size="xmd" weight={600} color="gray0">
-              {token === 'RIN'
-                ? `${stripDigitPlaces(stakedPercentage, 2)}%`
-                : '147.86%'}
+            <InlineText size="xmd" weight={600} color="white1">
+              {staking.additionalInfo}
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="white2">
               <DarkTooltip
                 title={
-                  <InlineText color="gray0">
+                  <InlineText color="white2">
                     <p>
                       Estimation for growth of your deposit over a year
                       projected on current farming rewards and past 7d trading
                       activity.
                     </p>
-                    <p>
-                      Farming APR:
-                      <InlineText weight={600} color="green4">
-                        119.90%
-                      </InlineText>
-                      Trading APR:
-                      <InlineText weight={600} color="green4">
-                        5.34%
-                      </InlineText>
-                    </p>
                   </InlineText>
                 }
               >
                 <span>
-                  <TooltipIcon margin="0" color="white2" /> APR
+                  <TooltipIcon margin="0" color="white2" /> APY{' '}
+                  {isPlutoniansToken && 'up to'}
                 </span>
               </DarkTooltip>
             </InlineText>
-            <SpacedColumn>
-              <InlineText size="xmd" weight={600} color="green1">
-                {token === 'RIN'
-                  ? `${stripDigitPlaces(RINHarvest?.apy, 2)}%`
-                  : '125.24%'}
-              </InlineText>
-            </SpacedColumn>
+            <InlineText size="xmd" weight={600} color="green3">
+              {stripDigitPlaces(staking.apy)}%
+            </InlineText>
           </SpacedColumn>
           <DepositRow>
             <Row width="100%" className="linksRow">
-              <LinkToTwitter />
-              <LinkToDiscord margin="0 0.5em" />
-              <LinkToCoinMarketcap />
+              <LinkToTwitter link={staking.socials.twitter} />
+              <LinkToDiscord link={staking.socials.discord} margin="0 0.5em" />
+              <LinkToCoinMarketcap link={staking.socials.coinmarketcap} />
             </Row>
 
-            {token === 'RPC' || token === 'PU238' || token === 'PLD' ? (
+            {isPlutoniansToken ? (
               <StyledLink to={stakingRoute}>View</StyledLink>
             ) : (
               <Button
                 onClick={() => {
-                  switch (token) {
+                  switch (staking.token) {
                     case 'RIN':
                       setIsRinStakingPopupOpen(true)
                       break
@@ -288,11 +186,30 @@ export const TableRow = ({
       </Container>
       {isRinStakingPopupOpen && (
         <RinStaking
+          socials={staking.socials}
           open={isRinStakingPopupOpen}
           onClose={() => setIsRinStakingPopupOpen(false)}
           farms={farms}
           dexTokensPricesMap={dexTokensPricesMap}
           setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+        />
+      )}
+      {isMSolStakingPopupOpen && (
+        <MarinadeStaking
+          socials={staking.socials}
+          open={isMSolStakingPopupOpen}
+          onClose={() => setIsMSolStakingPopupOpen(false)}
+          setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+          dexTokensPricesMap={dexTokensPricesMap}
+          mSolInfo={mSolInfo}
+          refreshStakingInfo={refreshStakingInfo}
+        />
+      )}
+      {isStSolStakingPopupOpen && (
+        <StSolStaking
+          socials={staking.socials}
+          open={isStSolStakingPopupOpen}
+          onClose={() => setIsStSolStakingPopupOpen(false)}
         />
       )}
       <ConnectWalletPopup

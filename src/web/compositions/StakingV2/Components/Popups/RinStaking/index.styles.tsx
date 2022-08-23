@@ -1,6 +1,7 @@
+import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
-import { BREAKPOINTS } from '@variables/variables'
+import { Row } from '../index.styles'
 
 type InputsContainerType = {
   margin?: string
@@ -34,7 +35,7 @@ export const FirstInputContainer = styled.div`
   padding: 0.8em;
   border-radius: 1em;
   margin-bottom: 0.8em;
-  border: 1px solid ${(props) => props.theme.colors.white5};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   background: ${(props) => props.theme.colors.white5};
 `
 
@@ -113,6 +114,19 @@ export const MainContainer = styled.div`
 
     .modal-content {
       overflow-y: scroll;
+    }
+  }
+`
+export const SRow = styled(Row)`
+  width: 100%;
+  margin: 1.25em 0;
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    flex-direction: column;
+    .rewards-block,
+    .stake-block {
+      width: 100%;
+      margin: 0.5em 0;
     }
   }
 `

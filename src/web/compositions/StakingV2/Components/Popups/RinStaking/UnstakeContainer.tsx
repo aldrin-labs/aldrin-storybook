@@ -33,7 +33,7 @@ export const UnstakeContainer = ({
           title="Unstake"
           maxAmount={maxAmount}
           amount={unstakeAmount}
-          onMaxAmountClick={() => {}}
+          onMaxAmountClick={() => setUnstakeAmount(maxAmount)}
           disabled={false}
           onChange={setUnstakeAmount}
           appendComponent={

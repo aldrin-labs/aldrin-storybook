@@ -56,7 +56,7 @@ export const AmountInput = ({
         <AmountInputContainer>
           <InvisibleInput
             type="text"
-            value={amount || ''}
+            value={formatNumberWithSpaces(amount) || ''}
             disabled={disabled}
             onChange={(e) => {
               onChange(formatNumbersForState(e.target.value))

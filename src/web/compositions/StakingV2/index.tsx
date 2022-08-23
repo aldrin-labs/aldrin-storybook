@@ -1,27 +1,35 @@
-import React, { useState } from 'react'
+import { PublicKey } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { Page } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { useConnection } from '@sb/dexUtils/connection'
+import { useFarmInfo } from '@sb/dexUtils/farming'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { useMarinadeStakingInfo } from '@sb/dexUtils/staking/hooks'
+import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc'
 import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
+import { FARMING_V2_TEST_TOKEN, ProgramsMultiton } from '@core/solana'
+import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
 import CoinsBg from './components/Icons/coins.webp'
-import { MarinadeStaking } from './components/Popups/MarinadeStaking/index'
-import { StSolStaking } from './components/Popups/StSolStaking/index'
 import { TableRow } from './components/TableRow'
-import { stakeTokens } from './config'
 import {
+  ImageContainer,
   StyledWideContent,
   ThinHeading,
+  TotalStaked,
   TotalStakedCard,
   TotalStakedRow,
-  TotalStaked,
-  ImageContainer,
 } from './index.styles'
 import { StakingPageProps } from './types'
+import { getStakingsData } from './utils'
 
 const Block: React.FC<StakingPageProps> = (props) => {
   const {
@@ -29,16 +37,92 @@ const Block: React.FC<StakingPageProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
   } = props
 
-  const stakingDataMap = toMap(getStakingInfo.farming, (farming) =>
+  const [PU238StakeVault, setPU238StakeVault] = useState('')
+  const [PLDStakeVault, setPLDStakeVault] = useState('')
+  const [RPCStakeVault, setRPCStakeVault] = useState('')
+
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const { data: mSolInfo, mutate: refreshStakingInfo } =
+    useMarinadeStakingInfo()
+
+  const stakingDataMap = toMap(getStakingInfo?.farming, (farming) =>
     farming?.stakeMint.toString()
   )
 
+  const { data: farms } = useFarmInfo(stakingDataMap)
+
   const dexTokensPricesMap = toMap(getDexTokensPrices, (price) => price.symbol)
 
-  const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
-  const [isStSolStakingPopupOpen, setIsStSolStakingPopupOpen] = useState(false)
+  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
 
-  console.log({ getStakingInfo })
+  const RINHarvest = farm?.harvests.find(
+    (harvest) => harvest.mint === FARMING_V2_TEST_TOKEN
+  )
+
+  const stakedPercentage =
+    (farm?.stakeVaultTokenAmount /
+      (getStakingInfo?.supply || farm?.stakeVaultTokenAmount)) *
+    100
+
+  useEffect(() => {
+    const getPlutoniansPoolData = async () => {
+      const program = ProgramsMultiton.getPlutoniansProgram({
+        wallet,
+        connection,
+      })
+
+      const pools = await program.account.stakingPool.all()
+      const stakingVaults = pools.map((pool) => {
+        const tokenName = getTokenNameByMintAddress(
+          pool.account.stakeTokenMint.toString()
+        )
+        const stakeVault = pool.account.stakeVault.toString()
+        console.log({ stakeVault })
+
+        if (tokenName === 'PLD') {
+          setPLDStakeVault(stakeVault)
+        }
+
+        if (tokenName === 'PU238') {
+          setPU238StakeVault(stakeVault)
+        }
+
+        if (tokenName === 'RPC') {
+          setRPCStakeVault(stakeVault)
+        }
+      })
+
+      return stakingVaults
+    }
+    getPlutoniansPoolData()
+  }, [])
+
+  const [RPCTotalStaked] = useAccountBalance({
+    publicKey: RPCStakeVault ? new PublicKey(RPCStakeVault) : undefined,
+  })
+  const [PU238TotalStaked] = useAccountBalance({
+    publicKey: PU238StakeVault ? new PublicKey(PU238StakeVault) : undefined,
+  })
+  const [PLDTotalStaked] = useAccountBalance({
+    publicKey: PLDStakeVault ? new PublicKey(PLDStakeVault) : undefined,
+  })
+
+  const stakingsData = getStakingsData({
+    farm,
+    stakedPercentage,
+    RINHarvest,
+    mSolInfo,
+    PLDTotalStaked,
+    RPCTotalStaked,
+    PU238TotalStaked,
+    dexTokensPricesMap,
+  })
+
+  const totalStaked = stakingsData.reduce((acc, current) => {
+    return acc + current.totalStaked
+  }, 0)
 
   return (
     <Page>
@@ -46,41 +130,28 @@ const Block: React.FC<StakingPageProps> = (props) => {
         <TotalStakedRow>
           <TotalStakedCard>
             <ThinHeading>Total Staked</ThinHeading>
-            <TotalStaked>$ 4.42m</TotalStaked>
+            <TotalStaked>$ {stripByAmountAndFormat(totalStaked)}</TotalStaked>
           </TotalStakedCard>
           <ImageContainer>
             <img alt="rin" src={CoinsBg} width="100%" height="100%" />
           </ImageContainer>
         </TotalStakedRow>
-        {stakeTokens.map((token) => (
+        {stakingsData.map((staking) => (
           <TableRow
             dexTokensPricesMap={dexTokensPricesMap}
-            stakingDataMap={stakingDataMap}
-            setIsStSolStakingPopupOpen={setIsStSolStakingPopupOpen}
-            setIsMSolStakingPopupOpen={setIsMSolStakingPopupOpen}
-            getStakingInfo={getStakingInfo}
-            token={token}
+            staking={staking}
+            farms={farms}
+            mSolInfo={mSolInfo}
+            refreshStakingInfo={refreshStakingInfo}
           />
         ))}
       </StyledWideContent>
-      {isMSolStakingPopupOpen && (
-        <MarinadeStaking
-          open={isMSolStakingPopupOpen}
-          onClose={() => setIsMSolStakingPopupOpen(false)}
-          getDexTokensPricesQuery={getDexTokensPrices}
-        />
-      )}
-      {isStSolStakingPopupOpen && (
-        <StSolStaking
-          open={isStSolStakingPopupOpen}
-          onClose={() => setIsStSolStakingPopupOpen(false)}
-        />
-      )}
     </Page>
   )
 }
 
 export const StakingPage: any = compose(
+  withPublicKey,
   queryRendererHoc({
     query: getDexTokensPricesQuery,
     name: 'getDexTokensPricesQuery',
@@ -91,6 +162,9 @@ export const StakingPage: any = compose(
   queryRendererHoc({
     query: getStakingInfoQuery,
     name: 'getStakingInfoQuery',
+    // variables: (props) => console.log('props', props) || ({
+    //   farmerPubkey: props.publicKey,
+    // }),
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000,

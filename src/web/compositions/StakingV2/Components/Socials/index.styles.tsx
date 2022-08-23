@@ -5,6 +5,7 @@ type StyledLinkProps = {
   margin?: string
   height?: string
   $variant?: keyof typeof VARIANTS
+  needHover?: boolean
 }
 
 export const VARIANTS = {
@@ -48,20 +49,25 @@ export const StyledLink = styled.a<StyledLinkProps>`
   margin: ${(props) => props.margin || '0'};
   height: ${(props) => props.height || '16px'};
   transition: all 0.5s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${(props) =>
+    props.needHover &&
+    `&:hover {
+      
+  svg path:not(.not-fill) {
+    fill: ${props.theme.colors.white1};
+  }
 
-  &:hover {
-    svg path:not(.not-fill) {
-      fill: ${(props) => props.theme.colors.white1};
-    }
-
-    svg {
-      defs {
-        clipPath {
-          rect {
-            fill: ${(props) => props.theme.colors.white1};
-          }
+  svg {
+    defs {
+      clipPath {
+        rect {
+          fill: ${props.theme.colors.white1};
         }
       }
     }
   }
+}`}
 `

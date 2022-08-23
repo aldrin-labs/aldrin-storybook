@@ -7,11 +7,14 @@ export interface BlockProps {
   icon?: string
   inner?: boolean
   margin?: string
+  needBorder?: boolean
 }
 
 export const Block = styled.div<BlockProps>`
   background: ${(props: BlockProps) =>
     props.inner ? props.theme.colors.white4 : props.theme.colors.white5};
+  border: ${(props) =>
+    props.needBorder && `1px solid ${props.theme.colors.white4}`};
   border-radius: 12px;
   margin: ${(props) => props.margin || '0'};
   height: 100%;

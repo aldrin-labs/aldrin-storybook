@@ -33,7 +33,7 @@ export const StakeContainer = ({
           title="Stake"
           maxAmount={maxAmount}
           amount={stakeAmount}
-          onMaxAmountClick={() => {}}
+          onMaxAmountClick={() => setStakeAmount(maxAmount)}
           disabled={false}
           onChange={setStakeAmount}
           appendComponent={

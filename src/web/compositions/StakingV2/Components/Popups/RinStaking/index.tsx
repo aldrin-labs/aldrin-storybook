@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Block, BlockContentStretched } from '@sb/components/Block'
 import { FlexBlock, StretchedBlock } from '@sb/components/Layout'
@@ -33,13 +33,14 @@ import {
   stripByAmountAndFormat,
   stripToMillions,
 } from '@core/utils/numberUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { NumberWithLabel } from '../../NumberWithLabel'
 import { HeaderComponent } from '../Header'
 import InfoIcon from '../Icons/Icon.svg'
-import { Column, Row } from '../index.styles'
+import { Column } from '../index.styles'
 import { ModalContainer } from '../WithdrawLiquidity/index.styles'
-import { BigNumber } from './index.styles'
+import { BigNumber, SRow } from './index.styles'
 import { StakeContainer } from './StakeContainer'
 import { UnstakeContainer } from './UnstakeContainer'
 
@@ -49,12 +50,14 @@ export const RinStaking = ({
   farms,
   dexTokensPricesMap,
   setIsConnectWalletPopupOpen,
+  socials,
 }: {
   onClose: () => void
   open: boolean
   farms: any
   dexTokensPricesMap: Map<string, DexTokensPrices>
   setIsConnectWalletPopupOpen: (a: boolean) => void
+  socials: any // TODO
 }) => {
   const [stakeAmount, setStakeAmount] = useState(0)
   const [unstakeAmount, setUnstakeAmount] = useState(0)
@@ -181,17 +184,21 @@ export const RinStaking = ({
   //   farmer?.account.staked.amount.toString() || '0'
   // )
 
-  // useEffect(() => {
-  //   document.title = `Aldrin | Stake RIN | ${}% APR`
-  //   return () => {
-  //     document.title = 'Aldrin'
-  //   }
-  // }, [apr])
+  useEffect(() => {
+    document.title = `Aldrin | Stake RIN | ${rinHarvest.apy}% APR`
+    return () => {
+      document.title = 'Aldrin'
+    }
+  }, [rinHarvest.apy])
 
   return (
     <ModalContainer needBlur>
       <Modal open={open} onClose={onClose}>
-        <HeaderComponent close={() => onClose()} token="RIN" />
+        <HeaderComponent
+          socials={socials}
+          close={() => onClose()}
+          token="RIN"
+        />
         <Column height="calc(100% - 10em)" margin="0 0 3em">
           <Column height="auto" width="100%">
             <StakeContainer
@@ -202,8 +209,10 @@ export const RinStaking = ({
               maxAmount={tokenData?.amount || '0.00'}
             />
 
-            <Row width="100%" margin="1.25em 0">
+            <SRow>
               <Block
+                needBorder
+                className="stake-block"
                 margin="0 8px 0 0"
                 style={{
                   flex: 1,
@@ -211,7 +220,9 @@ export const RinStaking = ({
               >
                 <BlockContentStretched>
                   <FlexBlock justifyContent="space-between" alignItems="center">
-                    <InlineText size="sm">Your stake</InlineText>{' '}
+                    <InlineText size="sm" color="white2">
+                      Your stake
+                    </InlineText>{' '}
                     <SvgIcon
                       style={{ cursor: 'pointer' }}
                       src={
@@ -228,21 +239,23 @@ export const RinStaking = ({
                     <InlineText>
                       {isBalanceShowing ? stripToMillions(totalStaked) : '***'}
                     </InlineText>{' '}
-                    <InlineText>RIN</InlineText>
+                    <InlineText color="white2">RIN</InlineText>
                   </BigNumber>
                   <StretchedBlock align="flex-end">
                     <InlineText size="sm">
-                      <InlineText>$</InlineText>&nbsp;{' '}
+                      <InlineText color="white2">$</InlineText>&nbsp;{' '}
                       {isBalanceShowing ? stakedInUsd : '***'}
                     </InlineText>{' '}
                   </StretchedBlock>
                 </BlockContentStretched>
               </Block>
 
-              <Block className="rewards-block">
+              <Block needBorder className="rewards-block">
                 <BlockContentStretched>
                   <FlexBlock alignItems="center" justifyContent="space-between">
-                    <InlineText size="sm">Compounded Rewards</InlineText>
+                    <InlineText color="white2" size="sm">
+                      Compounded Rewards
+                    </InlineText>
                     <DarkTooltip
                       title={
                         <>
@@ -262,18 +275,21 @@ export const RinStaking = ({
                     <InlineText>
                       {isBalanceShowing ? formatNumberWithSpaces(8000) : '***'}{' '}
                     </InlineText>{' '}
-                    <InlineText>RIN</InlineText>
+                    <InlineText color="white2">RIN</InlineText>
                   </BigNumber>
                   <StretchedBlock align="flex-end">
                     <InlineText size="sm">
-                      <InlineText>$</InlineText>&nbsp;{' '}
+                      <InlineText color="white2">$</InlineText>&nbsp;{' '}
                       {isBalanceShowing ? formatNumberWithSpaces(1800) : '***'}
                     </InlineText>
-                    <NumberWithLabel value={12} label="APY" />
+                    <NumberWithLabel
+                      value={stripDigitPlaces(rinHarvest.apy, 2)}
+                      label="APY"
+                    />
                   </StretchedBlock>
                 </BlockContentStretched>
               </Block>
-            </Row>
+            </SRow>
           </Column>
           <UnstakeContainer
             unstakeAmount={unstakeAmount}

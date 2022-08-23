@@ -15,11 +15,11 @@ import { Header, Row } from '../index.styles'
 export const HeaderComponent = ({
   token,
   close,
-  arrow,
+  socials,
 }: {
   token: string
   close: () => void
-  arrow?: boolean
+  socials: any // TODO
 }) => {
   return (
     <Header>
@@ -34,11 +34,10 @@ export const HeaderComponent = ({
         </InlineText>
       </Row>
       <Row width="36%" className="links-row">
-        <LinkToTwitter height="40px" />
-        <LinkToDiscord height="40px" />
-        <LinkToCoinMarketcap height="40px" />
-        <EscapeButton arrow={arrow} size="2.5" onClose={() => close()} />
-        {/* TODO: last button should be replaced with Esc when swaps merged */}
+        <LinkToTwitter link={socials.twitter} height="40px" />
+        <LinkToDiscord link={socials.discord} height="40px" />
+        <LinkToCoinMarketcap link={socials.coinmarketcap} height="40px" />
+        <EscapeButton size="2.5" onClose={() => close()} />
       </Row>
     </Header>
   )

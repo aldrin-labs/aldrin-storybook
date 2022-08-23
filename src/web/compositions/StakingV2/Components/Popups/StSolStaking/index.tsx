@@ -1,42 +1,88 @@
+import { SolidoSDK } from '@lidofinance/solido-sdk'
 import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
+import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { ArrowsExchangeIcon } from '@sb/compositions/Swap/components/Inputs/images/arrowsExchangeIcon'
+import { ReverseTokensContainer } from '@sb/compositions/Swap/styles'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { RIN_MINT } from '@core/solana'
+
+import { AmountInput } from '../../Inputs'
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Container, Row } from '../index.styles'
+import { AdditionalInfoRow } from '../MarinadeStaking/index.styles'
 import { Switcher } from '../Switcher/index'
 import { ModalContainer } from '../WithdrawLiquidity/index.styles'
-import { ValuesContainer } from './DepositContainer'
 import {
   FirstInputContainer,
   InputsContainer,
-  PositionatedIconContainer,
   SecondInputContainer,
   MainContainer,
 } from './index.styles'
-import { AmountInput } from '../../Inputs'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import { RIN_MINT } from '@core/solana'
 
 export const StSolStaking = ({
   onClose,
   open,
+  socials,
 }: {
   onClose: () => void
   open: boolean
+  socials: any // TO DO
 }) => {
-  const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
-  const [isUserVerified, setIsUserVerified] = useState(false)
-  const [period, setPeriod] = useState('7D')
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [amount, setAmount] = useState('')
   const [amountGet, setAmountGet] = useState('')
 
-  const wallet = useWallet()
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  console.log({ connection })
+
+  const solidoSDK = new SolidoSDK(
+    'mainnet-beta',
+    connection,
+    'your_solana_referral_address'
+  )
+
+  const stake = async (amount: number) => {
+    // try {
+    const { transaction, stSolAccountAddress } =
+      await solidoSDK.getStakeTransaction({
+        amount, // The amount of SOL-s which need to stake
+        payerAddress: wallet.publicKey,
+      })
+    // } catch (e) {
+    //   console.log('error create transaction', e)
+    // }
+
+    try {
+      // Do something before singing transaction
+      const signed = await wallet.signTransaction(transaction)
+
+      const transactionHash = await connection.sendRawTransaction(
+        signed.serialize()
+      )
+
+      // Do something before confirming transaction
+      const { value: status } = await connection.confirmTransaction(
+        transactionHash
+      )
+
+      if (status?.err) {
+        throw status.err
+      }
+
+      // Do something after getting success transaction
+    } catch (e) {
+      console.log('error sign transaction', e)
+    }
+  }
 
   const toggleStakeMode = (value: boolean) => {
     setAmount('0')
@@ -48,7 +94,7 @@ export const StSolStaking = ({
     <MainContainer>
       <ModalContainer needBlur className="modal-container">
         <Modal open={open} onClose={onClose}>
-          <HeaderComponent arrow close={onClose} token="stSOL" />
+          <HeaderComponent socials={socials} close={onClose} token="stSOL" />
           <Column height="auto" margin="2em 0">
             <Row width="100%" margin="2em 0 1em 0" className="apy-row">
               <NumberWithLabel value={0} label="Epoch" />
@@ -81,7 +127,11 @@ export const StSolStaking = ({
                     }
                   />
                 </FirstInputContainer>
-                <PositionatedIconContainer>+</PositionatedIconContainer>
+                <ReverseTokensContainer $isReversed={false}>
+                  <ArrowsExchangeIcon
+                    onClick={() => setIsStakeModeOn(!isStakeModeOn)}
+                  />
+                </ReverseTokensContainer>
                 <SecondInputContainer>
                   <AmountInput
                     title="Receive"
@@ -103,8 +153,12 @@ export const StSolStaking = ({
                   />
                 </SecondInputContainer>
               </InputsContainer>
-              <Row margin="1em 0" width="100%" className="rate-row">
-                <Box height="auto" width="48%" className="rate-box">
+              <AdditionalInfoRow
+                margin="1em 0"
+                width="100%"
+                className="rate-row"
+              >
+                <Box className="rate-box" height="auto" width="48%">
                   <Row width="100%">
                     <Row>
                       <InlineText size="sm">Rate:</InlineText>
@@ -129,20 +183,21 @@ export const StSolStaking = ({
                     </Row>
                   </Row>
                 </Box>
-              </Row>
+              </AdditionalInfoRow>
             </Column>
 
             <Column height="auto" width="100%">
               <Button
+                className="stake-st-btn"
                 onClick={() => {
-                  // connect wallet
+                  stake(0.01)
                 }}
                 $variant={wallet.connected ? 'green' : 'violet'}
                 $width="xl"
                 $padding="xxxl"
                 $fontSize="sm"
               >
-                {isRebalanceChecked || !wallet.connected ? (
+                {!wallet.connected ? (
                   'Connect Wallet to Stake mSOL'
                 ) : (
                   <>{isStakeModeOn ? 'Stake stSOL' : 'Unstake stSOL'}</>

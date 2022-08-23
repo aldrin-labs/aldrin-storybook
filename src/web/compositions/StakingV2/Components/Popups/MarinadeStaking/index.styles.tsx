@@ -1,5 +1,7 @@
-import { FONT_SIZES, BORDER_RADIUS } from '@variables/variables'
+import { FONT_SIZES, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
+
+import { Row } from '../index.styles'
 
 type CircleIconContainerType = {
   size?: string
@@ -126,4 +128,38 @@ export const Label = styled.span<LabelType>`
   font-weight: ${(props) => props.weight || '400'};
   padding: ${(props) => props.padding || '0 0 0 0.25em'};
   font-size: ${(props) => props.size || FONT_SIZES.md};
+`
+export const LabelsRow = styled(Row)`
+  width: 100%;
+  margin: 2em 0 1em 0;
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    div {
+      width: 49%;
+      justify-content: center;
+    }
+  }
+`
+
+export const AdditionalInfoRow = styled(Row)`
+  margin: 1em 0;
+  width: 100%;
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    flex-direction: column;
+    .rate-box {
+      margin-bottom: 1em;
+    }
+    div {
+      width: 100%;
+
+      div {
+        justify-content: space-between;
+
+        div {
+          width: auto;
+        }
+      }
+    }
+  }
 `

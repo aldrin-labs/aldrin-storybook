@@ -15,7 +15,7 @@ type ContainerProps = {
 }
 
 export const LabelsRow = styled(RootRow)`
-  margin: 10px 0 0 0;
+  margin: 20px 0 0 0;
   align-items: flex-start;
   justify-content: flex-start;
   div {
@@ -63,7 +63,7 @@ export const Container = styled.div<ContainerProps>`
   height: 12em;
   padding: ${PADDINGS.xxxl};
   transition: 0.3s;
-  overflow-x: scroll;
+  // overflow-x: scroll;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: ${(props) => props.width || '58%'};
@@ -147,7 +147,7 @@ export const SRow = styled(HeaderRow)`
   }
   @media (max-width: ${BREAKPOINTS.md}) {
     .smallLinksRow {
-      display: block;
+      display: flex;
       position: absolute;
       top: 10px;
       right: 0px;

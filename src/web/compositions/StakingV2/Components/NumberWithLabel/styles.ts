@@ -9,8 +9,8 @@ type LabelType = {
 }
 
 export const Container = styled.div`
-  background: ${(props) => rgba(props.theme.colors.green1, 0.15)};
-  color: ${(props) => props.theme.colors.green1};
+  background: ${(props) => rgba(props.theme.colors.green3, 0.15)};
+  color: ${(props) => props.theme.colors.green3};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -19,6 +19,7 @@ export const Container = styled.div`
   width: auto;
   border-radius: ${BORDER_RADIUS.md};
   font-weight: 600;
+  font-size: ${FONT_SIZES.sm};
 `
 
 export const Label = styled.span<LabelType>`

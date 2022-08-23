@@ -45,6 +45,7 @@ export const AmountInputContainer = styled.div`
 `
 export const StyledInlineText = styled(InlineText)`
   padding: 0 0 0 0.2em;
+  cursor: pointer;
 `
 export const CenteredRow = styled(Row)`
   align-items: center;

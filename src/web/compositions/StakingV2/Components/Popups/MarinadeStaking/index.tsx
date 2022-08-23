@@ -2,47 +2,47 @@ import { MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
 import { TokenInstructions } from '@project-serum/serum'
 import React, { useState } from 'react'
 
-import { AmountInput } from '@sb/components/AmountInput'
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import {
   notifyAboutStakeTransaction,
   notifyAboutUnStakeTransaction,
 } from '@sb/compositions/MarinadeStaking/utils'
 import { StakingBlockProps } from '@sb/compositions/StakingV2/types'
+import { ArrowsExchangeIcon } from '@sb/compositions/Swap/components/Inputs/images/arrowsExchangeIcon'
+import { ReverseTokensContainer } from '@sb/compositions/Swap/styles'
 import { useConnection } from '@sb/dexUtils/connection'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import {
-  useMarinadeSdk,
-  useMarinadeStakingInfo,
-} from '@sb/dexUtils/staking/hooks'
+import { useMarinadeSdk } from '@sb/dexUtils/staking/hooks'
 import {
   useAssociatedTokenAccount,
   useUserTokenAccounts,
 } from '@sb/dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
-import {
-  formatNumbersForState,
-  formatNumberWithSpaces,
-  MSOL_MINT,
-} from '@sb/dexUtils/utils'
+import { formatNumbersForState, MSOL_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { stripByAmount } from '@core/utils/chartPageUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 
+import { AmountInput } from '../../Inputs'
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { HeaderComponent } from '../Header'
-import { Box, Column, Row } from '../index.styles'
+import { Box, Column, Container, Row } from '../index.styles'
 import { Switcher } from '../Switcher'
 import { ModalContainer } from '../WithdrawLiquidity/index.styles'
 import {
+  AdditionalInfoRow,
   FirstInputContainer,
   InputsContainer,
-  PositionatedIconContainer,
+  LabelsRow,
   SecondInputContainer,
 } from './index.styles'
 
@@ -51,14 +51,16 @@ const SOL_GAP_AMOUNT = 0.0127 // to allow transactions pass
 
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {
-    getDexTokensPricesQuery: { getDexTokensPrices = [] },
+    dexTokensPricesMap,
     open,
     onClose,
+    setIsConnectWalletPopupOpen,
+    mSolInfo,
+    refreshStakingInfo,
+    socials,
   } = props
 
-  const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
-  const [modalOpen, setModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const [amount, setAmount] = useState('')
@@ -66,9 +68,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useConnection()
-  // const { data } = useMarinadeTickets()
-  const { data: mSolInfo, mutate: refreshStakingInfo } =
-    useMarinadeStakingInfo()
+
   const [_, refreshTokens] = useUserTokenAccounts()
 
   const mSolWallet = useAssociatedTokenAccount(MSOL_MINT)
@@ -82,10 +82,11 @@ const Block: React.FC<StakingBlockProps> = (props) => {
 
   const mSolPrice = mSolInfo?.stats.m_sol_price || 1
 
-  const solPrice = pricesMap.get('SOL')?.price || 0
-  const usdValue = isStakeModeOn
-    ? parseFloat(amount) * solPrice
-    : parseFloat(amountGet) * solPrice
+  // const solPrice = dexTokensPricesMap.get('SOL')?.price || 0
+
+  // const usdValue = isStakeModeOn
+  //   ? parseFloat(amount) * solPrice
+  //   : parseFloat(amountGet) * solPrice
 
   const setAmountFrom = (v: string) => {
     const valueForState = formatNumbersForState(v)
@@ -146,7 +147,6 @@ const Block: React.FC<StakingBlockProps> = (props) => {
       })
       await refreshAll()
       notifyAboutStakeTransaction(txResult)
-      setModalOpen(true)
     } catch (e) {
       notify({
         message: 'Something went wrong. Please, try again later',
@@ -181,62 +181,100 @@ const Block: React.FC<StakingBlockProps> = (props) => {
   const isValid =
     amountValue > 0 && fromWallet && amountValue <= fromWallet.amount
 
-  const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
+  const tokenFrom = isStakeModeOn ? 'SOL' : 'mSOL'
+  const tokenTo = isStakeModeOn ? 'mSOL' : 'SOL'
+
   return (
     <ModalContainer needBlur className="modal-container">
       <Modal open={open} onClose={onClose}>
-        <HeaderComponent arrow close={onClose} token="stSOL" />
+        <HeaderComponent socials={socials} close={onClose} token="mSOL" />
         <Column height="auto" margin="2em 0">
-          <Row width="100%" margin="2em 0 1em 0">
-            <NumberWithLabel value={0} label="Epoch" />
-            <NumberWithLabel value={12} label="APY" />
-          </Row>
+          <LabelsRow width="100%" margin="2em 0 1em 0">
+            <NumberWithLabel
+              value={
+                mSolInfo?.epochInfo.epochPct
+                  ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
+                  : '---'
+              }
+              label="Epoch"
+            />
+            <NumberWithLabel
+              value={mSolInfo?.stats.avg_staking_apy || 0}
+              label="APY"
+            />
+          </LabelsRow>
           <Switcher
             isStakeModeOn={isStakeModeOn}
             setIsStakeModeOn={toggleStakeMode}
           />
           <InlineText color="white2" size="sm">
-            Stake SOL and use stSOL while earning rewards
+            Stake SOL and use mSOL while earning rewards
           </InlineText>
           <Column height="auto" width="100%" margin="1em 0 2.4em 0">
             <InputsContainer>
               <FirstInputContainer>
                 <AmountInput
                   data-testid="marinade-staking-amount-from-field"
-                  value={formatNumberWithSpaces(amount)}
+                  title={isStakeModeOn ? 'Stake' : 'Unstake'}
+                  onMaxAmountClick={() => setAmountFrom(fromWallet?.amount)}
+                  amount={amount}
+                  disabled={false}
                   onChange={setAmountFrom}
-                  placeholder="0"
-                  name="amountFrom"
-                  amount={fromWallet?.amount || 0}
-                  mint={fromWallet?.mint || ''}
-                  label={isStakeModeOn ? 'Stake' : 'Unstake'}
+                  appendComponent={
+                    <Container>
+                      <TokenIcon
+                        margin="0 5px 0 0"
+                        mint={getTokenMintAddressByName(tokenFrom)}
+                      />
+                      <InlineText color="gray0" size="md" weight={600}>
+                        {tokenFrom}
+                      </InlineText>
+                    </Container>
+                  }
                 />
               </FirstInputContainer>
-              <PositionatedIconContainer>+</PositionatedIconContainer>
+              <ReverseTokensContainer $isReversed={false}>
+                <ArrowsExchangeIcon
+                  onClick={() => setIsStakeModeOn(!isStakeModeOn)}
+                />
+              </ReverseTokensContainer>
               <SecondInputContainer>
                 <AmountInput
-                  data-testid="marinade-staking-receive-amount-field"
-                  value={formatNumberWithSpaces(amountGet)}
+                  title="Receive"
+                  maxAmount={toWallet?.amount}
+                  amount={amountGet}
+                  onMaxAmountClick={() => setAmountTo(toWallet?.amount)}
+                  disabled={false}
                   onChange={setAmountTo}
-                  placeholder="0"
-                  name="amountTo"
-                  amount={toWallet?.amount || 0}
-                  mint={toWallet?.mint || ''}
-                  label="Receive"
-                  showButtons={false}
-                  usdValue={usdValue}
+                  appendComponent={
+                    <Container>
+                      <TokenIcon
+                        margin="0 5px 0 0"
+                        mint={getTokenMintAddressByName(tokenTo)}
+                      />
+                      <InlineText color="gray0" size="md" weight={600}>
+                        {tokenTo}
+                      </InlineText>
+                    </Container>
+                  }
                 />
               </SecondInputContainer>
             </InputsContainer>
-            <Row margin="1em 0" width="100%">
-              <Box height="auto" width="48%">
+            <AdditionalInfoRow>
+              <Box className="rate-box" height="auto" width="48%">
                 <Row width="100%">
                   <Row>
-                    <InlineText size="sm">Rate:</InlineText>
+                    <InlineText color="white2" size="sm">
+                      Rate:
+                    </InlineText>
                   </Row>
                   <Row>
-                    <InlineText size="sm" color="gray0" weight={600}>
-                      0.0005 SOL
+                    <InlineText color="white2" size="es">
+                      1 mSOL ⇄{' '}
+                      {mSolInfo?.stats.m_sol_price
+                        ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 4)
+                        : '---'}{' '}
+                      SOL
                     </InlineText>
                   </Row>
                 </Row>
@@ -245,32 +283,41 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <Box height="auto" width="48%">
                 <Row width="100%">
                   <Row>
-                    <InlineText size="sm">Stake Fee:</InlineText>
+                    <InlineText color="white2" size="sm">
+                      Stake Fee:
+                    </InlineText>
                   </Row>
                   <Row>
-                    <InlineText size="sm" color="gray0" weight={600}>
-                      $14.42
+                    <InlineText color="white2" size="sm" weight={600}>
+                      {isStakeModeOn ? '0%' : '≈0.3%'}
                     </InlineText>
                   </Row>
                 </Row>
               </Box>
-            </Row>
+            </AdditionalInfoRow>
           </Column>
 
           <Column height="auto" width="100%">
             <Button
+              className="stake-btn"
               onClick={() => {
-                // connect wallet
+                if (!wallet.connected) {
+                  setIsConnectWalletPopupOpen(true)
+                } else if (isStakeModeOn) {
+                  stake()
+                } else {
+                  unstake()
+                }
               }}
               $variant={wallet.connected ? 'green' : 'violet'}
               $width="xl"
               $padding="xxxl"
               $fontSize="sm"
             >
-              {isRebalanceChecked || !wallet.connected ? (
-                'Connect Wallet to Stake stSOL'
+              {!wallet.connected ? (
+                'Connect Wallet to Stake mSOL'
               ) : (
-                <>{isStakeModeOn ? 'Stake stSOL' : 'Unstake stSOL'}</>
+                <>{isStakeModeOn ? 'Stake mSOL' : 'Unstake mSOL'}</>
               )}
             </Button>
           </Column>

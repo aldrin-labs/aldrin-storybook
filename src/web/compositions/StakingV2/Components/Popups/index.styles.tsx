@@ -42,6 +42,17 @@ export const StyledModal = styled.div`
       width: 100%;
       flex-wrap: wrap;
     }
+    .modal-container {
+      height: calc(100% - 65px);
+    }
+    .modal-body {
+      width: 100%;
+      margin: 0;
+      border-radius: 0;
+      padding: 0 1.5em;
+      height: 100%;
+      max-height: 100%;
+    }
   }
 `
 
@@ -150,6 +161,14 @@ export const Column = styled.div<ColumnType>`
   flex-direction: column;
   align-items: flex-start;
   margin: ${(props) => props.margin || '0'};
+  @media (max-width: ${BREAKPOINTS.md}) {
+    .stake-btn {
+      margin-bottom: 2em;
+    }
+    .stake-st-btn {
+      margin-bottom: 7em;
+    }
+  }
 `
 export const Container = styled.div`
   background: ${(props) => props.theme.colors.white4};

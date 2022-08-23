@@ -84,5 +84,3 @@ export const STAKING_CARD_LABELS = [
     hoverStyle: LABEL_TYPES.default,
   },
 ]
-
-export const stakeTokens = ['RIN', 'mSOL', 'stSOL', 'PLD', 'RPC', 'PU238']
