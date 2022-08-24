@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Button, PADDINGS } from '@sb/components/Button'
 import { StretchedBlock, WideContent } from '@sb/components/Layout'
 
-import bg from './Components/Icons/bg.png'
+import bg from './components/Icons/bg.png'
 
 type FilterButtonType = {
   isActive: boolean
