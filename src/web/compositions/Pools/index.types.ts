@@ -3,7 +3,6 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { PoolFees, PoolInfo } from '@core/types/pools.types'
 
 export { PoolFees, PoolInfo }
-
 export type DexTokensPrices = {
   symbol: string
   price: number
