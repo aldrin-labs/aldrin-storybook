@@ -78,8 +78,11 @@ import {
   TextButton,
   FailedButtonsRow,
   DropdownIconContainer,
+  LeftColumn,
+  ChartContainer,
 } from './styles'
 import { getEstimatedPrice, getSwapButtonText } from './utils'
+import { SwapChartWithPrice } from './components/SwapChart'
 
 const SwapPage = ({
   getPoolsInfoQuery,
@@ -587,7 +590,7 @@ const SwapPage = ({
   return (
     <SwapPageLayout>
       <SwapPageContainer justify="center" direction="row" wrap="nowrap">
-        {/* <LeftColumn>
+        <LeftColumn>
           <ChartContainer>
             <SwapChartWithPrice
               isCrossOHLCV={isCrossOHLCV}
@@ -605,7 +608,7 @@ const SwapPage = ({
               pricesMap={dexTokensPricesMap}
             />
           </ChartContainer>
-        </LeftColumn> */}
+        </LeftColumn>
 
         <RightColumn>
           <SwapContentContainer direction="column">
