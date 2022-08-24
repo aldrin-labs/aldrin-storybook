@@ -103,8 +103,12 @@ export const RinStaking = ({
         notify({ message: 'Account does not exists' })
         return false
       }
+      console.log('farms', farms, farm)
 
       if (!farms) {
+        throw new Error('No farms')
+      }
+      if (!farm) {
         throw new Error('No farms')
       }
 
@@ -189,7 +193,7 @@ export const RinStaking = ({
     return () => {
       document.title = 'Aldrin'
     }
-  }, [rinHarvest.apy])
+  }, [rinHarvest?.apy])
 
   return (
     <ModalContainer needBlur>

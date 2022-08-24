@@ -47,7 +47,7 @@ const Block: React.FC<StakingPageProps> = (props) => {
   const { data: mSolInfo, mutate: refreshStakingInfo } =
     useMarinadeStakingInfo()
 
-  const stakingDataMap = toMap(getStakingInfo?.farming, (farming) =>
+  const stakingDataMap = toMap(getStakingInfo?.farming || [], (farming) =>
     farming?.stakeMint.toString()
   )
 

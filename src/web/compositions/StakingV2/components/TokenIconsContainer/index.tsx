@@ -16,7 +16,6 @@ export const TokenIconsContainer = ({
   size?: number
   elementSize?: 'sm' | 'lg'
 }) => {
-  console.log('token:', token)
   return (
     <Container>
       <IconsContainer>

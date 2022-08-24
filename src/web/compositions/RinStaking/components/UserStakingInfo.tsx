@@ -2,7 +2,6 @@ import { PublicKey } from '@solana/web3.js'
 import { toNumber } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
-import { useTheme } from 'styled-components'
 
 import { BlockTitle, Block, BlockContentStretched } from '@sb/components/Block'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
@@ -57,7 +56,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     getDexTokensPricesQuery,
     getStakingInfoQuery,
   } = props
-  const theme = useTheme()
 
   const stakingData = getStakingInfoQuery?.getStakingInfo?.farming || []
 
