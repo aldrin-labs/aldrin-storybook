@@ -33,7 +33,7 @@ import { getStakingsData } from './utils'
 
 const Block: React.FC<StakingPageProps> = (props) => {
   const {
-    getStakingInfoQuery: { getStakingInfo = [] },
+    getStakingInfoQuery: { getStakingInfo },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
   } = props
 

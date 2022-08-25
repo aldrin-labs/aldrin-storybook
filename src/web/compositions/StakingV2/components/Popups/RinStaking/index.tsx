@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Block, BlockContentStretched } from '@sb/components/Block'
 import { FlexBlock, StretchedBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
@@ -28,6 +29,7 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import {
   stripByAmountAndFormat,
@@ -35,6 +37,7 @@ import {
 } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import { WithStakingInfo } from '../../../types'
 import { NumberWithLabel } from '../../NumberWithLabel'
 import { HeaderComponent } from '../Header'
 import InfoIcon from '../Icons/Icon.svg'
@@ -44,21 +47,23 @@ import { BigNumber, SRow } from './index.styles'
 import { StakeContainer } from './StakeContainer'
 import { UnstakeContainer } from './UnstakeContainer'
 
-export const RinStaking = ({
-  onClose,
-  open,
-  farms,
-  dexTokensPricesMap,
-  setIsConnectWalletPopupOpen,
-  socials,
-}: {
+interface RinStakingProps extends WithStakingInfo {
   onClose: () => void
   open: boolean
   farms: any
   dexTokensPricesMap: Map<string, DexTokensPrices>
   setIsConnectWalletPopupOpen: (a: boolean) => void
   socials: any // TODO
-}) => {
+}
+export const RinStakingComp = ({
+  onClose,
+  open,
+  farms,
+  dexTokensPricesMap,
+  setIsConnectWalletPopupOpen,
+  socials,
+  getStakingInfoQuery,
+}: RinStakingProps) => {
   const [stakeAmount, setStakeAmount] = useState(0)
   const [unstakeAmount, setUnstakeAmount] = useState(0)
   const [isBalanceShowing, setIsBalanceShowing] = useState(true)
@@ -169,6 +174,12 @@ export const RinStaking = ({
     dexTokensPricesMap?.get(getTokenNameByMintAddress(FARMING_V2_TEST_TOKEN))
       ?.price || 0
 
+  const userStakingInfo = getStakingInfoQuery.getStakingInfo?.farmers.find(
+    (_) => _.pubkey === wallet.publicKey?.toString()
+  )
+
+  const compoundedRewards = userStakingInfo?.reward || 0
+
   const stakedInUsd = stripByAmountAndFormat(+totalStaked * tokenPrice || 0, 2)
 
   // const rinValue = stripByAmountAndFormat(totalStaked)
@@ -277,14 +288,18 @@ export const RinStaking = ({
                   </FlexBlock>
                   <BigNumber>
                     <InlineText>
-                      {isBalanceShowing ? formatNumberWithSpaces(8000) : '***'}{' '}
+                      {isBalanceShowing
+                        ? formatNumberWithSpaces(compoundedRewards)
+                        : '***'}{' '}
                     </InlineText>{' '}
                     <InlineText color="white2">RIN</InlineText>
                   </BigNumber>
                   <StretchedBlock align="flex-end">
                     <InlineText size="sm">
                       <InlineText color="white2">$</InlineText>&nbsp;{' '}
-                      {isBalanceShowing ? formatNumberWithSpaces(1800) : '***'}
+                      {isBalanceShowing
+                        ? formatNumberWithSpaces(compoundedRewards * tokenPrice)
+                        : '***'}
                     </InlineText>
                     <NumberWithLabel
                       value={stripDigitPlaces(rinHarvest.apy, 2)}
@@ -307,3 +322,10 @@ export const RinStaking = ({
     </ModalContainer>
   )
 }
+
+export const RinStaking = queryRendererHoc({
+  query: getStakingInfo,
+  name: 'getStakingInfoQuery',
+  fetchPolicy: 'network-only',
+  withoutLoading: true,
+})(RinStakingComp)

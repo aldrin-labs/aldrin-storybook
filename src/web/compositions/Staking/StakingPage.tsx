@@ -6,8 +6,14 @@ import { MarinadeStakingBlock } from './components/MarinadeStakingBlock'
 import { PlutoniasStakingBlock } from './components/PlutoniansStaking/PlutoniansStaking'
 import { RinStakingBlock } from './components/RinStakingBlock'
 import { Page } from './styles'
+import { createNewHarvestPeriod } from '../../dexUtils/farming'
 
 export const StakingPage: React.FC = () => {
+  const createFarm = () => {
+    createNewHarvestPeriod({
+
+    })
+  }
   return (
     <Page>
       <WideContent>
