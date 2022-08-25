@@ -40,7 +40,7 @@ export const getStakingsData = ({
         farm?.stakeVaultTokenAmount *
         (dexTokensPricesMap.get('RIN')?.price || 0),
       additionalInfo: `${stripDigitPlaces(stakedPercentage, 2)}%`,
-      apy: RINHarvest?.apy,
+      apy: stripDigitPlaces(RINHarvest?.apy, 2),
       columnName: '% of circ. supply',
       socials: {
         twitter: tokensMap.get('RIN')?.twitterLink,

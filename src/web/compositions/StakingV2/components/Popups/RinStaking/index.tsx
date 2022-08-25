@@ -61,8 +61,8 @@ export const RinStakingComp = ({
   socials,
   getStakingInfoQuery,
 }: RinStakingProps) => {
-  const [stakeAmount, setStakeAmount] = useState(0)
-  const [unstakeAmount, setUnstakeAmount] = useState(0)
+  const [stakeAmount, setStakeAmount] = useState('')
+  const [unstakeAmount, setUnstakeAmount] = useState('')
   const [isBalanceShowing, setIsBalanceShowing] = useState(true)
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
@@ -86,6 +86,7 @@ export const RinStakingComp = ({
   })
 
   const totalStaked = farmer?.totalStaked || '0'
+  const maxAmount = totalStaked / 10 ** 9 // decimals
 
   const rinHarvest = farm?.harvests.find(
     (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
@@ -316,7 +317,7 @@ export const RinStakingComp = ({
             setUnstakeAmount={setUnstakeAmount}
             end={end}
             setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
-            maxAmount={totalStaked || '0.00'}
+            maxAmount={maxAmount || '0.00'}
           />
         </Column>
       </Modal>

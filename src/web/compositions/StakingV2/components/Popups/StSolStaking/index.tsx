@@ -113,7 +113,7 @@ export const StSolStaking = ({
                   <AmountInput
                     title={isStakeModeOn ? 'Stake' : 'Unstake'}
                     maxAmount="0.00"
-                    amount={0}
+                    amount=""
                     onMaxAmountClick={() => {}}
                     disabled={false}
                     onChange={() => {}}
@@ -136,7 +136,7 @@ export const StSolStaking = ({
                   <AmountInput
                     title="Receive"
                     maxAmount="0.00"
-                    amount={0}
+                    amount=""
                     onMaxAmountClick={() => {}}
                     onChange={() => {}}
                     appendComponent={

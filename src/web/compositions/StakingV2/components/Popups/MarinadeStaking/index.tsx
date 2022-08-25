@@ -233,10 +233,13 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   }
                 />
               </FirstInputContainer>
-              <ReverseTokensContainer $isReversed={false}>
-                <ArrowsExchangeIcon
-                  onClick={() => setIsStakeModeOn(!isStakeModeOn)}
-                />
+              <ReverseTokensContainer
+                onClick={() => {
+                  setIsStakeModeOn(!isStakeModeOn)
+                }}
+                $isReversed={false}
+              >
+                <ArrowsExchangeIcon />
               </ReverseTokensContainer>
               <SecondInputContainer>
                 <AmountInput
@@ -313,6 +316,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               $width="xl"
               $padding="xxxl"
               $fontSize="sm"
+              disabled={!isValid || loading}
             >
               {!wallet.connected ? (
                 'Connect Wallet to Stake mSOL'

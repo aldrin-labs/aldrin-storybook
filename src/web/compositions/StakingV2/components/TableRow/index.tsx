@@ -8,7 +8,6 @@ import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { RefreshFunction } from '@sb/dexUtils/types'
 
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { STAKING_CARD_LABELS } from '../../config'
 import { RootColumn, RootRow, SpacedColumn } from '../../index.styles'
@@ -145,7 +144,7 @@ export const TableRow = ({
               </DarkTooltip>
             </InlineText>
             <InlineText size="xmd" weight={600} color="green3">
-              {stripDigitPlaces(staking.apy)}%
+              {staking.apy}%
             </InlineText>
           </SpacedColumn>
           <DepositRow>

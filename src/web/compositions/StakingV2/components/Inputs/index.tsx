@@ -55,7 +55,7 @@ export const AmountInput = ({
       <StretchedBlock width="xl" align="flex-end" margin="0.6em 0 0 0">
         <AmountInputContainer>
           <InvisibleInput
-            maxLength={10}
+            maxLength={20}
             type="text"
             value={formatNumberWithSpaces(amount) || ''}
             disabled={disabled}
