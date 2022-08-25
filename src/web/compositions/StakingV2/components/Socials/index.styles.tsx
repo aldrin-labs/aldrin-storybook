@@ -52,10 +52,11 @@ export const StyledLink = styled.a<StyledLinkProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 0;
   ${(props) =>
     props.needHover &&
     `&:hover {
-      
+
   svg path:not(.not-fill) {
     fill: ${props.theme.colors.white1};
   }

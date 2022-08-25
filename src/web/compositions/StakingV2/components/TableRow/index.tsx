@@ -92,7 +92,9 @@ export const TableRow = ({
                   link={staking.socials.discord}
                   margin="0 0.5em"
                 />
-                <LinkToCoinMarketcap link={staking.socials.coinmarketcap} />
+                {!!staking.socials.coinmarketcap && (
+                  <LinkToCoinMarketcap link={staking.socials.coinmarketcap} />
+                )}
               </Row>
             </SRow>
             <LabelsRow>
@@ -147,10 +149,16 @@ export const TableRow = ({
             </InlineText>
           </SpacedColumn>
           <DepositRow>
-            <Row width="100%" className="linksRow">
+            <Row
+              width="100%"
+              className="linksRow"
+              style={{ justifyContent: 'flex-start' }}
+            >
               <LinkToTwitter link={staking.socials.twitter} />
               <LinkToDiscord link={staking.socials.discord} margin="0 0.5em" />
-              <LinkToCoinMarketcap link={staking.socials.coinmarketcap} />
+              {!!staking.socials.coinmarketcap && (
+                <LinkToCoinMarketcap link={staking.socials.coinmarketcap} />
+              )}
             </Row>
 
             {isPlutoniansToken ? (
