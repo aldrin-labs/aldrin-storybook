@@ -33,7 +33,6 @@ import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import {
   stripByAmountAndFormat,
-  stripToMillions,
 } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -252,7 +251,9 @@ export const RinStakingComp = ({
                   </FlexBlock>
                   <BigNumber>
                     <InlineText>
-                      {isBalanceShowing ? stripToMillions(totalStaked) : '***'}
+                      {isBalanceShowing
+                        ? stripByAmountAndFormat(totalStaked)
+                        : '***'}
                     </InlineText>{' '}
                     <InlineText color="white2">RIN</InlineText>
                   </BigNumber>
