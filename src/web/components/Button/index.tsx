@@ -150,6 +150,10 @@ const VARIANTS = {
     &:active {
       background: ${(props) => props.theme.colors.violet7};
     }
+
+    &:disabled {
+      color: ${(props) => rgba(props.theme.colors.blue1, 0.2)};
+    }
   `,
 
   green: css`

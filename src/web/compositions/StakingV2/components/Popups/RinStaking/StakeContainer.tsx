@@ -47,6 +47,7 @@ export const StakeContainer = ({
         />
       </FirstInputContainer>
       <Button
+        disabled={stakeAmount === 0}
         onClick={() =>
           !wallet.connected
             ? setIsConnectWalletPopupOpen(true)
