@@ -31,9 +31,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { FARMING_V2_TEST_TOKEN } from '@core/solana'
-import {
-  stripByAmountAndFormat,
-} from '@core/utils/numberUtils'
+import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { WithStakingInfo } from '../../../types'
@@ -199,7 +197,9 @@ export const RinStakingComp = ({
   // )
 
   useEffect(() => {
-    document.title = `Aldrin | Stake RIN | ${rinHarvest.apy}% APR`
+    document.title = `Aldrin | Stake RIN | ${
+      rinHarvest ? `${rinHarvest.apy}% APR` : ''
+    }`
     return () => {
       document.title = 'Aldrin'
     }
@@ -303,7 +303,7 @@ export const RinStakingComp = ({
                         : '***'}
                     </InlineText>
                     <NumberWithLabel
-                      value={stripDigitPlaces(rinHarvest.apy, 2)}
+                      value={stripDigitPlaces(rinHarvest?.apy, 2)}
                       label="APY"
                     />
                   </StretchedBlock>
