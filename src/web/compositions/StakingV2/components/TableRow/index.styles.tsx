@@ -116,9 +116,9 @@ export const StretchedRow = styled(RootRow)`
 `
 
 export const StyledLink = styled(Link)`
-  background: ${(props) => rgba(props.theme.colors.green0, 0.15)};
+  background: ${(props) => rgba(props.theme.colors.green3, 0.15)};
   border: none;
-  color: ${(props) => props.theme.colors.green1};
+  color: ${(props) => props.theme.colors.green3};
   white-space: nowrap;
   font-weight: 700;
   line-height: 100%;
