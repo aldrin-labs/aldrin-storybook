@@ -101,9 +101,9 @@ export const LinkToCoinMarketcap = ({
       $variant={$variant}
       height={height}
       margin={margin}
-      target="_blank"
+      target={link ? '_blank' : ''}
       rel="noopener noreferrer"
-      href={link}
+      href={link || '/'}
     >
       <svg
         width="17"

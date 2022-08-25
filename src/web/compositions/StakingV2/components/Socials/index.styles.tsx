@@ -52,6 +52,7 @@ export const StyledLink = styled.a<StyledLinkProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: ${(props) => (props.needHover ? 'pointer' : 'auto')};
   flex: 0;
   ${(props) =>
     props.needHover &&
