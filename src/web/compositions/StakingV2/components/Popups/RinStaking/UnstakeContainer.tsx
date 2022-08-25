@@ -53,7 +53,7 @@ export const UnstakeContainer = ({
             ? setIsConnectWalletPopupOpen(true)
             : end(unstakeAmount)
         }
-        disabled={unstakeAmount === 0}
+        disabled={unstakeAmount === 0 || unstakeAmount === ''}
         $variant="violet"
         $width="xl"
         $padding="xxxl"
