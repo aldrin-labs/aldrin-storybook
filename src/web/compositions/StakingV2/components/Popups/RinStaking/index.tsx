@@ -63,7 +63,6 @@ export const RinStakingComp = ({
   setIsConnectWalletPopupOpen,
   socials,
   getStakingInfoQuery,
-  ...props
 }: RinStakingProps) => {
   const [stakeAmount, setStakeAmount] = useState('')
   const [unstakeAmount, setUnstakeAmount] = useState('')
@@ -102,15 +101,12 @@ export const RinStakingComp = ({
     refreshAll()
   }, 30_000)
 
-  console.log({ props, getStakingInfoQuery })
-
   const start = useCallback(
     async (amount: number) => {
       if (!tokenData?.address) {
         notify({ message: 'Account does not exists' })
         return false
       }
-      console.log('farms', farms, farm)
 
       if (!farms) {
         throw new Error('No farms')
@@ -178,11 +174,11 @@ export const RinStakingComp = ({
     dexTokensPricesMap?.get(getTokenNameByMintAddress(FARMING_V2_TEST_TOKEN))
       ?.price || 0
 
-  const userStakingInfo = getStakingInfoQuery.getStakingInfo?.farmers.find(
-    (_) => _.pubkey === wallet.publicKey?.toString()
-  )
+  const userStakingInfo = getStakingInfoQuery.getStakingInfo?.farmers
 
-  const compoundedRewards = userStakingInfo?.reward || 0
+  const compoundedRewards = userStakingInfo?.reduce((acc, current) => {
+    return acc + current.reward
+  }, 0)
 
   const stakedInUsd = stripByAmountAndFormat(+totalStaked * tokenPrice || 0, 2)
 

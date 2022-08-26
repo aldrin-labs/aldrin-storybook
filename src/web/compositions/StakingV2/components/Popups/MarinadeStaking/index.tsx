@@ -79,15 +79,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
     : undefined
   const fromWallet = isStakeModeOn ? solWalletWithGap : mSolWallet
   const toWallet = isStakeModeOn ? mSolWallet : solWalletWithGap
-  console.log({ fromWallet, toWallet, solWalletWithGap, mSolWallet })
 
   const mSolPrice = mSolInfo?.stats.m_sol_price || 1
-
-  // const solPrice = dexTokensPricesMap.get('SOL')?.price || 0
-
-  // const usdValue = isStakeModeOn
-  //   ? parseFloat(amount) * solPrice
-  //   : parseFloat(amountGet) * solPrice
 
   const setAmountFrom = (v: string) => {
     const valueForState = formatNumbersForState(v)

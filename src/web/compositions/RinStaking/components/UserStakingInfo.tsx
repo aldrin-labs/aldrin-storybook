@@ -219,8 +219,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     farmer?.account.staked.amount.toString() || '0'
   )
 
-  console.log({ availableForUnstake })
-
   return (
     <>
       <StretchedRow>

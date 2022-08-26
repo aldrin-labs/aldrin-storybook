@@ -42,8 +42,6 @@ export const StSolStaking = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  console.log({ connection })
-
   // const solidoSDK = new SolidoSDK(
   //   'mainnet-beta',
   //   connection,

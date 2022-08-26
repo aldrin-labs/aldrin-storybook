@@ -85,7 +85,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
           pool.account.stakeTokenMint.toString()
         )
         const stakeVault = pool.account.stakeVault.toString()
-        console.log({ stakeVault })
 
         if (tokenName === 'PLD') {
           setPLDStakeVault(stakeVault)

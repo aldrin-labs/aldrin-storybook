@@ -38,8 +38,6 @@ const QueryRenderer = (props: IProps) => {
     ...rest
   } = props
 
-  console.log('props', props)
-
   return (
     <Query
       query={query}

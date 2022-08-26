@@ -3,8 +3,10 @@ import React from 'react'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
+import { MarinadeStats } from '@sb/dexUtils/staking/hooks/types'
 
 import { toMap } from '@core/collection'
+import { Farm, Harvest } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -21,10 +23,10 @@ export const getStakingsData = ({
   PU238TotalStaked,
   dexTokensPricesMap,
 }: {
-  farm: any // TODO
+  farm: Farm
   stakedPercentage: number
-  RINHarvest: any // TODO
-  mSolInfo: any // TODO
+  RINHarvest: Harvest
+  mSolInfo: { stats: MarinadeStats }
   PLDTotalStaked: number
   RPCTotalStaked: number
   PU238TotalStaked: number
