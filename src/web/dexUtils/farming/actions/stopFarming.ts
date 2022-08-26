@@ -28,8 +28,6 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
     userTokenAccount = newAccountPubkey.toString()
 
     instructions.push(...transaction.instructions)
-
-    // TODO: Add SOL check & close wSOL account
   }
 
   let decimals = existingTokenAccount?.decimals

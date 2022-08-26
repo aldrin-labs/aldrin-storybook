@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import compose from 'recompose/compose'
 
 import { Block, BlockContentStretched } from '@sb/components/Block'
 import { FlexBlock, StretchedBlock } from '@sb/components/Layout'
@@ -28,6 +29,7 @@ import {
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { FARMING_V2_TEST_TOKEN } from '@core/solana'
@@ -50,8 +52,9 @@ interface RinStakingProps extends WithStakingInfo {
   farms: any
   dexTokensPricesMap: Map<string, DexTokensPrices>
   setIsConnectWalletPopupOpen: (a: boolean) => void
-  socials: any // TODO
+  socials: string[]
 }
+
 export const RinStakingComp = ({
   onClose,
   open,
@@ -60,12 +63,12 @@ export const RinStakingComp = ({
   setIsConnectWalletPopupOpen,
   socials,
   getStakingInfoQuery,
+  ...props
 }: RinStakingProps) => {
   const [stakeAmount, setStakeAmount] = useState('')
   const [unstakeAmount, setUnstakeAmount] = useState('')
   const [isBalanceShowing, setIsBalanceShowing] = useState(true)
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
-
   const { wallet } = useWallet()
 
   const connection = useMultiEndpointConnection()
@@ -82,7 +85,6 @@ export const RinStakingComp = ({
   const [loading, setLoading] = useState({
     stake: false,
     unstake: false,
-    claim: false,
   })
 
   const totalStaked = farmer?.totalStaked || '0'
@@ -99,6 +101,8 @@ export const RinStakingComp = ({
   useInterval(() => {
     refreshAll()
   }, 30_000)
+
+  console.log({ props, getStakingInfoQuery })
 
   const start = useCallback(
     async (amount: number) => {
@@ -182,23 +186,6 @@ export const RinStakingComp = ({
 
   const stakedInUsd = stripByAmountAndFormat(+totalStaked * tokenPrice || 0, 2)
 
-  // const rinValue = stripByAmountAndFormat(totalStaked)
-
-  // const totalStakedValue = isBalanceShowing
-  //   ? rinValue
-  //   : new Array(rinValue.length).fill('∗').join('')
-
-  // const totalStakedUsdValue = isBalanceShowing
-  //   ? stakedInUsd
-  //   : new Array(stakedInUsd.length).fill('∗').join('')
-
-  // const isUnstakeLocked =
-  //   parseFloat(farmer?.account.staked.amount.toString() || '0') === 0
-
-  // const availableForUnstake = parseFloat(
-  //   farmer?.account.staked.amount.toString() || '0'
-  // )
-
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${
       rinHarvest ? `${rinHarvest.apy}% APR` : ''
@@ -219,6 +206,7 @@ export const RinStakingComp = ({
         <Column height="calc(100% - 10em)" margin="0 0 3em">
           <Column height="auto" width="100%">
             <StakeContainer
+              loading={loading.stake}
               stakeAmount={stakeAmount}
               setStakeAmount={setStakeAmount}
               start={start}
@@ -315,6 +303,7 @@ export const RinStakingComp = ({
             </SRow>
           </Column>
           <UnstakeContainer
+            loading={loading.unstake}
             unstakeAmount={unstakeAmount}
             setUnstakeAmount={setUnstakeAmount}
             end={end}
@@ -327,9 +316,15 @@ export const RinStakingComp = ({
   )
 }
 
-export const RinStaking = queryRendererHoc({
-  query: getStakingInfo,
-  name: 'getStakingInfoQuery',
-  fetchPolicy: 'network-only',
-  withoutLoading: true,
-})(RinStakingComp)
+export default compose(
+  withPublicKey,
+  queryRendererHoc({
+    query: getStakingInfo,
+    name: 'getStakingInfoQuery',
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      farmerPubkey: props.publicKey,
+    }),
+    withoutLoading: true,
+  })
+)(RinStakingComp)

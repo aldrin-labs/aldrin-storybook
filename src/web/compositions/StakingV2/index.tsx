@@ -65,7 +65,7 @@ const Block: React.FC<StakingPageProps> = (props) => {
     farm?.stakeVaultTokenAmount / 10 ** farm?.stakeVaultDecimals
 
   const totalStakedWithDecimalsInUSD =
-    totalStakedWithDecimals * dexTokensPricesMap.get('RIN')?.price
+    totalStakedWithDecimals * (dexTokensPricesMap.get('RIN')?.price || 0)
 
   const stakedPercentage =
     (totalStakedWithDecimalsInUSD /
@@ -168,10 +168,10 @@ export const StakingPage: any = compose(
   queryRendererHoc({
     query: getStakingInfoQuery,
     name: 'getStakingInfoQuery',
-    // variables: (props) => console.log('props', props) || ({
-    //   farmerPubkey: props.publicKey,
-    // }),
     fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      farmerPubkey: props.publicKey,
+    }),
     withoutLoading: true,
     pollInterval: 60000,
   })

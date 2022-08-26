@@ -28,7 +28,7 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
 
   if (!farmer) {
     const { instruction } = await buildCreateFarmerInstruction({
-      farm: new PublicKey(farm.publicKey), // TODO: remove that after types fix
+      farm: new PublicKey(farm.publicKey),
       wallet,
       connection,
     })

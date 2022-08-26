@@ -28,6 +28,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc'
 import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -337,6 +338,7 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
 }
 
 export default compose<InnerProps, OuterProps>(
+  withPublicKey,
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
@@ -346,8 +348,10 @@ export default compose<InnerProps, OuterProps>(
   }),
   queryRendererHoc({
     query: getStakingInfo,
-    name: 'getStakingInfoQuery',
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      farmerPubkey: props.publicKey,
+    }),
     withoutLoading: true,
   })
 )(UserStakingInfo)

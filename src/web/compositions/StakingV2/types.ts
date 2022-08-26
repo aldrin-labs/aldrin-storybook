@@ -58,3 +58,17 @@ export interface WithStakingInfo {
 export interface StakingPageProps extends WithStakingInfo {
   getDexTokensPricesQuery: { getDexTokensPrices?: DexTokensPrices[] }
 }
+
+export type StakingRowType = {
+  token: string
+  labels: string[]
+  totalStaked: number
+  additionalInfo: string
+  apy: string | number
+  columnName: string
+  socials: {
+    twitter: string
+    coinmarketcap: string
+    discord: string
+  }
+}

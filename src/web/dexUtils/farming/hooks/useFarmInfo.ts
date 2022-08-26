@@ -1,13 +1,12 @@
 import useSWR from 'swr'
 
-import { loadFarmAccountsData } from '@core/solana'
+import { Farm, loadFarmAccountsData } from '@core/solana'
 
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
-export const useFarmInfo = (stakingDataMap: any) => {
-  // TODO: type
+export const useFarmInfo = (stakingDataMap: Farm[]) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -19,7 +18,7 @@ export const useFarmInfo = (stakingDataMap: any) => {
       connection,
       wallet,
     })
-    return toMap(farms, (farm) => farm.stakeMint.toString())
+    return toMap(farms, (farm: Farm) => farm.stakeMint.toString())
   }
 
   return useSWR(`farm-info-${wallet.publicKey?.toString()}`, fetcher) // .data}

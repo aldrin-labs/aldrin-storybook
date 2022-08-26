@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { Query } from 'react-apollo'
 
-import { ErrorFallback, QueryRenderPlaceholder, LinearProgressCustom } from '@sb/components/index'
+import {
+  ErrorFallback,
+  QueryRenderPlaceholder,
+  LinearProgressCustom,
+} from '@sb/components/index'
 import { Loader as RinLoader } from '@sb/components/Loader/Loader'
 import Loader from '@sb/components/TablePlaceholderLoader/newLoader'
 import { useInterval } from '@sb/dexUtils/useInterval'
@@ -34,6 +38,8 @@ const QueryRenderer = (props: IProps) => {
     ...rest
   } = props
 
+  console.log('props', props)
+
   return (
     <Query
       query={query}
@@ -42,14 +48,27 @@ const QueryRenderer = (props: IProps) => {
       fetchPolicy={fetchPolicy}
       skip={!!getVariables(skip, props)}
     >
-      {({ loading, error, data, refetch, networkStatus, fetchMore, subscribeToMore, ...result }) => {
+      {({
+        loading,
+        error,
+        data,
+        refetch,
+        networkStatus,
+        fetchMore,
+        subscribeToMore,
+        ...result
+      }) => {
         const refProps = React.useRef(props)
 
         const isDataInCacheExists = !!data
-        const queryParamsWereChanged = loading && networkStatus === 2 && showLoadingWhenQueryParamsChange
+        const queryParamsWereChanged =
+          loading && networkStatus === 2 && showLoadingWhenQueryParamsChange
 
         const extendedLoading =
-          ((loading && !isDataInCacheExists) || queryParamsWereChanged || isDataLoading) && !withoutLoading
+          ((loading && !isDataInCacheExists) ||
+            queryParamsWereChanged ||
+            isDataLoading) &&
+          !withoutLoading
 
         React.useEffect(() => {
           refProps.current = props
@@ -57,7 +76,12 @@ const QueryRenderer = (props: IProps) => {
 
         if (pollInterval) {
           useInterval(() => {
-            if (extendedLoading || !pollInterval || fetchPolicy === 'cache-only') return
+            if (
+              extendedLoading ||
+              !pollInterval ||
+              fetchPolicy === 'cache-only'
+            )
+              return
 
             const newVariables = getVariables(variables, refProps.current)
             refetch(newVariables)
@@ -65,11 +89,23 @@ const QueryRenderer = (props: IProps) => {
         }
 
         if (extendedLoading && Placeholder) {
-          return <QueryRenderPlaceholder centerAlign={centerAlign} placeholderComponent={Placeholder} />
+          return (
+            <QueryRenderPlaceholder
+              centerAlign={centerAlign}
+              placeholderComponent={Placeholder}
+            />
+          )
         }
         if (extendedLoading && !withOutSpinner) {
           return (
-            <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+            <div
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
               <RinLoader width={loaderSize} color={loaderColor} />
             </div>
           )
@@ -123,7 +159,12 @@ const QueryRenderer = (props: IProps) => {
             subscribeToMore={subscribeToMoreFunction}
           />
         ) : (
-          <Component {...dataObject} {...rest} fetchMore={fetchMore} refetch={refetch} />
+          <Component
+            {...dataObject}
+            {...rest}
+            fetchMore={fetchMore}
+            refetch={refetch}
+          />
         )
       }}
     </Query>
@@ -134,6 +175,12 @@ export const queryRendererHoc =
   (params: HOCTypes) =>
   (WrappedComponent: React.ComponentType<any>) =>
   (props: object): React.ReactElement<object> =>
-    <QueryRenderer component={WrappedComponent} query={params.query} {...{ ...params, ...props }} />
+    (
+      <QueryRenderer
+        component={WrappedComponent}
+        query={params.query}
+        {...{ ...params, ...props }}
+      />
+    )
 
 export default QueryRenderer

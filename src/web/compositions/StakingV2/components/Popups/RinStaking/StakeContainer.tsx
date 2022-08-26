@@ -17,12 +17,14 @@ export const StakeContainer = ({
   setStakeAmount,
   stakeAmount,
   maxAmount,
+  loading,
 }: {
   setIsConnectWalletPopupOpen: (a: boolean) => void
   start: (a: number) => void
   setStakeAmount: (a: string | number) => void
   stakeAmount: number
   maxAmount: number | string
+  loading: boolean
 }) => {
   const wallet = useWallet()
 
@@ -47,7 +49,10 @@ export const StakeContainer = ({
         />
       </FirstInputContainer>
       <Button
-        disabled={wallet.connected && (stakeAmount === 0 || stakeAmount === '')}
+        disabled={
+          wallet.connected &&
+          (stakeAmount === 0 || stakeAmount === '' || loading)
+        }
         onClick={() =>
           !wallet.connected
             ? setIsConnectWalletPopupOpen(true)

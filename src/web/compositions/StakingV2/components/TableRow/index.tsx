@@ -5,18 +5,20 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { MarinadeStats } from '@sb/dexUtils/staking/hooks/types'
 import { RefreshFunction } from '@sb/dexUtils/types'
 
+import { Farm } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
 import { STAKING_CARD_LABELS } from '../../config'
 import { RootColumn, RootRow, SpacedColumn } from '../../index.styles'
+import { StakingRowType } from '../../types'
 import { LabelComponent } from '../FilterSection/Labels'
 import { TooltipIcon } from '../Icons'
 import { Row } from '../Popups/index.styles'
 import { MarinadeStaking } from '../Popups/MarinadeStaking'
-import { RinStaking } from '../Popups/RinStaking'
-import { StSolStaking } from '../Popups/StSolStaking'
+import RinStaking from '../Popups/RinStaking'
 import { LinkToCoinMarketcap, LinkToDiscord, LinkToTwitter } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
 import {
@@ -35,15 +37,14 @@ export const TableRow = ({
   staking,
   refreshStakingInfo,
 }: {
-  farms: any // TODO
+  farms: Farm[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  mSolInfo: any // TODO
-  staking: any // TODO
+  mSolInfo: MarinadeStats
+  staking: StakingRowType
   refreshStakingInfo: RefreshFunction
 }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
   const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
-  const [isStSolStakingPopupOpen, setIsStSolStakingPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
@@ -166,9 +167,6 @@ export const TableRow = ({
                     case 'mSOL':
                       setIsMSolStakingPopupOpen(true)
                       break
-                    case 'stSOL':
-                      setIsStSolStakingPopupOpen(true)
-                      break
                     default:
                       break
                   }
@@ -204,13 +202,6 @@ export const TableRow = ({
           dexTokensPricesMap={dexTokensPricesMap}
           mSolInfo={mSolInfo}
           refreshStakingInfo={refreshStakingInfo}
-        />
-      )}
-      {isStSolStakingPopupOpen && (
-        <StSolStaking
-          socials={staking.socials}
-          open={isStSolStakingPopupOpen}
-          onClose={() => setIsStSolStakingPopupOpen(false)}
         />
       )}
       <ConnectWalletPopup

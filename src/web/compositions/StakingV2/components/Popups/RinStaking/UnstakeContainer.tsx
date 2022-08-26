@@ -17,12 +17,14 @@ export const UnstakeContainer = ({
   setUnstakeAmount,
   unstakeAmount,
   maxAmount,
+  loading,
 }: {
   setIsConnectWalletPopupOpen: (a: boolean) => void
   end: (a: number) => void
   setUnstakeAmount: (a: string | number) => void
   unstakeAmount: number
   maxAmount: number | string
+  loading: boolean
 }) => {
   const wallet = useWallet()
 
@@ -54,7 +56,8 @@ export const UnstakeContainer = ({
             : end(unstakeAmount)
         }
         disabled={
-          wallet.connected && (unstakeAmount === 0 || unstakeAmount === '')
+          wallet.connected &&
+          (unstakeAmount === 0 || unstakeAmount === '' || loading)
         }
         $variant="violet"
         $width="xl"
