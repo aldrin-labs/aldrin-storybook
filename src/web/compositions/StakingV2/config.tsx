@@ -84,3 +84,5 @@ export const STAKING_CARD_LABELS = [
     hoverStyle: LABEL_TYPES.default,
   },
 ]
+
+export const RIN_DECIMALS = 9

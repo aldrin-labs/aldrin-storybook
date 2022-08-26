@@ -37,10 +37,10 @@ export const getStakingsData = ({
       token: 'RIN',
       labels: ['Auto-Compound'],
       totalStaked:
-        farm?.stakeVaultTokenAmount *
+        (farm?.stakeVaultTokenAmount / 10 ** farm?.stakeVaultDecimals) *
         (dexTokensPricesMap.get('RIN')?.price || 0),
-      additionalInfo: `${stripDigitPlaces(stakedPercentage, 2)}%`,
-      apy: stripDigitPlaces(RINHarvest?.apy, 2),
+      additionalInfo: `${stripDigitPlaces(stakedPercentage, 2) || 0}%`,
+      apy: stripDigitPlaces(RINHarvest?.apy, 2) || 0,
       columnName: '% of circ. supply',
       socials: {
         twitter: tokensMap.get('RIN')?.twitterLink,
@@ -72,26 +72,26 @@ export const getStakingsData = ({
         discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
-    {
-      token: 'stSOL',
-      labels: ['Liquid', 'Lido'],
-      totalStaked: 0,
-      additionalInfo: 0,
-      apy: 0,
-      columnName: (
-        <DarkTooltip title="Tooltip">
-          <span>
-            <TooltipIcon color="white2" /> Epoch
-          </span>
-        </DarkTooltip>
-      ),
-      socials: {
-        twitter: tokensMap.get('stSOL')?.twitterLink,
-        coinmarketcap:
-          'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
-        discord: 'https://discord.com/invite/vgdPfhZ',
-      },
-    },
+    // {
+    //   token: 'stSOL',
+    //   labels: ['Liquid', 'Lido'],
+    //   totalStaked: 0,
+    //   additionalInfo: 0,
+    //   apy: 0,
+    //   columnName: (
+    //     <DarkTooltip title="Tooltip">
+    //       <span>
+    //         <TooltipIcon color="white2" /> Epoch
+    //       </span>
+    //     </DarkTooltip>
+    //   ),
+    //   socials: {
+    //     twitter: tokensMap.get('stSOL')?.twitterLink,
+    //     coinmarketcap:
+    //       'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
+    //     discord: 'https://discord.com/invite/vgdPfhZ',
+    //   },
+    // },
     {
       token: 'PLD',
       labels: ['Plutonians', 'NFT Rewards'],

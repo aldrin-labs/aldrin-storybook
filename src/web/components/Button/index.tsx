@@ -144,15 +144,15 @@ const VARIANTS = {
     transition: 0.3s;
 
     &:hover {
-      background: ${(props) => props.theme.colors.violet6};
+      background: ${(props) => rgba(props.theme.colors.blue1, 0.25)};
     }
 
     &:active {
-      background: ${(props) => props.theme.colors.violet7};
+      background: ${(props) => rgba(props.theme.colors.blue1, 0.35)};
     }
 
     &:disabled {
-      color: ${(props) => rgba(props.theme.colors.blue1, 0.2)};
+      color: ${(props) => rgba(props.theme.colors.blue1, 0.5)};
     }
   `,
 
@@ -169,11 +169,15 @@ const VARIANTS = {
     transition: 0.3s;
 
     &:hover {
-      background: ${(props) => props.theme.colors.green11};
+      background: ${(props) => rgba(props.theme.colors.green3, 0.25)};
     }
 
     &:active {
-      background: ${(props) => props.theme.colors.green12};
+      background: ${(props) => rgba(props.theme.colors.green3, 0.35)};
+    }
+
+    &:disabled {
+      color: ${(props) => rgba(props.theme.colors.blue1, 0.15)};
     }
   `,
   none: css``,
@@ -267,7 +271,7 @@ export const Button = styled.button<ButtonProps>`
     cursor: not-allowed;
     pointer-events: none;
     border: none;
-    background-color: ${(props) => props.theme.colors.disabled};
+    background-color: ${(props) => rgba(props.theme.colors.blue1, 0.05)};
   }
 
   ${({ $loading: loading }: ButtonProps) =>

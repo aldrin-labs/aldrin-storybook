@@ -61,9 +61,15 @@ const Block: React.FC<StakingPageProps> = (props) => {
     (harvest) => harvest.mint === FARMING_V2_TEST_TOKEN
   )
 
+  const totalStakedWithDecimals =
+    farm?.stakeVaultTokenAmount / 10 ** farm?.stakeVaultDecimals
+
+  const totalStakedWithDecimalsInUSD =
+    totalStakedWithDecimals * dexTokensPricesMap.get('RIN')?.price
+
   const stakedPercentage =
-    (farm?.stakeVaultTokenAmount /
-      (getStakingInfo?.supply || farm?.stakeVaultTokenAmount)) *
+    (totalStakedWithDecimalsInUSD /
+      (getStakingInfo?.supply || totalStakedWithDecimalsInUSD)) *
     100
 
   useEffect(() => {

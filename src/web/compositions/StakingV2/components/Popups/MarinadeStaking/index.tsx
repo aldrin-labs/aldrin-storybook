@@ -79,6 +79,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
     : undefined
   const fromWallet = isStakeModeOn ? solWalletWithGap : mSolWallet
   const toWallet = isStakeModeOn ? mSolWallet : solWalletWithGap
+  console.log({ fromWallet, toWallet, solWalletWithGap, mSolWallet })
 
   const mSolPrice = mSolInfo?.stats.m_sol_price || 1
 
@@ -154,6 +155,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
     }
 
     setLoading(false)
+    setAmount('')
+    setAmountGet('')
   }
 
   const unstake = async () => {
@@ -175,6 +178,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
       })
     }
     setLoading(false)
+    setAmount('')
+    setAmountGet('')
   }
 
   const amountValue = parseFloat(amount)
@@ -214,6 +219,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <InputsContainer>
               <FirstInputContainer>
                 <AmountInput
+                  maxAmount={fromWallet?.amount}
                   data-testid="marinade-staking-amount-from-field"
                   title={isStakeModeOn ? 'Stake' : 'Unstake'}
                   onMaxAmountClick={() => setAmountFrom(fromWallet?.amount)}
@@ -316,7 +322,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               $width="xl"
               $padding="xxxl"
               $fontSize="sm"
-              disabled={!isValid || loading}
+              disabled={wallet.connected && (!isValid || loading)}
             >
               {!wallet.connected ? (
                 'Connect Wallet to Stake mSOL'

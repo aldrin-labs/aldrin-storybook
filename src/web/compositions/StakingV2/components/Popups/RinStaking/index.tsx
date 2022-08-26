@@ -86,7 +86,7 @@ export const RinStakingComp = ({
   })
 
   const totalStaked = farmer?.totalStaked || '0'
-  const maxAmount = totalStaked / 10 ** 9 // decimals
+  const totalStakedWithDecimals = totalStaked / 10 ** farm?.stakeVaultDecimals
 
   const rinHarvest = farm?.harvests.find(
     (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
@@ -134,6 +134,7 @@ export const RinStakingComp = ({
         await refreshAll()
       }
       setLoading((prev) => ({ ...prev, stake: false }))
+      setStakeAmount('')
       return true
     },
     [connection, wallet, tokenData, refreshAll]
@@ -165,6 +166,7 @@ export const RinStakingComp = ({
     }
 
     setLoading((prev) => ({ ...prev, unstake: false }))
+    setUnstakeAmount('')
     return true
   }
 
@@ -253,7 +255,7 @@ export const RinStakingComp = ({
                   <BigNumber>
                     <InlineText>
                       {isBalanceShowing
-                        ? stripByAmountAndFormat(totalStaked)
+                        ? stripByAmountAndFormat(totalStakedWithDecimals)
                         : '***'}
                     </InlineText>{' '}
                     <InlineText color="white2">RIN</InlineText>
@@ -317,7 +319,7 @@ export const RinStakingComp = ({
             setUnstakeAmount={setUnstakeAmount}
             end={end}
             setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
-            maxAmount={maxAmount || '0.00'}
+            maxAmount={totalStakedWithDecimals || '0.00'}
           />
         </Column>
       </Modal>
