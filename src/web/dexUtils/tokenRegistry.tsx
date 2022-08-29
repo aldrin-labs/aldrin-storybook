@@ -21,9 +21,11 @@ export function TokenRegistryProvider(props) {
     const tokenListProvider = new TokenListProvider()
     tokenListProvider.resolve().then((tokenListContainer) => {
       const cluster = clusterForEndpoint(endpoint)
+      console.log('endpoint', { endpoint, cluster })
 
-      const filteredTokenListContainer =
-        tokenListContainer?.filterByClusterSlug(cluster?.name)
+      const filteredTokenListContainer = tokenListContainer.filterByClusterSlug(
+        cluster?.name
+      )
 
       const tokenInfos =
         tokenListContainer !== filteredTokenListContainer

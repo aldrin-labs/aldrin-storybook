@@ -22,6 +22,9 @@ export const getStakingsData = ({
   RPCTotalStaked,
   PU238TotalStaked,
   dexTokensPricesMap,
+  lidoApy,
+  lidoMarketcap,
+  lidoTotalStaked,
 }: {
   farm: Farm
   stakedPercentage: number
@@ -31,6 +34,9 @@ export const getStakingsData = ({
   RPCTotalStaked: number
   PU238TotalStaked: number
   dexTokensPricesMap: Map<string, DexTokensPrices>
+  lidoApy: number | string
+  lidoMarketcap: number | string
+  lidoTotalStaked: number | string
 }) => {
   const tokensMap = toMap(tokens, (el) => el.symbol)
 
@@ -74,26 +80,25 @@ export const getStakingsData = ({
         discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
-    // {
-    //   token: 'stSOL',
-    //   labels: ['Liquid', 'Lido'],
-    //   totalStaked: 0,
-    //   additionalInfo: 0,
-    //   apy: 0,
-    //   columnName: (
-    //     <DarkTooltip title="Tooltip">
-    //       <span>
-    //         <TooltipIcon color="white2" /> Epoch
-    //       </span>
-    //     </DarkTooltip>
-    //   ),
-    //   socials: {
-    //     twitter: tokensMap.get('stSOL')?.twitterLink,
-    //     coinmarketcap:
-    //       'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
-    //     discord: 'https://discord.com/invite/vgdPfhZ',
-    //   },
-    // },
+    {
+      token: 'stSOL',
+      labels: ['Liquid', 'Lido'],
+      totalStaked: lidoTotalStaked,
+      additionalInfo: (
+        <>
+          <InlineText color="white2">$</InlineText>{' '}
+          {stripByAmountAndFormat(lidoMarketcap)}
+        </>
+      ),
+      apy: stripByAmountAndFormat(lidoApy),
+      columnName: 'Marketcap',
+      socials: {
+        twitter: tokensMap.get('stSOL')?.twitterLink,
+        coinmarketcap:
+          'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
+        discord: 'https://discord.com/invite/vgdPfhZ',
+      },
+    },
     {
       token: 'PLD',
       labels: ['Plutonians', 'NFT Rewards'],

@@ -4,4 +4,5 @@ export interface NumberWithLabelProps {
   size?: string
   center?: boolean
   padding?: string
+  needPercenatage?: boolean
 }

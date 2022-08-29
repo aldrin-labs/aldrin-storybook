@@ -11,6 +11,7 @@ import {
   notifyAboutStakeTransaction,
   notifyAboutUnStakeTransaction,
 } from '@sb/compositions/MarinadeStaking/utils'
+import { SOL_GAP_AMOUNT } from '@sb/compositions/StakingV2/config'
 import { StakingBlockProps } from '@sb/compositions/StakingV2/types'
 import { ArrowsExchangeIcon } from '@sb/compositions/Swap/components/Inputs/images/arrowsExchangeIcon'
 import { ReverseTokensContainer } from '@sb/compositions/Swap/styles'
@@ -47,7 +48,6 @@ import {
 } from './index.styles'
 
 const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
-const SOL_GAP_AMOUNT = 0.0127 // to allow transactions pass
 
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {

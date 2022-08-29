@@ -3,7 +3,7 @@ import { RefreshFunction } from '@sb/dexUtils/types'
 import { DexTokensPrices } from '../Pools/index.types'
 
 export interface StakingBlockProps {
-  mSolInfo: any
+  mSolInfo: any // TODO
   refreshStakingInfo: RefreshFunction
   setIsConnectWalletPopupOpen: (a: boolean) => void
   dexTokensPricesMap: Map<string, DexTokensPrices>

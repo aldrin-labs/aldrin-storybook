@@ -86,3 +86,5 @@ export const STAKING_CARD_LABELS = [
 ]
 
 export const RIN_DECIMALS = 9
+
+export const SOL_GAP_AMOUNT = 0.0127 // to allow transactions pass

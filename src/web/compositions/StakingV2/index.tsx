@@ -1,3 +1,4 @@
+import { SolidoSDK } from '@lidofinance/solido-sdk'
 import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -40,6 +41,10 @@ const Block: React.FC<StakingPageProps> = (props) => {
   const [PU238StakeVault, setPU238StakeVault] = useState('')
   const [PLDStakeVault, setPLDStakeVault] = useState('')
   const [RPCStakeVault, setRPCStakeVault] = useState('')
+  const [lidoApy, setLidoApy] = useState(0)
+  const [lidoMarketcap, setLidoMarketcap] = useState(0)
+  const [lidoTotalStaked, setLidoTotalStaked] = useState(0)
+  const [lidoFee, setLidoFee] = useState(0)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -114,6 +119,26 @@ const Block: React.FC<StakingPageProps> = (props) => {
     publicKey: PLDStakeVault ? new PublicKey(PLDStakeVault) : undefined,
   })
 
+  const solidoSDK = new SolidoSDK(
+    'mainnet-beta',
+    connection,
+    'your_solana_referral_address'
+  )
+
+  useEffect(() => {
+    const getStakingData = async () => {
+      const { apy, totalStaked, marketCap } =
+        await solidoSDK.getLidoStatistics()
+      const { fee } = await solidoSDK.getStakingRewardsFee()
+
+      setLidoMarketcap(marketCap)
+      setLidoTotalStaked(totalStaked.value)
+      setLidoApy(apy)
+      setLidoFee(fee)
+    }
+    getStakingData()
+  }, [])
+
   const stakingsData = getStakingsData({
     farm,
     stakedPercentage,
@@ -123,10 +148,13 @@ const Block: React.FC<StakingPageProps> = (props) => {
     RPCTotalStaked,
     PU238TotalStaked,
     dexTokensPricesMap,
+    lidoApy,
+    lidoMarketcap,
+    lidoTotalStaked,
   })
 
   const totalStaked = stakingsData.reduce((acc, current) => {
-    return acc + current.totalStaked
+    return acc + +current.totalStaked
   }, 0)
 
   return (
@@ -148,6 +176,11 @@ const Block: React.FC<StakingPageProps> = (props) => {
             farms={farms}
             mSolInfo={mSolInfo}
             refreshStakingInfo={refreshStakingInfo}
+            solidoSDK={solidoSDK}
+            lidoTotalStaked={lidoTotalStaked}
+            lidoApy={lidoApy}
+            lidoMarketcap={lidoMarketcap}
+            lidoFee={lidoFee}
           />
         ))}
       </StyledWideContent>

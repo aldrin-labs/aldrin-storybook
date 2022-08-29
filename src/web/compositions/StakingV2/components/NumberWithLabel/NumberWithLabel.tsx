@@ -10,11 +10,13 @@ export const NumberWithLabel: React.FC<NumberWithLabelProps> = (props) => {
     size,
     center = false,
     padding = '0 0 0 0.25em',
+    needPercenatage = true,
   } = props
 
   return (
     <Container>
-      {value}%
+      {value}
+      {needPercenatage ? '%' : ''}
       <Label
         padding={padding}
         style={center ? { margin: '0 auto' } : undefined}

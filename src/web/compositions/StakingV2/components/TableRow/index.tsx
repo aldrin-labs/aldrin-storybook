@@ -19,6 +19,7 @@ import { TooltipIcon } from '../Icons'
 import { Row } from '../Popups/index.styles'
 import { MarinadeStaking } from '../Popups/MarinadeStaking'
 import RinStaking from '../Popups/RinStaking'
+import { StSolStaking } from '../Popups/StSolStaking'
 import { LinkToCoinMarketcap, LinkToDiscord, LinkToTwitter } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
 import {
@@ -36,15 +37,25 @@ export const TableRow = ({
   mSolInfo,
   staking,
   refreshStakingInfo,
+  solidoSDK,
+  lidoApy,
+  lidoMarketcap,
+  lidoFee,
 }: {
   farms: Farm[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   mSolInfo: MarinadeStats
   staking: StakingRowType
   refreshStakingInfo: RefreshFunction
+  solidoSDK: any // TODO
+  lidoApy: number
+  lidoMarketcap: number
+  lidoFee: number
 }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
   const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
+  const [isStSolStakingPopupOpen, setIsStSolStakingPopupOpen] = useState(false)
+
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
@@ -164,6 +175,9 @@ export const TableRow = ({
                     case 'RIN':
                       setIsRinStakingPopupOpen(true)
                       break
+                    case 'stSOL':
+                      setIsStSolStakingPopupOpen(true)
+                      break
                     case 'mSOL':
                       setIsMSolStakingPopupOpen(true)
                       break
@@ -202,6 +216,19 @@ export const TableRow = ({
           dexTokensPricesMap={dexTokensPricesMap}
           mSolInfo={mSolInfo}
           refreshStakingInfo={refreshStakingInfo}
+        />
+      )}
+      {isStSolStakingPopupOpen && (
+        <StSolStaking
+          socials={staking.socials}
+          open={isStSolStakingPopupOpen}
+          onClose={() => setIsStSolStakingPopupOpen(false)}
+          setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+          dexTokensPricesMap={dexTokensPricesMap}
+          solidoSDK={solidoSDK}
+          lidoApy={lidoApy}
+          lidoMarketcap={lidoMarketcap}
+          lidoFee={lidoFee}
         />
       )}
       <ConnectWalletPopup
