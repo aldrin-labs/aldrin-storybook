@@ -359,6 +359,10 @@ const SwapPage = ({
   const marketsByMints = findMarketByMints()
   const selectedPoolForSwap = getSelectedPoolForSwap()
 
+  const { decimals: inputTokenDecimals } = tokenInfosMap.get(
+    inputTokenMintAddress
+  ) || { decimals: 0 }
+
   const { decimals: outputTokenDecimals } = tokenInfosMap.get(
     outputTokenMintAddress
   ) || { decimals: 0 }
@@ -614,8 +618,11 @@ const SwapPage = ({
     getEstimatedPrice({
       inputPrice: basePrice,
       outputPrice: quotePrice,
-      inputAmount: +inputAmount,
-      outputAmount: +outputAmount,
+      inputAmount: removeDecimalsFromBN(swapRoute.amountIn, inputTokenDecimals),
+      outputAmount: removeDecimalsFromBN(
+        swapRoute.amountOut,
+        outputTokenDecimals
+      ),
       field: priceShowField,
     })
   )
