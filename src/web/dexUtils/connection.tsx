@@ -9,11 +9,10 @@ import useSWR from 'swr'
 
 import { MultiEndpointsConnection, AldrinConnection } from '@core/solana'
 
-export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta',
-    endpoint: MAINNET_BETA_ENDPOINT,
+    endpoint: clusterApiUrl('mainnet-beta'),
   },
 ]
 

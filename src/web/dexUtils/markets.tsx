@@ -206,7 +206,7 @@ export function useMarketsList() {
     (el) =>
       !el.deprecated ||
       (el.name.includes('/WUSDT') &&
-        el.programId.toBase58() === programId?.toString())
+        el.programId.toBase58() === programId.toString())
   )
 
   return UPDATED_USE_MARKETS
