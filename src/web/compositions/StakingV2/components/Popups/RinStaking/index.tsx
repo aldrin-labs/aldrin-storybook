@@ -32,7 +32,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
-import { FARMING_V2_TEST_TOKEN } from '@core/solana'
+import { Farm, FARMING_V2_TEST_TOKEN } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -40,8 +40,7 @@ import { WithStakingInfo } from '../../../types'
 import { NumberWithLabel } from '../../NumberWithLabel'
 import { HeaderComponent } from '../Header'
 import InfoIcon from '../Icons/Icon.svg'
-import { Column } from '../index.styles'
-import { ModalContainer } from '../WithdrawLiquidity/index.styles'
+import { Column, ModalContainer } from '../index.styles'
 import { BigNumber, SRow } from './index.styles'
 import { StakeContainer } from './StakeContainer'
 import { UnstakeContainer } from './UnstakeContainer'
@@ -49,7 +48,7 @@ import { UnstakeContainer } from './UnstakeContainer'
 interface RinStakingProps extends WithStakingInfo {
   onClose: () => void
   open: boolean
-  farms: any
+  farms: Farm[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   setIsConnectWalletPopupOpen: (a: boolean) => void
   socials: string[]
@@ -176,9 +175,10 @@ export const RinStakingComp = ({
 
   const userStakingInfo = getStakingInfoQuery.getStakingInfo?.farmers
 
-  const compoundedRewards = userStakingInfo?.reduce((acc, current) => {
-    return acc + current.reward
-  }, 0)
+  const compoundedRewards =
+    userStakingInfo?.reduce((acc, current) => {
+      return acc + current.reward
+    }, 0) || 0
 
   const stakedInUsd = stripByAmountAndFormat(+totalStaked * tokenPrice || 0, 2)
 
@@ -317,7 +317,7 @@ export default compose(
   queryRendererHoc({
     query: getStakingInfo,
     name: 'getStakingInfoQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
     variables: (props) => ({
       farmerPubkey: props.publicKey,
     }),

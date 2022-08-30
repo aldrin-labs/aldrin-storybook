@@ -1,7 +1,6 @@
 import tokens from 'aldrin-registry/src/tokens.json'
 import React from 'react'
 
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { MarinadeStats } from '@sb/dexUtils/staking/hooks/types'
 
@@ -11,7 +10,6 @@ import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { DexTokensPrices } from '../Pools/index.types'
-import { TooltipIcon } from './components/Icons'
 
 export const getStakingsData = ({
   farm,
@@ -67,38 +65,32 @@ export const getStakingsData = ({
         2
       )}%`,
       apy: mSolInfo?.stats.avg_staking_apy,
-      columnName: (
-        <DarkTooltip title="Tooltip">
-          <span>
-            <TooltipIcon color="white2" /> Epoch
-          </span>
-        </DarkTooltip>
-      ),
+      columnName: 'Epoch',
       socials: {
         twitter: 'https://twitter.com/MarinadeFinance',
         coinmarketcap: 'https://coinmarketcap.com/ru/currencies/marinade/',
         discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
-    {
-      token: 'stSOL',
-      labels: ['Liquid', 'Lido'],
-      totalStaked: lidoTotalStaked,
-      additionalInfo: (
-        <>
-          <InlineText color="white2">$</InlineText>{' '}
-          {stripByAmountAndFormat(lidoMarketcap)}
-        </>
-      ),
-      apy: stripByAmountAndFormat(lidoApy),
-      columnName: 'Marketcap',
-      socials: {
-        twitter: tokensMap.get('stSOL')?.twitterLink,
-        coinmarketcap:
-          'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
-        discord: 'https://discord.com/invite/vgdPfhZ',
-      },
-    },
+    // {
+    //   token: 'stSOL',
+    //   labels: ['Liquid', 'Lido'],
+    //   totalStaked: lidoTotalStaked,
+    //   additionalInfo: (
+    //     <>
+    //       <InlineText color="white2">$</InlineText>{' '}
+    //       {stripByAmountAndFormat(lidoMarketcap)}
+    //     </>
+    //   ),
+    //   apy: stripByAmountAndFormat(lidoApy),
+    //   columnName: 'Marketcap',
+    //   socials: {
+    //     twitter: tokensMap.get('stSOL')?.twitterLink,
+    //     coinmarketcap:
+    //       'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
+    //     discord: 'https://discord.com/invite/vgdPfhZ',
+    //   },
+    // },
     {
       token: 'PLD',
       labels: ['Plutonians', 'NFT Rewards'],

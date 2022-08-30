@@ -36,9 +36,8 @@ import {
 import { AmountInput } from '../../Inputs'
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { HeaderComponent } from '../Header'
-import { Box, Column, Container, Row } from '../index.styles'
+import { Box, Column, Container, Row, ModalContainer } from '../index.styles'
 import { Switcher } from '../Switcher'
-import { ModalContainer } from '../WithdrawLiquidity/index.styles'
 import {
   AdditionalInfoRow,
   FirstInputContainer,
@@ -111,8 +110,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
   }
 
   const toggleStakeMode = (value: boolean) => {
-    setAmount('0')
-    setAmountGet('0')
+    setAmount('')
+    setAmountGet('')
     setIsStakeModeOn(value)
   }
 

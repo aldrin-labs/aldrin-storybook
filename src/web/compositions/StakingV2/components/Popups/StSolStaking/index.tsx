@@ -21,10 +21,9 @@ import { stripByAmount, stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { AmountInput } from '../../Inputs'
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { HeaderComponent } from '../Header'
-import { Box, Column, Container, Row } from '../index.styles'
+import { Box, Column, Container, Row, ModalContainer } from '../index.styles'
 import { AdditionalInfoRow } from '../MarinadeStaking/index.styles'
 import { Switcher } from '../Switcher/index'
-import { ModalContainer } from '../WithdrawLiquidity/index.styles'
 import {
   FirstInputContainer,
   InputsContainer,
