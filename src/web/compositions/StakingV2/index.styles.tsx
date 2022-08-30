@@ -170,13 +170,7 @@ export const ThinHeading = styled.div`
   font-size: 14px;
   line-height: 20px;
   margin-bottom: 0.6em;
-
-  /* identical to box height, or 143% */
-
   letter-spacing: -0.0015em;
-
-  /* Dark Mode/D1 */
-
   color: #fafafa;
 `
 
@@ -186,9 +180,6 @@ export const TotalStaked = styled.div`
   font-size: 40px;
   line-height: 48px;
   letter-spacing: 0.0037em;
-
-  /* Dark Mode/D1 */
-
   color: #fafafa;
 
   @media only screen and (max-width: 600px) {

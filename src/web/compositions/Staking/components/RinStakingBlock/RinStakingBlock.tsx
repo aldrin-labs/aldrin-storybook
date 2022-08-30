@@ -57,9 +57,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       harvest: rinHarvest,
     })
 
-    const tokenName = getTokenNameByMintAddress(
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
-    ) // getTokenNameByMintAddress(farm?.stakeMint.toString())
+    const tokenName = getTokenNameByMintAddress(RIN_MINT)
 
     const rinPrice =
       getDexTokensPrices?.find((v) => v.symbol === tokenName)?.price || 0

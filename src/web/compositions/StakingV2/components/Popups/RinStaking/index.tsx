@@ -33,6 +33,7 @@ import { withPublicKey } from '@sb/hoc'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { Farm, RIN_MINT } from '@core/solana'
+import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -86,7 +87,10 @@ export const RinStakingComp = ({
   })
 
   const totalStaked = farmer?.totalStaked || '0'
-  const totalStakedWithDecimals = totalStaked / 10 ** farm?.stakeVaultDecimals
+  const totalStakedWithDecimals = removeDecimals(
+    totalStaked,
+    farm?.stakeVaultDecimals
+  )
 
   const rinHarvest = farm?.harvests.find(
     (harvest) => harvest.mint.toString() === RIN_MINT

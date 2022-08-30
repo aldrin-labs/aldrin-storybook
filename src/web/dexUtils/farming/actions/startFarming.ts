@@ -5,6 +5,7 @@ import {
   buildStartFarmingV2Instruction,
   buildCreateFarmerInstruction,
 } from '@core/solana'
+import { addDecimals } from '@core/utils/helpers'
 
 import { walletAdapterToWallet } from '../../common'
 import { signAndSendTransactions } from '../../transactions'
@@ -18,9 +19,10 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   if (!userTokenAccount) {
     throw new Error('Token account not found!')
   }
-  const amountWithDecimals = (amount * 10 ** userTokenAccount.decimals).toFixed(
-    0
-  )
+  const amountWithDecimals = addDecimals(
+    amount,
+    userTokenAccount.decimals
+  ).toFixed(0)
 
   const tokenAmount = new BN(amountWithDecimals)
 

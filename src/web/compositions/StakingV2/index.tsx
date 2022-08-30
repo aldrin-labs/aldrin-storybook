@@ -17,6 +17,7 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
 import { RIN_MINT, ProgramsMultiton } from '@core/solana'
+import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
 import CoinsBg from './components/Icons/coins.webp'
@@ -64,8 +65,10 @@ const Block: React.FC<StakingPageProps> = (props) => {
 
   const RINHarvest = farm?.harvests.find((harvest) => harvest.mint === RIN_MINT)
 
-  const totalStakedWithDecimals =
-    farm?.stakeVaultTokenAmount / 10 ** farm?.stakeVaultDecimals
+  const totalStakedWithDecimals = removeDecimals(
+    farm?.stakeVaultTokenAmount,
+    farm?.stakeVaultDecimals
+  )
 
   const totalStakedWithDecimalsInUSD =
     totalStakedWithDecimals * (dexTokensPricesMap.get('RIN')?.price || 0)

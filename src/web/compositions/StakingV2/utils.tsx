@@ -6,6 +6,7 @@ import { MarinadeStats } from '@sb/dexUtils/staking/hooks/types'
 
 import { toMap } from '@core/collection'
 import { Farm, Harvest } from '@core/solana'
+import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -43,7 +44,7 @@ export const getStakingsData = ({
       token: 'RIN',
       labels: ['Auto-Compound'],
       totalStaked:
-        (farm?.stakeVaultTokenAmount / 10 ** farm?.stakeVaultDecimals) *
+        removeDecimals(farm?.stakeVaultTokenAmount, farm?.stakeVaultDecimals) *
         (dexTokensPricesMap.get('RIN')?.price || 0),
       additionalInfo: `${stripDigitPlaces(stakedPercentage, 2) || 0}%`,
       apy: stripDigitPlaces(RINHarvest?.apy, 2) || 0,
