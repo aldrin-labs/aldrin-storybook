@@ -11,7 +11,7 @@ import { useRinStakingApr } from '@sb/dexUtils/staking/hooks/useRinStakingApr'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { FARMING_V2_TEST_TOKEN } from '@core/solana'
+import { RIN_MINT } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import AldrinLogo from '@icons/Aldrin.svg'
@@ -42,14 +42,14 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
     const { data: farms } = useFarmInfo()
     const { data: poolInfo } = useStakingPoolInfo()
 
-    const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+    const farm = farms?.get(RIN_MINT)
 
     const [totalStakedRIN] = useAccountBalance({
       publicKey: farm ? farm.stakeVault : undefined,
     })
 
     const rinHarvest = farm?.harvests.find(
-      (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
+      (harvest) => harvest.mint.toString() === RIN_MINT
     )
 
     const { data: apr } = useRinStakingApr({

@@ -121,7 +121,7 @@ export const StSolStaking = ({
   const stSOLPrice = dexTokensPricesMap.get('stSOL')?.price || 0
   const SOLPrice = dexTokensPricesMap.get('SOL')?.price || 0
 
-  const ration = SOLPrice / stSOLPrice
+  const ratio = SOLPrice / stSOLPrice
 
   const setAmountFrom = (v: string) => {
     const valueForState = formatNumbersForState(v)
@@ -244,7 +244,7 @@ export const StSolStaking = ({
                     </Row>
                     <Row>
                       <InlineText color="white2" size="es">
-                        1 SOL ⇄ {stripByAmountAndFormat(ration, 4)} stSOL
+                        1 SOL ⇄ {stripByAmountAndFormat(ratio, 4)} stSOL
                       </InlineText>
                     </Row>
                   </Row>

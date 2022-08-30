@@ -33,7 +33,7 @@ import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
-import { FARMING_V2_TEST_TOKEN } from '@core/solana'
+import { RIN_MINT } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import EyeIcon from '@icons/eye.svg'
@@ -66,7 +66,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { data: farms } = useFarmInfo(stakingDataMap)
 
-  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+  const farm = farms?.get(RIN_MINT)
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: farm ? new PublicKey(farm?.stakeVault) : undefined,
   })
@@ -95,15 +95,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
   const rinHarvest = farm?.harvests.find(
-    (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
+    (harvest) => harvest.mint.toString() === RIN_MINT
   )
 
   const { data: apr } = useRinStakingApr({
     totalStaked: totalStakedRIN,
     harvest: rinHarvest,
   })
-
-  console.log('getStakingInfoQuery', getStakingInfoQuery)
 
   const refreshAll = async () => {
     await Promise.all([

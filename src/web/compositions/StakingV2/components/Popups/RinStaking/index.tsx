@@ -32,7 +32,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
-import { Farm, FARMING_V2_TEST_TOKEN } from '@core/solana'
+import { Farm, RIN_MINT } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -74,7 +74,7 @@ export const RinStakingComp = ({
   const { data: farmersInfo, mutate: refreshFarmersInfo } =
     useFarmersAccountInfo()
 
-  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+  const farm = farms?.get(RIN_MINT)
 
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
 
@@ -89,7 +89,7 @@ export const RinStakingComp = ({
   const totalStakedWithDecimals = totalStaked / 10 ** farm?.stakeVaultDecimals
 
   const rinHarvest = farm?.harvests.find(
-    (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
+    (harvest) => harvest.mint.toString() === RIN_MINT
   )
 
   const refreshAll = async () => {
@@ -170,8 +170,7 @@ export const RinStakingComp = ({
   }
 
   const tokenPrice =
-    dexTokensPricesMap?.get(getTokenNameByMintAddress(FARMING_V2_TEST_TOKEN))
-      ?.price || 0
+    dexTokensPricesMap?.get(getTokenNameByMintAddress(RIN_MINT))?.price || 0
 
   const userStakingInfo = getStakingInfoQuery.getStakingInfo?.farmers
 

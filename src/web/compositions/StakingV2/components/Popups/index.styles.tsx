@@ -1,24 +1,14 @@
 import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
-type RowType = {
-  width?: string
-  padding?: string
-  height?: string
-  margin?: string
-}
-
-type BoxType = {
-  height?: string
-  width?: string
-  padding?: string
-}
-
-type ColumnType = {
-  height?: string
-  width?: string
-  margin?: string
-}
+import {
+  RowType,
+  BoxType,
+  CircleIconContainerType,
+  ColumnType,
+  PeriodButtonType,
+  ModalType,
+} from './types'
 
 export const StyledModal = styled.div`
   .modal-container {
@@ -180,18 +170,6 @@ export const Container = styled.div`
   border-radius: 0.6em;
   padding: 0.5em;
 `
-
-type CircleIconContainerType = {
-  size?: string
-}
-
-type PeriodButtonType = {
-  isActive: boolean
-}
-
-type ModalType = {
-  needBlur?: boolean
-}
 
 export const CircleIconContainer = styled.div<CircleIconContainerType>`
   display: flex;
