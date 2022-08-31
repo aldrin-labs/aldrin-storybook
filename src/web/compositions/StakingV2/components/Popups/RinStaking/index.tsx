@@ -320,7 +320,7 @@ export default compose(
   queryRendererHoc({
     query: getStakingInfo,
     name: 'getStakingInfoQuery',
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     variables: (props) => ({
       farmerPubkey: props.publicKey,
     }),

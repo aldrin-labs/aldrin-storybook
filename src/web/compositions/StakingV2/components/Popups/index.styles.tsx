@@ -20,7 +20,7 @@ export const StyledModal = styled.div`
     border-radius: 1.5em 1.5em 0 0;
     background: ${(props) => props.theme.colors.gray7};
     padding: 0 1.5em;
-    height: 90%;
+    // height: 90%;
   }
   .modal-content {
     height: 100%;
