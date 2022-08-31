@@ -16,7 +16,7 @@ import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
-import { RIN_MINT, ProgramsMultiton } from '@core/solana'
+import { ProgramsMultiton, FARMING_V2_TOKEN } from '@core/solana'
 import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
@@ -61,9 +61,11 @@ const Block: React.FC<StakingPageProps> = (props) => {
 
   const dexTokensPricesMap = toMap(getDexTokensPrices, (price) => price.symbol)
 
-  const farm = farms?.get(RIN_MINT)
+  const farm = farms?.get(FARMING_V2_TOKEN)
 
-  const RINHarvest = farm?.harvests.find((harvest) => harvest.mint === RIN_MINT)
+  const RINHarvest = farm?.harvests.find(
+    (harvest) => harvest.mint === FARMING_V2_TOKEN
+  )
 
   const totalStakedWithDecimals = removeDecimals(
     farm?.stakeVaultTokenAmount,
