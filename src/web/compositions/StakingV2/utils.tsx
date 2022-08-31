@@ -73,25 +73,25 @@ export const getStakingsData = ({
         discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
-    // {
-    //   token: 'stSOL',
-    //   labels: ['Liquid', 'Lido'],
-    //   totalStaked: lidoTotalStaked,
-    //   additionalInfo: (
-    //     <>
-    //       <InlineText color="white2">$</InlineText>{' '}
-    //       {stripByAmountAndFormat(lidoMarketcap)}
-    //     </>
-    //   ),
-    //   apy: stripByAmountAndFormat(lidoApy),
-    //   columnName: 'Marketcap',
-    //   socials: {
-    //     twitter: tokensMap.get('stSOL')?.twitterLink,
-    //     coinmarketcap:
-    //       'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
-    //     discord: 'https://discord.com/invite/vgdPfhZ',
-    //   },
-    // },
+    {
+      token: 'stSOL',
+      labels: ['Liquid', 'Lido'],
+      totalStaked: lidoTotalStaked,
+      additionalInfo: (
+        <>
+          <InlineText color="white2">$</InlineText>{' '}
+          {stripByAmountAndFormat(lidoMarketcap)}
+        </>
+      ),
+      apy: stripByAmountAndFormat(lidoApy),
+      columnName: 'Marketcap',
+      socials: {
+        twitter: tokensMap.get('stSOL')?.twitterLink,
+        coinmarketcap:
+          'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
+        discord: 'https://discord.com/invite/vgdPfhZ',
+      },
+    },
     {
       token: 'PLD',
       labels: ['Plutonians', 'NFT Rewards'],

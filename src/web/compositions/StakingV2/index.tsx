@@ -123,7 +123,7 @@ const Block: React.FC<StakingPageProps> = (props) => {
   const solidoSDK = new SolidoSDK(
     'mainnet-beta',
     connection,
-    'your_solana_referral_address'
+    'LidMA9AeE8ahsUT5QAcv3VtkDWaCapue8bL6prEyBtU'
   )
 
   useEffect(() => {
