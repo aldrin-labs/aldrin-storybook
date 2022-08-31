@@ -32,7 +32,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
-import { Farm, RIN_MINT } from '@core/solana'
+import { Farm, FARMING_V2_TEST_TOKEN, RIN_MINT } from '@core/solana'
 import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -75,7 +75,7 @@ export const RinStakingComp = ({
   const { data: farmersInfo, mutate: refreshFarmersInfo } =
     useFarmersAccountInfo()
 
-  const farm = farms?.get(RIN_MINT)
+  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
 
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
 
@@ -87,13 +87,14 @@ export const RinStakingComp = ({
   })
 
   const totalStaked = farmer?.totalStaked || '0'
+
   const totalStakedWithDecimals = removeDecimals(
     totalStaked,
     farm?.stakeVaultDecimals
   )
 
   const rinHarvest = farm?.harvests.find(
-    (harvest) => harvest.mint.toString() === RIN_MINT
+    (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
   )
 
   const refreshAll = async () => {
@@ -183,8 +184,11 @@ export const RinStakingComp = ({
       return acc + current.reward
     }, 0) || 0
 
-  const stakedInUsd = stripByAmountAndFormat(+totalStaked * tokenPrice || 0, 2)
-
+  const stakedInUsd = stripByAmountAndFormat(
+    +totalStakedWithDecimals * tokenPrice || 0,
+    2
+  )
+  console.log('totalStaked', totalStakedWithDecimals)
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${
       rinHarvest ? `${rinHarvest.apy}% APR` : ''
