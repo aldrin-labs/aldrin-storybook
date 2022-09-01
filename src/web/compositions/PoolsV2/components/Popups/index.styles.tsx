@@ -33,8 +33,11 @@ export const StyledModal = styled.div`
     height: 90%;
   }
   .modal-content {
-    height: 100%;
+    height: 95%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 `
 

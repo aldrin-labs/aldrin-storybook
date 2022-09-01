@@ -25,7 +25,7 @@ export const PositionatedIconContainer = styled(CircleIconContainer)`
   position: absolute;
   left: 50%;
   top: 50%;
-  border-bottom: 1px solid ${(props) => props.theme.colors.white4};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   transform: translate(-50%, -50%);
   z-index: 2;
 

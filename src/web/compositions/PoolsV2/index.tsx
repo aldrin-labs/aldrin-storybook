@@ -5,6 +5,7 @@ import { Page } from '@sb/components/Layout'
 import { TVLChart, VolumeChart } from './components/Charts'
 import { ExtendedFiltersSection } from './components/FiltersSection'
 import { FilterIcon, PlusIcon } from './components/Icons'
+import { CreatePoolModal } from './components/Popups/CreatePool'
 import { Row } from './components/Popups/index.styles'
 import { PoolsDetails } from './components/Popups/PoolsDetails'
 import { SearchInput } from './components/SearchInput'
@@ -28,6 +29,7 @@ export const PoolsComponent: React.FC = () => {
   const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
+  const [isCreatePoolPopupOpen, setIsCreatPoolPopupOpen] = useState(false)
 
   const positionsAmount = 2
   const showPositionsChart =
@@ -63,7 +65,12 @@ export const PoolsComponent: React.FC = () => {
             >
               Aldrin Pools Guide
             </SButton>
-            <SButton $borderRadius="md" $width="rg" $variant="violet">
+            <SButton
+              onClick={() => setIsCreatPoolPopupOpen(true)}
+              $borderRadius="md"
+              $width="rg"
+              $variant="violet"
+            >
               <PlusIcon />
               Create Pool
             </SButton>
@@ -118,6 +125,10 @@ export const PoolsComponent: React.FC = () => {
         onClose={() => {
           setIsPoolsDetailsPopupOpen(false)
         }}
+      />
+      <CreatePoolModal
+        open={isCreatePoolPopupOpen}
+        onClose={() => setIsCreatPoolPopupOpen(false)}
       />
     </Page>
   )
