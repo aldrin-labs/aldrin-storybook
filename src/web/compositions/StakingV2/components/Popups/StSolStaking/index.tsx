@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
 
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
@@ -11,7 +12,10 @@ import { ReverseTokensContainer } from '@sb/compositions/Swap/styles'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
-import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
+import {
+  sendSignedSignleTransaction,
+  signAndSendSingleTransaction,
+} from '@sb/dexUtils/transactions'
 import { formatNumbersForState } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -39,7 +43,6 @@ export const StSolStaking = ({
   dexTokensPricesMap,
   lidoApy,
   lidoMarketcap,
-  lidoFee,
   solidoSDK,
 }: {
   onClose: () => void
@@ -49,12 +52,20 @@ export const StSolStaking = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   lidoApy: number
   lidoMarketcap: number
-  lidoFee: number
   solidoSDK: any // TDOD
 }) => {
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [amount, setAmount] = useState('')
   const [amountGet, setAmountGet] = useState('')
+  const [lidoFee, setLidoFee] = useState(0)
+  const [ratioSOLToStSOL, setSOLToStSOL] = useState(0)
+  const [stSOLmaxUnStakeAmountInLamports, setStSOLMaxUnStakeAmountInLamports] =
+    useState(0)
+  const [txStageCallback, setTxStageCallback] = useState({
+    txStage: '',
+    transactionHash: '', // for TX_STAGE.AWAITING_BLOCK stage
+    deactivatingSolAccountAddress: '', // for TX_STAGE.AWAITING_SIGNING stage
+  })
 
   const stSOLWallet = useAssociatedTokenAccount(
     getTokenMintAddressByName('stSOL') || ''
@@ -63,13 +74,21 @@ export const StSolStaking = ({
   const SOLWallet = useAssociatedTokenAccount(
     getTokenMintAddressByName('SOL') || ''
   )
-
   const solWalletWithGap = SOLWallet
     ? { ...SOLWallet, amount: Math.max(SOLWallet.amount - SOL_GAP_AMOUNT, 0) }
     : undefined
 
-  const fromWallet = isStakeModeOn ? solWalletWithGap : stSOLWallet
-  const toWallet = isStakeModeOn ? stSOLWallet : solWalletWithGap
+  const toWalletWithMaxUnStakeAmount = {
+    ...stSOLWallet,
+    amount: stSOLmaxUnStakeAmountInLamports,
+  }
+
+  const fromWallet = isStakeModeOn
+    ? solWalletWithGap
+    : toWalletWithMaxUnStakeAmount
+  const toWallet = isStakeModeOn
+    ? toWalletWithMaxUnStakeAmount
+    : solWalletWithGap
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -95,17 +114,17 @@ export const StSolStaking = ({
 
   const unstake = async () => {
     const walletWithPk = walletAdapterToWallet(wallet)
-
     try {
       const { transaction } = await solidoSDK.getUnStakeTransaction({
         amount,
         payerAddress: walletWithPk.publicKey,
       })
 
-      await signAndSendSingleTransaction({
-        wallet: walletWithPk,
+      const signedTx = await wallet.signTransaction(transaction)
+
+      await sendSignedSignleTransaction({
         connection,
-        transaction,
+        transaction: signedTx,
       })
     } catch (e) {
       console.error('unstake error', e)
@@ -118,10 +137,7 @@ export const StSolStaking = ({
     setIsStakeModeOn(value)
   }
 
-  const stSOLPrice = dexTokensPricesMap.get('stSOL')?.price || 0
-  const SOLPrice = dexTokensPricesMap.get('SOL')?.price || 0
-
-  const ratio = SOLPrice / stSOLPrice
+  const stSOLPrice = dexTokensPricesMap.get('stSOL')?.price || 33.2
 
   const setAmountFrom = (v: string) => {
     const valueForState = formatNumbersForState(v)
@@ -150,6 +166,24 @@ export const StSolStaking = ({
     setAmountGet(valueForState)
     setAmount(formattedNewFromValue)
   }
+
+  useEffect(() => {
+    const getStakingData = async () => {
+      const { fee } = await solidoSDK.getStakingRewardsFee()
+      const { stSOLToSOL } = await solidoSDK.getExchangeRate()
+      const maxUnStakeAmountInLamports =
+        await solidoSDK.calculateMaxUnStakeAmount(wallet.publicKey)
+
+      console.log('maxUnStakeAmountInLamports', maxUnStakeAmountInLamports)
+
+      setLidoFee(fee)
+      setSOLToStSOL(stSOLToSOL)
+      setStSOLMaxUnStakeAmountInLamports(
+        maxUnStakeAmountInLamports / LAMPORTS_PER_SOL
+      )
+    }
+    getStakingData()
+  }, [])
 
   return (
     <MainContainer>
@@ -244,7 +278,7 @@ export const StSolStaking = ({
                     </Row>
                     <Row>
                       <InlineText color="white2" size="es">
-                        1 SOL ⇄ {stripByAmountAndFormat(ratio, 4)} stSOL
+                        1 SOL ⇄ {ratioSOLToStSOL} stSOL
                       </InlineText>
                     </Row>
                   </Row>

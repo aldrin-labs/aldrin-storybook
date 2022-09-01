@@ -41,6 +41,7 @@ export const TableRow = ({
   lidoApy,
   lidoMarketcap,
   lidoFee,
+  lidoMaxUnstakeAmount,
 }: {
   farms: Farm[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -51,6 +52,7 @@ export const TableRow = ({
   lidoApy: number
   lidoMarketcap: number
   lidoFee: number
+  lidoMaxUnstakeAmount: number
 }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
   const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
@@ -228,7 +230,6 @@ export const TableRow = ({
           solidoSDK={solidoSDK}
           lidoApy={lidoApy}
           lidoMarketcap={lidoMarketcap}
-          lidoFee={lidoFee}
         />
       )}
       <ConnectWalletPopup

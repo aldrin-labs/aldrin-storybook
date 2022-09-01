@@ -45,7 +45,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
   const [lidoApy, setLidoApy] = useState(0)
   const [lidoMarketcap, setLidoMarketcap] = useState(0)
   const [lidoTotalStaked, setLidoTotalStaked] = useState(0)
-  const [lidoFee, setLidoFee] = useState(0)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -130,12 +129,10 @@ const Block: React.FC<StakingPageProps> = (props) => {
     const getStakingData = async () => {
       const { apy, totalStaked, marketCap } =
         await solidoSDK.getLidoStatistics()
-      const { fee } = await solidoSDK.getStakingRewardsFee()
 
       setLidoMarketcap(marketCap)
       setLidoTotalStaked(totalStaked.value)
       setLidoApy(apy)
-      setLidoFee(fee)
     }
     getStakingData()
   }, [])
@@ -181,7 +178,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
             lidoTotalStaked={lidoTotalStaked}
             lidoApy={lidoApy}
             lidoMarketcap={lidoMarketcap}
-            lidoFee={lidoFee}
           />
         ))}
       </StyledWideContent>
