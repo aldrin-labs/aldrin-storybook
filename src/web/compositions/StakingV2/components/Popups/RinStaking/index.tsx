@@ -27,7 +27,6 @@ import {
   useUserTokenAccounts,
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
-import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc'
 
@@ -78,7 +77,11 @@ export const RinStakingComp = ({
   const farm = farms?.get(FARMING_V2_TOKEN)
 
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
-
+  console.log({
+    farmer,
+    ts: farmer.account.staked.amount.toString(),
+    tv: farmer.account.vested.amount.toString(),
+  })
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
 
   const [loading, setLoading] = useState({
@@ -183,6 +186,11 @@ export const RinStakingComp = ({
       return acc + current.reward
     }, 0) || 0
 
+  const compoundedRewardsWithputDecimals = removeDecimals(
+    compoundedRewards,
+    farm?.stakeVaultDecimals
+  )
+
   const stakedInUsd = stripByAmountAndFormat(
     +totalStakedWithDecimals * tokenPrice || 0,
     2
@@ -283,7 +291,9 @@ export const RinStakingComp = ({
                   <BigNumber>
                     <InlineText>
                       {isBalanceShowing
-                        ? formatNumberWithSpaces(compoundedRewards)
+                        ? stripByAmountAndFormat(
+                            compoundedRewardsWithputDecimals
+                          )
                         : '***'}{' '}
                     </InlineText>{' '}
                     <InlineText color="white2">RIN</InlineText>
@@ -292,7 +302,9 @@ export const RinStakingComp = ({
                     <InlineText size="sm">
                       <InlineText color="white2">$</InlineText>&nbsp;{' '}
                       {isBalanceShowing
-                        ? formatNumberWithSpaces(compoundedRewards * tokenPrice)
+                        ? stripByAmountAndFormat(
+                            compoundedRewardsWithputDecimals * tokenPrice
+                          )
                         : '***'}
                     </InlineText>
                     <NumberWithLabel
