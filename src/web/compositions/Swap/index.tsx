@@ -79,7 +79,12 @@ import {
   SwapPageLayout,
   TextButton,
 } from './styles'
-import { getEstimatedPrice, getSwapButtonText } from './utils'
+import {
+  getEstimatedPrice,
+  getSwapButtonText,
+  getEstimatedPrice,
+  getSwapButtonText,
+} from './utils'
 
 const SwapPage = ({
   getPoolsInfoQuery,

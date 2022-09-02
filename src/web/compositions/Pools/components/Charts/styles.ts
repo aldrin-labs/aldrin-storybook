@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { BlockSubtitle } from '@sb/components/Block'
+import { Block, BlockSubtitle } from '@sb/components/Block'
 import { Row } from '@sb/components/Layout'
 
 export const TitleContainer = styled.div`
@@ -30,4 +30,7 @@ export const Canvas = styled.canvas`
 export const DataContainer = styled.div`
   height: 220px;
   position: relative;
+`
+export const SBlock = styled(Block)`
+  margin-right: 1em;
 `
