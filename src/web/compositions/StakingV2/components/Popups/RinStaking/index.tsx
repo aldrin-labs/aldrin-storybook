@@ -77,11 +77,7 @@ export const RinStakingComp = ({
   const farm = farms?.get(FARMING_V2_TOKEN)
 
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
-  console.log({
-    farmer,
-    ts: farmer.account.staked.amount.toString(),
-    tv: farmer.account.vested.amount.toString(),
-  })
+
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
 
   const [loading, setLoading] = useState({
