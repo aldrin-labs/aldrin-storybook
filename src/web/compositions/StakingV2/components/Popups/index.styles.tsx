@@ -11,20 +11,25 @@ import {
 } from './types'
 
 export const StyledModal = styled.div`
-  .modal-container {
-    justify-content: flex-end;
-  }
   .modal-body {
     width: 39em;
     margin: 0;
-    border-radius: 1.5em 1.5em 0 0;
+    border-radius: 1.5em;
     background: ${(props) => props.theme.colors.gray7};
     padding: 0 1.5em;
-    // height: 90%;
   }
   .modal-content {
     height: 100%;
     width: 100%;
+  }
+
+  @media (max-width: ${BREAKPOINTS.xxxl}) {
+    .modal-container {
+      justify-content: flex-end;
+    }
+    .modal-body {
+      border-radius: 1.5em 1.5em 0 0;
+    }
   }
 
   @media (max-width: ${BREAKPOINTS.md}) {
