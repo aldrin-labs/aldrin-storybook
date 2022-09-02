@@ -4,7 +4,7 @@ import { InlineText } from '@sb/components/Typography'
 
 import { Circle, StepContainer } from './index.styles'
 
-const StepsCirle = () => {
+const StepsCirle = ({ creationStep }: { creationStep: string }) => {
   return (
     <svg
       width="36"
@@ -15,7 +15,7 @@ const StepsCirle = () => {
     >
       <path
         d="M18 3C15.0159 3 12.0843 3.7855 9.5 5.27757C6.91567 6.76963 4.76963 8.91567 3.27757 11.5C1.78551 14.0843 0.999999 17.0159 0.999998 20C0.999998 22.9841 1.7855 25.9157 3.27757 28.5"
-        stroke="#302F41"
+        stroke={creationStep === 'setPreferences' ? '#00FF84' : '#302F41'}
         strokeWidth="2"
       />
       <path
@@ -25,7 +25,7 @@ const StepsCirle = () => {
       />
       <path
         d="M3.27757 28.5C4.76963 31.0843 6.91567 33.2304 9.5 34.7224C12.0843 36.2145 15.0159 37 18 37C20.9841 37 23.9157 36.2145 26.5 34.7224C29.0843 33.2304 31.2304 31.0843 32.7224 28.5"
-        stroke="#302F41"
+        stroke={creationStep !== 'createPool' ? '#00FF84' : '#302F41'}
         strokeWidth="2"
       />
       <rect
@@ -54,13 +54,24 @@ const StepsCirle = () => {
   )
 }
 
-export const StepChecker = () => {
+export const StepChecker = ({ creationStep }: { creationStep: string }) => {
+  const getStep = () => {
+    if (creationStep === 'createPool') {
+      return '1'
+    }
+    if (creationStep === 'setupFarming') {
+      return '2'
+    }
+    return '3'
+  }
+  const currentStep = getStep()
+
   return (
     <Circle>
-      <StepsCirle />
+      <StepsCirle creationStep={creationStep} />
       <StepContainer>
         <InlineText color="green3" size="xsm" weight={600}>
-          1
+          {currentStep}
         </InlineText>
       </StepContainer>
     </Circle>

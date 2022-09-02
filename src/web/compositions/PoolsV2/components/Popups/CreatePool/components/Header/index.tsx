@@ -7,22 +7,30 @@ import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
 import { Column, Row } from '../../../index.styles'
 import { StepChecker } from './StepChecker'
 
-export const Header = ({ onClose }: { onClose: () => void }) => {
+export const Header = ({
+  onClose,
+  header,
+  description,
+  creationStep,
+}: {
+  onClose: () => void
+  header: string
+  description: string
+  creationStep: string
+}) => {
   return (
-    <RootRow>
+    <RootRow margin="1.5em 0 1em 0">
       <Row width="70%">
-        <StepChecker />
+        <StepChecker creationStep={creationStep} />
         <Column width="85%" margin="0 0 0 1em">
           <InlineText size="xmd" weight={600}>
-            Create Pool & Deposit Liquidity
+            {header}
           </InlineText>
           <InlineText color="blue1" size="esm">
-            If your token name or logo are not displayed correctly you can
-            submit it to the Aldrin Registry here.
+            {description}
           </InlineText>
         </Column>
       </Row>
-
       <EscapeButton onClose={onClose} />
     </RootRow>
   )

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Page } from '@sb/components/Layout'
 
+import { ConnectWalletPopup } from '../Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { TVLChart, VolumeChart } from './components/Charts'
 import { ExtendedFiltersSection } from './components/FiltersSection'
 import { FilterIcon, PlusIcon } from './components/Icons'
@@ -30,6 +31,8 @@ export const PoolsComponent: React.FC = () => {
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
   const [isCreatePoolPopupOpen, setIsCreatPoolPopupOpen] = useState(false)
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
 
   const positionsAmount = 2
   const showPositionsChart =
@@ -129,6 +132,11 @@ export const PoolsComponent: React.FC = () => {
       <CreatePoolModal
         open={isCreatePoolPopupOpen}
         onClose={() => setIsCreatPoolPopupOpen(false)}
+        setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+      />
+      <ConnectWalletPopup
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
       />
     </Page>
   )
