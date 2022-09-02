@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { InlineText } from '@sb/components/Typography'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import { Container } from '../../TableRow/index.styles'
 import { ValuesContainer } from '../DepositLiquidity/DepositContainer'
@@ -25,6 +26,11 @@ export const CreatePoolModal = ({
   open: boolean
   onClose: () => void
 }) => {
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
+
+  const { wallet } = useWallet()
+
   return (
     <StyledModal>
       <Modal open={open} onClose={onClose}>
@@ -64,7 +70,9 @@ export const CreatePoolModal = ({
           <ValuesContainer />
         </Column>
         <Button
-          onClick={() => {}}
+          onClick={() =>
+            !wallet.connected ? setIsConnectWalletPopupOpen(true) : null
+          }
           $variant="violet"
           $width="xl"
           $padding="xxxl"
