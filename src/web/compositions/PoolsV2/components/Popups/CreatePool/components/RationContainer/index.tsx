@@ -14,10 +14,18 @@ import {
   SignContainer,
 } from './index.styles'
 
-export const RationContainer = ({ token = 'USDC' }: { token: string }) => {
+export const RationContainer = ({
+  token = 'USDC',
+  needPadding = true,
+  needElement = true,
+}: {
+  token: string
+  needPadding?: boolean
+  needElement?: boolean
+}) => {
   return (
     <Container>
-      <LeftHalfContainer>
+      <LeftHalfContainer needPadding={needPadding}>
         <RootRow margin="0" width="100%">
           <Column margin="0" width="auto">
             <InlineText size="sm" color="white2">
@@ -35,8 +43,8 @@ export const RationContainer = ({ token = 'USDC' }: { token: string }) => {
           </TokenContainer>
         </RootRow>
       </LeftHalfContainer>
-      <SignContainer>=</SignContainer>
-      <RightHalfContainer>
+      <SignContainer needElement={needElement}>=</SignContainer>
+      <RightHalfContainer needPadding={needPadding}>
         <RootRow margin="0" width="100%">
           <Column margin="0" width="auto">
             <InlineText size="sm" color="white2">

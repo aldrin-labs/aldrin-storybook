@@ -40,7 +40,7 @@ export const CreatePool = ({
         description="If your token name or logo are not displayed correctly you can submit it to the Aldrin Registry here."
         onClose={onClose}
       />
-      <Column height="auto" width="100%">
+      <Column height="30em" margin="2em 0" width="100%">
         <Container needBorder height="9.5em" width="100%">
           <Column width="100%">
             <InlineText size="sm" color="white2">
@@ -74,19 +74,21 @@ export const CreatePool = ({
         <ValuesContainer />
         {wallet.connected && <RationContainer token="RIN" />}
       </Column>
-      <Button
-        onClick={() =>
-          !wallet.connected
-            ? setIsConnectWalletPopupOpen(true)
-            : setCreationStep('setupFarming')
-        }
-        $variant="violet"
-        $width="xl"
-        $padding="xxxl"
-        $fontSize="sm"
-      >
-        {!wallet.connected ? 'Connect Wallet to Create Pool' : 'Next'}
-      </Button>
+      <RootRow margin="0 0 2em 0">
+        <Button
+          onClick={() =>
+            !wallet.connected
+              ? setIsConnectWalletPopupOpen(true)
+              : setCreationStep('setupFarming')
+          }
+          $variant="violet"
+          $width="xl"
+          $padding="xxxl"
+          $fontSize="sm"
+        >
+          {!wallet.connected ? 'Connect Wallet to Create Pool' : 'Next'}
+        </Button>
+      </RootRow>
     </>
   )
 }

@@ -1,4 +1,5 @@
-import { RIN_MINT } from '@core/solana'
+import React, { useState } from 'react'
+
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
@@ -6,7 +7,9 @@ import { AmountInput } from '@sb/compositions/PoolsV2/components/Inputs'
 import { InputContainer } from '@sb/compositions/PoolsV2/components/Inputs/index.styles'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
+
+import { RIN_MINT } from '@core/solana'
+
 import { Container } from '../../../../TableRow/index.styles'
 import { ValuesContainer } from '../../../DepositLiquidity/DepositContainer'
 import { Column, Row } from '../../../index.styles'
@@ -45,10 +48,19 @@ export const SetupFarming = ({
         header="Setup Farming"
         description="You will be able to prolong your farming for as long as you like."
         creationStep={creationStep}
-        onClose={onClose}
+        arrow
+        onClose={() =>
+          stepOfSetup === 0
+            ? setCreationStep('createPool')
+            : setStepOfSetup(stepOfSetup - 1)
+        }
       />
-
-      <Column height="auto" width="100%">
+      <Column
+        justify="center"
+        height={stepOfSetup === 1 ? '32em' : '30em'}
+        margin={stepOfSetup === 1 ? '1em 0' : '2em 0'}
+        width="100%"
+      >
         <Container needBorder height="8.5em" width="100%">
           <Column width="100%">
             <InlineText size="sm" color="white2">
@@ -107,27 +119,54 @@ export const SetupFarming = ({
           </InputContainer>
         )}
         {stepOfSetup === 1 && <ValuesContainer />}
-        {stepOfSetup === 1 && <RationContainer token={'RIN'} />}
-        {stepOfSetup === 0 &&  <RootRow margin="1em 0 0 0">
-          <Container height="5em" needBorder width="49%">
-            <RootRow margin="0" width="100%">
-              <Column margin="0" width="auto">
-                <InlineText size="sm" color="white2">
-                  Rewards per day
-                </InlineText>
-                <InlineText weight={600} color="white1">
-                  1.00
-                </InlineText>
-              </Column>
-              <TokenSelectorContainer>
-                <TokenIcon margin="0 5px 0 0" mint={RIN_MINT} />
-                <InlineText color="gray0" size="md" weight={600}>
-                  RIN
-                </InlineText>
-              </TokenSelectorContainer>
-            </RootRow>
-          </Container>
-          <Container height="5em" needBorder width="49%">
+        {stepOfSetup === 1 && (
+          <RationContainer
+            needElement={false}
+            needPadding={false}
+            token="RIN"
+          />
+        )}
+        {stepOfSetup === 0 && (
+          <RootRow margin="1em 0 0 0">
+            <Container height="5em" needBorder width="49%">
+              <RootRow margin="0" width="100%">
+                <Column margin="0" width="auto">
+                  <InlineText size="sm" color="white2">
+                    Rewards per day
+                  </InlineText>
+                  <InlineText weight={600} color="white1">
+                    1.00
+                  </InlineText>
+                </Column>
+                <TokenSelectorContainer>
+                  <TokenIcon margin="0 5px 0 0" mint={RIN_MINT} />
+                  <InlineText color="gray0" size="md" weight={600}>
+                    RIN
+                  </InlineText>
+                </TokenSelectorContainer>
+              </RootRow>
+            </Container>
+            <Container height="5em" needBorder width="49%">
+              <RootRow margin="0" width="100%">
+                <Column margin="0" width="auto">
+                  <InlineText size="sm" color="white2">
+                    Est. APR for $100k TVL
+                  </InlineText>
+                  <InlineText weight={600} color="white1">
+                    1.00
+                  </InlineText>
+                </Column>
+                <TokenSelectorContainer>
+                  <InlineText color="gray0" size="md" weight={600}>
+                    &nbsp;%&nbsp;
+                  </InlineText>
+                </TokenSelectorContainer>
+              </RootRow>
+            </Container>
+          </RootRow>
+        )}
+        {stepOfSetup === 1 && (
+          <Container padding="0.5em 1em" height="4em" needBorder width="100%">
             <RootRow margin="0" width="100%">
               <Column margin="0" width="auto">
                 <InlineText size="sm" color="white2">
@@ -144,11 +183,11 @@ export const SetupFarming = ({
               </TokenSelectorContainer>
             </RootRow>
           </Container>
-        </RootRow>}
+        )}
       </Column>
-      <RootRow>
+      <RootRow margin="0 0 2em 0">
         <Button
-          onClick={() => setStepOfSetup(stepOfSetup + 1)}
+          onClick={() => setCreationStep('setPreferences')}
           $variant="skip"
           $width="rg"
           $padding="xxxl"
@@ -157,7 +196,11 @@ export const SetupFarming = ({
           Skip
         </Button>
         <Button
-          onClick={() => setStepOfSetup(stepOfSetup + 1)}
+          onClick={() =>
+            stepOfSetup === 1
+              ? setCreationStep('setPreferences')
+              : setStepOfSetup(stepOfSetup + 1)
+          }
           $variant="violet"
           $width="rg"
           $padding="xxxl"

@@ -40,15 +40,17 @@ export const VARIANTS = {
 }
 
 export const StyledLink = styled.a<StyledLinkProps>`
-  width: 40px;
+  width: 35px;
   transition: ${TRANSITION};
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 0.5em;
   padding: 0.4em;
   ${(props) => VARIANTS[props.$variant || 'withBack']};
   margin: ${(props) => props.margin || '0'};
-  height: ${(props) => props.height || '16px'};
-
+  height: ${(props) => props.height || '35px'};
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     svg path:not(.not-fill) {
       fill: ${(props) => props.theme.colors.gray0};

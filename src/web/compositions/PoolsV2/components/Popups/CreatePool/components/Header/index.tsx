@@ -12,11 +12,13 @@ export const Header = ({
   header,
   description,
   creationStep,
+  arrow,
 }: {
   onClose: () => void
   header: string
   description: string
   creationStep: string
+  arrow: boolean
 }) => {
   return (
     <RootRow margin="1.5em 0 1em 0">
@@ -31,7 +33,7 @@ export const Header = ({
           </InlineText>
         </Column>
       </Row>
-      <EscapeButton onClose={onClose} />
+      <EscapeButton arrow={arrow} onClose={onClose} />
     </RootRow>
   )
 }

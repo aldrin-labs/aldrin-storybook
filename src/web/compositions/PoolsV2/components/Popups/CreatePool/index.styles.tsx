@@ -1,6 +1,8 @@
 import { FONTS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
+import { Container } from '../../TableRow/index.styles'
+
 type TierProps = {
   width?: string
 }
@@ -68,4 +70,9 @@ export const TokenSelectorContainer = styled.div`
   align-items: center;
   border-radius: 0.6em;
   padding: 0.5em;
+`
+export const SContainer = styled(Container)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `

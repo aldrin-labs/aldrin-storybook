@@ -47,7 +47,6 @@ export const InputsContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.white5};
   border-radius: 0.8em;
   padding: 0.8em 0;
-  margin: 0.5em 0 0 0;
   background: ${(props) => props.theme.colors.white6};
 `
 

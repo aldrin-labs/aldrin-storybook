@@ -10,6 +10,7 @@ type ContainerProps = {
   margin?: string
   height?: string
   needBorder?: boolean
+  padding?: string
 }
 
 export const LabelsRow = styled(RootRow)`
@@ -50,7 +51,7 @@ export const Container = styled.div<ContainerProps>`
   justify-content: space-around;
   margin-bottom: ${(props) => props.margin || '1em'};
   height: 12em;
-  padding: ${PADDINGS.xxxl};
+  padding: ${(props) => props.padding || PADDINGS.xxxl};
   transition: 0.3s;
   overflow-x: scroll;
   border: ${(props) =>

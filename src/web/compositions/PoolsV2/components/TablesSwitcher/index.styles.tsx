@@ -7,7 +7,7 @@ import { Button, PADDINGS } from '@sb/components/Button'
 type StyledSwitcher = {
   isActive?: boolean
   radius?: string
-  $variant?: 'small' | 'huge'
+  $variant?: 'small' | 'huge' | 'saturated' | 'text'
 }
 
 export interface RadioContainer {
@@ -51,6 +51,25 @@ const VARIANTS = {
       @media (min-width: ${BREAKPOINTS.sm}) {
         width: auto;
       }
+    `,
+  },
+  saturated: {
+    container: css`
+      width: auto;
+      padding: 0.3em;
+      border-radius: 10px;
+      font-size: ${FONT_SIZES.esm};
+      background: ${(props) => rgba(props.theme.colors.white3, 0.15)};
+    `,
+    button: css`
+      width: auto;
+      padding: 3px 5px;
+      border-radius: 8px;
+      background: ${(props) =>
+        props.isActive ? props.theme.colors.white3 : 'transparent'};
+      color: ${(props) =>
+        props.isActive ? props.theme.colors.white1 : props.theme.colors.white2};
+      font-weight: ${(props) => (props.isActive ? 600 : 400)};
     `,
   },
   text: {

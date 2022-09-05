@@ -18,6 +18,8 @@ type ColumnType = {
   height?: string
   width?: string
   margin?: string
+  justify?: string
+  overflow?: string
 }
 
 export const StyledModal = styled.div`
@@ -30,10 +32,8 @@ export const StyledModal = styled.div`
     border-radius: 1.5em 1.5em 0 0;
     background: ${(props) => props.theme.colors.modal};
     padding: 0 1.5em;
-    height: 90%;
   }
   .modal-content {
-    height: 95%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -94,10 +94,11 @@ export const Column = styled.div<ColumnType>`
   height: ${(props) => props.height || '100%'};
   width: ${(props) => props.width || 'auto'};
   display: flex;
-  justify-content: space-between;
+  justify-content: ${(props) => props.justify || 'space-between'};
   flex-direction: column;
   align-items: flex-start;
   margin: ${(props) => props.margin || '0'};
+  overflow: ${(props) => props.overflow || 'hidden'};
 `
 export const Container = styled.div`
   background: ${(props) => props.theme.colors.white5};

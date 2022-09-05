@@ -10,6 +10,7 @@ import { WalletIcon } from '../Icons'
 import {
   AmountInputContainer,
   CenteredRow,
+  CustomTextInputContainer,
   Input,
   InvisibleInput,
   StyledInlineText,
@@ -34,7 +35,7 @@ export const AmountInput = ({
   onChange?: (value: number | string) => void
   onMaxAmountClick?: () => void
   appendComponent?: any
-  needPadding: boolean
+  needPadding?: boolean
 }) => {
   return (
     <Input needPadding={needPadding}>
@@ -65,5 +66,56 @@ export const AmountInput = ({
         {appendComponent}
       </StretchedBlock>
     </Input>
+  )
+}
+
+export const CustomTextInput = ({
+  width,
+  amount = '',
+  maxAmount = '0.00',
+  disabled = false,
+  title = 'Title',
+  placeholder = '0.00',
+  onChange = () => {},
+  onMaxAmountClick = () => {},
+  appendComponent = null,
+  needPadding = true,
+}: {
+  width?: string
+  amount?: string | number
+  maxAmount?: number | string
+  disabled?: boolean
+  title?: string
+  placeholder?: string
+  onChange?: (value: number | string) => void
+  onMaxAmountClick?: () => void
+  appendComponent?: any
+  needPadding?: boolean
+}) => {
+  return (
+    <CustomTextInputContainer width={width}>
+      <Input needPadding={needPadding} background="transparent">
+        <StretchedBlock width="xl">
+          <InlineText weight={400} size="sm" color="white2">
+            {title}
+          </InlineText>
+        </StretchedBlock>
+        <StretchedBlock width="xl" align="flex-end" margin="0.6em 0 0 0">
+          <AmountInputContainer>
+            <InvisibleInput
+              data-testid={`swap-${title.replaceAll(' ', '-')}-field`}
+              type="text"
+              value={amount || ''}
+              disabled={disabled}
+              onChange={(e) => {
+                onChange(formatNumbersForState(e.target.value))
+              }}
+              placeholder={placeholder}
+            />
+          </AmountInputContainer>
+          {appendComponent}
+        </StretchedBlock>
+      </Input>
+    </CustomTextInputContainer>
   )
 }

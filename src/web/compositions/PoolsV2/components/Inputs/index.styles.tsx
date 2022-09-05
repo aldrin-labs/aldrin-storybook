@@ -6,6 +6,11 @@ import { InlineText } from '@sb/components/Typography'
 
 type InputProps = {
   needPadding?: boolean
+  background?: string
+}
+
+type InputContainerProps = {
+  width?: string
 }
 
 export const InvisibleInput = styled.input`
@@ -14,7 +19,6 @@ export const InvisibleInput = styled.input`
   color: ${(props) => props.theme.colors.gray0};
   outline: none;
   border: none;
-
   font-family: ${FONTS.main};
   font-size: ${FONT_SIZES.md};
   line-height: ${FONT_SIZES.xlmd};
@@ -25,7 +29,7 @@ export const InvisibleInput = styled.input`
   }
 `
 export const Input = styled.div<InputProps>`
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors[props.background || 'white6']};
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -66,4 +70,13 @@ export const InputContainer = styled.div`
   border-radius: 1em;
   border: 1px solid ${(props) => props.theme.colors.white5};
   background: ${(props) => props.theme.colors.white6};
+`
+
+export const CustomTextInputContainer = styled(
+  InputContainer
+)<InputContainerProps>`
+  width: ${(props) => props.width || '100%'};
+  border: none;
+  padding: 0.3em 0;
+  background: ${(props) => props.theme.colors.white4};
 `

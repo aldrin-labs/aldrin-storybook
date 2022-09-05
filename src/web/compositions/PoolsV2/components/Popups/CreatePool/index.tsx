@@ -4,6 +4,7 @@ import { Modal } from '@sb/components/Modal'
 
 import { StyledModal } from '../index.styles'
 import { CreatePool } from './steps/CreatePool'
+import { SetPreferences } from './steps/SetPreferences'
 import { SetupFarming } from './steps/SetupFarming'
 
 export const CreatePoolModal = ({
@@ -30,6 +31,13 @@ export const CreatePoolModal = ({
         )}
         {creationStep === 'setupFarming' && (
           <SetupFarming
+            onClose={onClose}
+            creationStep={creationStep}
+            setCreationStep={setCreationStep}
+          />
+        )}
+        {creationStep === 'setPreferences' && (
+          <SetPreferences
             onClose={onClose}
             creationStep={creationStep}
             setCreationStep={setCreationStep}
