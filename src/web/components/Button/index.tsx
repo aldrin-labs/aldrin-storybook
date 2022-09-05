@@ -156,6 +156,19 @@ const VARIANTS = {
     }
   `,
 
+  skip: css`
+    background: ${(props) => rgba(props.theme.colors.white3, 0.15)};
+    border: none;
+    color: ${(props) => rgba(props.theme.colors.white3, 0.55)};
+    white-space: nowrap;
+    font-weight: 600;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+  `,
+
   green: css`
     background: ${(props) => rgba(props.theme.colors.green3, 0.15)};
     border: none;
