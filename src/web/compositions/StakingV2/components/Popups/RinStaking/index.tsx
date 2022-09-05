@@ -182,10 +182,9 @@ export const RinStakingComp = ({
       return acc + current.reward
     }, 0) || 0
 
-  const compoundedRewardsWithputDecimals = removeDecimals(
-    compoundedRewards,
-    farm?.stakeVaultDecimals
-  )
+  const compoundedRewardsWithputDecimals = !wallet.connected
+    ? 0
+    : removeDecimals(compoundedRewards, farm?.stakeVaultDecimals)
 
   const stakedInUsd = stripByAmountAndFormat(
     +totalStakedWithDecimals * tokenPrice || 0,

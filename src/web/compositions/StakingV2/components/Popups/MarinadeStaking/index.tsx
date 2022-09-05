@@ -50,7 +50,6 @@ const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
 
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {
-    dexTokensPricesMap,
     open,
     onClose,
     setIsConnectWalletPopupOpen,

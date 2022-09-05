@@ -1,3 +1,5 @@
+import { MarinadeState } from '@marinade.finance/marinade-ts-sdk'
+
 import { RefreshFunction } from '@sb/dexUtils/types'
 
 import { DexTokensPrices } from '../Pools/index.types'
