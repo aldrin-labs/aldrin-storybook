@@ -123,16 +123,18 @@ export const FilterIcon = ({ isActive }: { isActive: boolean }) => {
 export const TooltipIcon = ({
   color,
   margin,
+  size = 11,
 }: {
   color: string
   margin?: string
+  size?: number
 }) => {
   const theme = useTheme()
   return (
     <TooltipIconContainer
       margin={margin}
-      width="11"
-      height="11"
+      width={size}
+      height={size}
       viewBox="0 0 12 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
