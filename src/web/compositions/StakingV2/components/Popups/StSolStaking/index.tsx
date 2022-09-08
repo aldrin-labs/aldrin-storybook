@@ -59,19 +59,20 @@ export const StSolStaking = ({
   const [amountGet, setAmountGet] = useState('')
   const [lidoFee, setLidoFee] = useState(0)
   const [priceRatios, setStSOLPriceInSOL] = useState({
-    stSOLPriceInSOL: 0,
-    SOLPriceInStSOL: 0,
+    stSOLPriceInSOL: 0.9471,
+    SOLPriceInStSOL: 1.0558,
   })
   const [stSOLmaxUnStakeAmountInLamports, setStSOLMaxUnStakeAmountInLamports] =
     useState(0)
 
   const stSOLWallet = useAssociatedTokenAccount(
     getTokenMintAddressByName('stSOL') || ''
-  )
+  ) || { amount: 0, symbol: 'stSOL' }
 
   const SOLWallet = useAssociatedTokenAccount(
     getTokenMintAddressByName('SOL') || ''
-  )
+  ) || { amount: 0, symbol: 'SOL' }
+
   const solWalletWithGap = SOLWallet
     ? { ...SOLWallet, amount: Math.max(SOLWallet.amount - SOL_GAP_AMOUNT, 0) }
     : undefined
@@ -167,16 +168,20 @@ export const StSolStaking = ({
 
   useEffect(() => {
     const getStakingData = async () => {
-      const { fee } = await solidoSDK.getStakingRewardsFee()
-      const { stSOLToSOL, SOLToStSOL } = await solidoSDK.getExchangeRate()
-      const maxUnStakeAmountInLamports =
-        await solidoSDK.calculateMaxUnStakeAmount(wallet.publicKey)
+      const [{ fee }, { stSOLToSOL, SOLToStSOL }, maxUnStakeAmountInLamports] =
+        await Promise.all([
+          solidoSDK.getStakingRewardsFee(),
+          solidoSDK.getExchangeRate(),
+          solidoSDK.calculateMaxUnStakeAmount(wallet.publicKey),
+        ])
 
       setLidoFee(fee)
+
       setStSOLPriceInSOL({
         stSOLPriceInSOL: stSOLToSOL,
         SOLPriceInStSOL: SOLToStSOL,
       })
+
       setStSOLMaxUnStakeAmountInLamports(
         maxUnStakeAmountInLamports / LAMPORTS_PER_SOL
       )
@@ -210,7 +215,7 @@ export const StSolStaking = ({
                 <FirstInputContainer>
                   <AmountInput
                     title={isStakeModeOn ? 'Stake' : 'Unstake'}
-                    maxAmount={stripByAmount(fromWallet?.amount)}
+                    maxAmount={fromWallet?.amount}
                     amount={amount}
                     onMaxAmountClick={() => {
                       setAmountFrom(stripByAmount(fromWallet?.amount))
@@ -241,7 +246,7 @@ export const StSolStaking = ({
                 <SecondInputContainer>
                   <AmountInput
                     title="Receive"
-                    maxAmount={stripByAmount(toWallet?.amount)}
+                    maxAmount={toWallet?.amount}
                     amount={amountGet}
                     onMaxAmountClick={() => {
                       setAmountTo(stripByAmount(toWallet?.amount))

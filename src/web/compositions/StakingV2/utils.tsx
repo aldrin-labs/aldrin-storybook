@@ -150,3 +150,31 @@ export const getStakingsData = ({
     },
   ]
 }
+
+// copied from lido sdk
+
+type StakeApyResponse = {
+  data: {
+    apy: number
+  }
+}
+
+export const STATIC_DEFAULT_APY = '5.74' // TODO think
+
+export const getLidoStakeApy = async () => {
+  try {
+    const resp = await fetch(
+      `https://sol-api-pub.lido.fi/v1/apy?since_launch`,
+      {
+        mode: 'cors',
+      }
+    )
+    const {
+      data: { apy },
+    } = (await resp.json()) as StakeApyResponse
+
+    return apy ? apy.toFixed(2) : STATIC_DEFAULT_APY
+  } catch {
+    return STATIC_DEFAULT_APY
+  }
+}

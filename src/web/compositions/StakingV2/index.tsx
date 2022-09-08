@@ -16,7 +16,7 @@ import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
-import { RIN_MINT, ProgramsMultiton } from '@core/solana'
+import { RIN_MINT, ProgramsMultiton, LIDO_STAKING_ADDRESS } from '@core/solana'
 import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
@@ -31,7 +31,7 @@ import {
   TotalStakedRow,
 } from './index.styles'
 import { StakingPageProps } from './types'
-import { getStakingsData } from './utils'
+import { getLidoStakeApy, getStakingsData } from './utils'
 
 const Block: React.FC<StakingPageProps> = (props) => {
   const {
@@ -51,6 +51,28 @@ const Block: React.FC<StakingPageProps> = (props) => {
 
   const { data: mSolInfo, mutate: refreshStakingInfo } =
     useMarinadeStakingInfo()
+
+  const solidoSDK = new SolidoSDK(
+    'mainnet-beta',
+    connection,
+    LIDO_STAKING_ADDRESS
+  )
+
+  useEffect(() => {
+    const getStakingData = async () => {
+      const [totalStaked, marketCap, apy] = await Promise.all([
+        solidoSDK.getTotalStaked(),
+        solidoSDK.getMarketCap(),
+        getLidoStakeApy(),
+      ])
+
+      console.log({ apy, totalStaked, marketCap })
+      setLidoApy(apy)
+      setLidoMarketcap(marketCap)
+      setLidoTotalStaked(totalStaked)
+    }
+    getStakingData()
+  }, [])
 
   const stakingDataMap = toMap(getStakingInfo?.farming || [], (farming) =>
     farming?.stakeMint.toString()
@@ -118,24 +140,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
   const [PLDTotalStaked] = useAccountBalance({
     publicKey: PLDStakeVault ? new PublicKey(PLDStakeVault) : undefined,
   })
-
-  const solidoSDK = new SolidoSDK(
-    'mainnet-beta',
-    connection,
-    'LidMA9AeE8ahsUT5QAcv3VtkDWaCapue8bL6prEyBtU'
-  )
-
-  useEffect(() => {
-    const getStakingData = async () => {
-      const { apy, totalStaked, marketCap } =
-        await solidoSDK.getLidoStatistics()
-
-      setLidoMarketcap(marketCap)
-      setLidoTotalStaked(totalStaked.value)
-      setLidoApy(apy)
-    }
-    getStakingData()
-  }, [])
 
   const stakingsData = getStakingsData({
     farm,
