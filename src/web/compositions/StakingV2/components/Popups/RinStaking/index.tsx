@@ -272,8 +272,8 @@ export const RinStakingComp = ({
                       title={
                         <>
                           <p>
-                            APR is calculated based on last RIN buyback which
-                            are weekly.
+                            Staking rewards are autocompounded to your total
+                            stake once per hour.
                           </p>
                         </>
                       }
