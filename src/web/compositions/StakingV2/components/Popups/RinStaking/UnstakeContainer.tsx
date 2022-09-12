@@ -6,6 +6,7 @@ import { InlineText } from '@sb/components/Typography'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { RIN_MINT } from '@core/solana'
+import { stripByAmount } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../Inputs'
 import { Container } from '../index.styles'
@@ -35,7 +36,7 @@ export const UnstakeContainer = ({
           title="Unstake"
           maxAmount={maxAmount}
           amount={unstakeAmount}
-          onMaxAmountClick={() => setUnstakeAmount(maxAmount)}
+          onMaxAmountClick={() => setUnstakeAmount(stripByAmount(maxAmount))}
           disabled={false}
           onChange={setUnstakeAmount}
           appendComponent={

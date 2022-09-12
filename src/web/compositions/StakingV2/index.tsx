@@ -187,7 +187,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
             solidoSDK={solidoSDK}
             lidoTotalStaked={lidoTotalStaked}
             lidoApy={lidoApy}
-            lidoMarketcap={lidoMarketcap}
           />
         ))}
       </StyledWideContent>

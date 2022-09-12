@@ -56,24 +56,6 @@ export const getStakingsData = ({
       },
     },
     {
-      token: 'mSOL',
-      labels: ['Liquid', 'Marinade'],
-      totalStaked:
-        (mSolInfo?.stats.tvl_sol || 0) *
-        (dexTokensPricesMap.get('mSOL')?.price || 0),
-      additionalInfo: `${stripDigitPlaces(
-        mSolInfo?.epochInfo?.epochPct || 0,
-        2
-      )}%`,
-      apy: mSolInfo?.stats.avg_staking_apy,
-      columnName: 'Epoch',
-      socials: {
-        twitter: 'https://twitter.com/MarinadeFinance',
-        coinmarketcap: 'https://coinmarketcap.com/ru/currencies/marinade/',
-        discord: 'https://discord.gg/6EtUf4Euu6',
-      },
-    },
-    {
       token: 'stSOL',
       labels: ['Liquid', 'Lido'],
       totalStaked: lidoTotalStaked,
@@ -90,6 +72,24 @@ export const getStakingsData = ({
         coinmarketcap:
           'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
         discord: 'https://discord.com/invite/vgdPfhZ',
+      },
+    },
+    {
+      token: 'mSOL',
+      labels: ['Liquid', 'Marinade'],
+      totalStaked:
+        (mSolInfo?.stats.tvl_sol || 0) *
+        (dexTokensPricesMap.get('mSOL')?.price || 0),
+      additionalInfo: `${stripDigitPlaces(
+        mSolInfo?.epochInfo?.epochPct || 0,
+        2
+      )}%`,
+      apy: mSolInfo?.stats.avg_staking_apy,
+      columnName: 'Epoch',
+      socials: {
+        twitter: 'https://twitter.com/MarinadeFinance',
+        coinmarketcap: 'https://coinmarketcap.com/ru/currencies/marinade/',
+        discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
     {

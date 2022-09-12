@@ -157,7 +157,8 @@ export const Column = styled.div<ColumnType>`
   flex-direction: column;
   align-items: flex-start;
   margin: ${(props) => props.margin || '0'};
-  .stake-btn {
+  .stake-btn,
+  .stake-st-btn {
     margin-bottom: 2em;
   }
   @media (max-width: ${BREAKPOINTS.md}) {

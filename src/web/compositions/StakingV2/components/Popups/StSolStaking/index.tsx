@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { SOL_GAP_AMOUNT } from '@sb/compositions/StakingV2/config'
 import { ArrowsExchangeIcon } from '@sb/compositions/Swap/components/Inputs/images/arrowsExchangeIcon'
@@ -19,8 +20,9 @@ import { formatNumbersForState } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { walletAdapterToWallet } from '@core/solana'
-import { stripByAmount, stripByAmountAndFormat } from '@core/utils/numberUtils'
+import { stripByAmount } from '@core/utils/numberUtils'
 
+import { TooltipIcon } from '../../Icons'
 import { AmountInput } from '../../Inputs'
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { ConfirmUnstakeModal } from '../ConfirmUnstake'
@@ -41,7 +43,6 @@ export const StSolStaking = ({
   socials,
   setIsConnectWalletPopupOpen,
   lidoApy,
-  lidoMarketcap,
   solidoSDK,
 }: {
   onClose: () => void
@@ -49,7 +50,6 @@ export const StSolStaking = ({
   socials: string[]
   setIsConnectWalletPopupOpen: (a: boolean) => void
   lidoApy: number
-  lidoMarketcap: number
   solidoSDK: any
 }) => {
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
@@ -129,6 +129,7 @@ export const StSolStaking = ({
       setIsConfirmUnStakeModalOpen(false)
     } catch (e) {
       console.error('unstake error', e)
+      setIsConfirmUnStakeModalOpen(false)
     }
   }
 
@@ -189,6 +190,8 @@ export const StSolStaking = ({
     getStakingData()
   }, [])
 
+  const isValid = +amount > 0 && fromWallet && +amount <= fromWallet.amount
+
   return (
     <MainContainer>
       <ModalContainer needBlur className="modal-container">
@@ -196,11 +199,6 @@ export const StSolStaking = ({
           <HeaderComponent socials={socials} close={onClose} token="stSOL" />
           <Column height="auto" margin="2em 0">
             <Row width="100%" margin="2em 0 1em 0" className="apy-row">
-              <NumberWithLabel
-                needPercenatage={false}
-                value={stripByAmountAndFormat(lidoMarketcap)}
-                label="Marketcap"
-              />
               <NumberWithLabel value={lidoApy} label="APY" />
             </Row>
             <Switcher
@@ -291,10 +289,27 @@ export const StSolStaking = ({
                 <Box height="auto" width="48%" className="fee-box">
                   <Row width="100%">
                     <Row>
-                      <InlineText size="sm">Stake Fee:</InlineText>
+                      <InlineText size="sm" color="white2">
+                        <DarkTooltip
+                          title={
+                            <p>
+                              Please note: This fee applies to staking
+                              rewards/earnings only, and is NOT taken from your
+                              staked amount. It is a fee on earnings only. This
+                              fee is split between node operators, the DAO
+                              treasury, and Lido for Solana developers.
+                            </p>
+                          }
+                        >
+                          <span>
+                            <TooltipIcon margin="0 0.5em 0 0" color="white2" />
+                          </span>
+                        </DarkTooltip>
+                        Staking rewards fee:
+                      </InlineText>
                     </Row>
                     <Row>
-                      <InlineText size="sm" color="gray0" weight={600}>
+                      <InlineText size="sm" color="white2" weight={600}>
                         {lidoFee}
                       </InlineText>
                     </Row>
@@ -314,13 +329,13 @@ export const StSolStaking = ({
                     stake()
                   } else {
                     setIsConfirmUnStakeModalOpen(true)
-                    // unstake()
                   }
                 }}
                 $variant={wallet.connected ? 'green' : 'violet'}
                 $width="xl"
                 $padding="xxxl"
                 $fontSize="sm"
+                disabled={wallet.connected && !isValid}
               >
                 {!wallet.connected ? (
                   'Connect Wallet to Stake mSOL'

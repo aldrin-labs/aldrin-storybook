@@ -283,8 +283,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <Box height="auto" width="48%">
                 <Row width="100%">
                   <Row>
-                    <InlineText color="white2" size="sm">
-                      Stake Fee:
+                    <InlineText size="sm">
+                      {isStakeModeOn ? 'Stake' : 'Unstake'} Fee:
                     </InlineText>
                   </Row>
                   <Row>

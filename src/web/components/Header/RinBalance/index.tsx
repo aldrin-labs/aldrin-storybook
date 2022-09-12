@@ -1,19 +1,23 @@
 import React, { useState } from 'react'
+import { compose } from 'recompose'
 
 import { RewardsModal } from '@sb/components/Header/Rewards/RewardsModal'
-import { useConnection } from '@sb/dexUtils/connection'
-import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
-import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { RIN_DECIMALS } from '@sb/compositions/StakingV2/config'
+import { useFarmersAccountInfo, useFarmInfo } from '@sb/dexUtils/farming'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc'
 
-import { getStakedTokensTotal } from '@core/solana'
+import { toMap } from '@core/collection'
+import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
+import { FARMING_V2_TOKEN, RIN_MINT } from '@core/solana'
+import { removeDecimals } from '@core/utils/helpers'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import RinLogo from '@icons/rin_logo.png'
 
 import { RinBalanceContainer, RinBalanceLogo, RinBalanceLabel } from './styles'
+import { WithStakingInfo } from './types'
 
 const RinBalanceContent = ({ children }) => {
   const [isRewardsModalOpen, setIsRewardsModalOpen] = useState(false)
@@ -33,40 +37,51 @@ const RinBalanceContent = ({ children }) => {
   )
 }
 
-export const RinBalance = () => {
-  const { wallet } = useWallet()
-  const connection = useConnection()
-  const { data: poolInfo } = useStakingPoolInfo()
+const RinBalanceComponent: React.FC<WithStakingInfo> = (props) => {
+  const {
+    getStakingInfoQuery: { getStakingInfo },
+  } = props
 
-  const rinTokenData = useAssociatedTokenAccount(
-    poolInfo?.currentFarmingState?.farmingTokenMint
+  const stakingDataMap = toMap(getStakingInfo?.farming || [], (farming) =>
+    farming?.stakeMint.toString()
   )
 
-  const [tickets] = useAllStakingTickets({
-    wallet,
-    connection,
-    walletPublicKey: wallet?.publicKey,
-    onlyUserTickets: true,
-  })
+  const { data: farms } = useFarmInfo(stakingDataMap)
 
-  if (!poolInfo || !rinTokenData) {
+  const { data: farmersInfo } = useFarmersAccountInfo()
+  const farm = farms?.get(FARMING_V2_TOKEN)
+
+  const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
+  const totalStaked = farmer?.totalStaked || '0'
+  const totalStakedWithDecimals = removeDecimals(
+    totalStaked,
+    farm?.stakeVaultDecimals || RIN_DECIMALS
+  )
+  const rinTokenData = useAssociatedTokenAccount(RIN_MINT)
+
+  if (!rinTokenData) {
     return <RinBalanceContent>0.00</RinBalanceContent>
   }
 
-  const { farmingTokenMintDecimals } = poolInfo.currentFarmingState
-
   const { amount: rinBalance } = rinTokenData
 
-  const rinStaked = getStakedTokensTotal(
-    getTicketsWithUiValues({
-      tickets,
-      farmingTokenMintDecimals,
-    })
-  )
-
-  const totalRin = rinBalance + rinStaked
+  const totalRin = rinBalance + totalStakedWithDecimals
 
   return (
     <RinBalanceContent>{roundAndFormatNumber(totalRin, 2)}</RinBalanceContent>
   )
 }
+
+export const RinBalance: any = compose(
+  withPublicKey,
+  queryRendererHoc({
+    query: getStakingInfoQuery,
+    name: 'getStakingInfoQuery',
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      farmerPubkey: props.publicKey,
+    }),
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
+)(RinBalanceComponent)
