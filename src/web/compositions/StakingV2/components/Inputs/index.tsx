@@ -7,7 +7,7 @@ import {
   formatNumberWithSpaces,
 } from '@sb/dexUtils/utils'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { stripByAmount } from '@core/utils/numberUtils'
 
 import { WalletIcon } from '../Icons'
 import {
@@ -47,7 +47,7 @@ export const AmountInput = ({
           <WalletIcon />
           <StyledInlineText weight={600} size="sm" color="white2">
             {maxAmount
-              ? formatNumberWithSpaces(stripDigitPlaces(maxAmount, 2))
+              ? formatNumberWithSpaces(stripByAmount(maxAmount))
               : '0.00'}
           </StyledInlineText>
         </CenteredRow>

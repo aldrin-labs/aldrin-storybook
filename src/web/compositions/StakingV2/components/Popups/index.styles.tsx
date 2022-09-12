@@ -1,6 +1,7 @@
 import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { RootRow } from '../../index.styles'
 import {
   RowType,
   BoxType,
@@ -289,4 +290,9 @@ export const ModalContainer = styled(StyledModal)<ModalType>`
     backdrop-filter: ${(props) => (props.needBlur ? 'blur(5px)' : 'none')};
     background: ${(props) => (props.needBlur ? 'rgba(0, 0, 0, 0.5)' : 'none')};
   }
+`
+
+export const RightCenteredRow = styled(RootRow)`
+  justify-content: flex-end;
+  width: 95%;
 `

@@ -73,25 +73,25 @@ export const getStakingsData = ({
         discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
-    // {
-    //   token: 'stSOL',
-    //   labels: ['Liquid', 'Lido'],
-    //   totalStaked: lidoTotalStaked,
-    //   additionalInfo: (
-    //     <>
-    //       <InlineText color="white2">$</InlineText>{' '}
-    //       {stripByAmountAndFormat(lidoMarketcap)}
-    //     </>
-    //   ),
-    //   apy: stripByAmountAndFormat(lidoApy),
-    //   columnName: 'Marketcap',
-    //   socials: {
-    //     twitter: tokensMap.get('stSOL')?.twitterLink,
-    //     coinmarketcap:
-    //       'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
-    //     discord: 'https://discord.com/invite/vgdPfhZ',
-    //   },
-    // },
+    {
+      token: 'stSOL',
+      labels: ['Liquid', 'Lido'],
+      totalStaked: lidoTotalStaked,
+      additionalInfo: (
+        <>
+          <InlineText color="white2">$</InlineText>{' '}
+          {stripByAmountAndFormat(lidoMarketcap)}
+        </>
+      ),
+      apy: stripByAmountAndFormat(lidoApy),
+      columnName: 'Marketcap',
+      socials: {
+        twitter: tokensMap.get('stSOL')?.twitterLink,
+        coinmarketcap:
+          'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
+        discord: 'https://discord.com/invite/vgdPfhZ',
+      },
+    },
     {
       token: 'PLD',
       labels: ['Plutonians', 'NFT Rewards'],
@@ -149,4 +149,32 @@ export const getStakingsData = ({
       },
     },
   ]
+}
+
+// copied from lido sdk
+
+type StakeApyResponse = {
+  data: {
+    apy: number
+  }
+}
+
+export const STATIC_DEFAULT_APY = '5.74' // TODO think
+
+export const getLidoStakeApy = async () => {
+  try {
+    const resp = await fetch(
+      `https://sol-api-pub.lido.fi/v1/apy?since_launch`,
+      {
+        mode: 'cors',
+      }
+    )
+    const {
+      data: { apy },
+    } = (await resp.json()) as StakeApyResponse
+
+    return apy ? apy.toFixed(2) : STATIC_DEFAULT_APY
+  } catch {
+    return STATIC_DEFAULT_APY
+  }
 }
