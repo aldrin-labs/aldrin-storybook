@@ -5,6 +5,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 
 import { getStakedTokensTotal } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -35,6 +36,9 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
     vesting,
     tokenMap,
   } = props
+
+  const isRegionRestricted = useRegionRestriction()
+
   const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
 
   // Hide tiny balances (we cannot withdraw all LP tokens so...)
@@ -100,7 +104,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
           </LiquidityText>
         </div>
         <LiquidityButton
-          disabled={processing}
+          disabled={processing || isRegionRestricted}
           $loading={processing}
           $variant="rainbow"
           onClick={onDepositClick}

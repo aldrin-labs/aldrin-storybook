@@ -20,10 +20,11 @@ interface StakingFormProps {
   tokenData: TokenInfo | undefined
   loading: { stake: boolean; unstake: boolean }
   start: (amount: number) => any
+  disabled: boolean
 }
 
 export const StakingForm: React.FC<StakingFormProps> = (props) => {
-  const { tokenData, loading, start } = props
+  const { tokenData, loading, start, disabled } = props
 
   const form = useFormik({
     // validateOnMount: true,
@@ -80,7 +81,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
             $fontSize="sm"
             $borderRadius="md"
             $loading={loading.stake}
-            disabled={Object.keys(form.errors).length !== 0 || loading.stake}
+            disabled={
+              Object.keys(form.errors).length !== 0 || loading.stake || disabled
+            }
           >
             Stake
           </StakingFormButton>

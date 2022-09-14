@@ -30,6 +30,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
@@ -70,6 +71,8 @@ import {
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const { stakingPool, currentFarmingState, getDexTokensPricesQuery } = props
   const theme = useTheme()
+
+  const isRegionRestricted = useRegionRestriction()
 
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: new PublicKey(stakingPool.stakingVault),
@@ -522,7 +525,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </InlineText>{' '}
                 <FlexBlock>
                   <RestakeButton
-                    disabled={isClaimDisabled || loading.claim}
+                    disabled={
+                      isClaimDisabled || loading.claim || isRegionRestricted
+                    }
                     $loading={loading.claim}
                     $fontSize="sm"
                     onClick={doRestake}
@@ -572,6 +577,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 tokenData={tokenData}
                 start={start}
                 loading={loading}
+                disabled={isRegionRestricted}
               />
             </Cell>
             <Cell colMd={6} colSm={12}>
