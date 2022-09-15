@@ -14,6 +14,11 @@ type RootRowType = {
   width?: string
   margin?: string
   align?: string
+  $justify?: string
+}
+
+type LineProps = {
+  $height?: string
 }
 
 export const RootRow = styled.div<RootRowType>`
@@ -35,7 +40,7 @@ export const RootColumn = styled.div<RootRowType>`
   height: ${(props) => props.height || 'auto'};
   width: ${(props) => props.width || 'auto'};
   display: flex;
-  justify-content: space-between;
+  justify-content: ${(props) => props.$justify || 'space-between'};
   flex-direction: column;
   align-items: flex-start;
 `
@@ -116,4 +121,9 @@ export const GrayContainer = styled.div`
     height: auto;
     margin: 0;
   }
+`
+export const Line = styled.div<LineProps>`
+  height: ${(props) => props.$height || '100%'};
+  background: none;
+  border-left: 1px solid ${(props) => props.theme.colors.white4};
 `

@@ -24,6 +24,7 @@ import {
   SButton,
   FilterRow,
 } from './index.styles'
+import { PoolInfo } from './components/YourPools'
 
 export const PoolsComponent: React.FC = () => {
   const [tableView, setTableView] = useState('classicLiquidity')
@@ -46,6 +47,7 @@ export const PoolsComponent: React.FC = () => {
   }, [])
 
   const isUserHavePositions = true
+  const isUserHavePools = true
 
   return (
     <Page>
@@ -53,6 +55,7 @@ export const PoolsComponent: React.FC = () => {
         <RootRow>
           <TablesSwitcher
             isUserHavePositions={isUserHavePositions}
+            isUserHavePools={isUserHavePools}
             tableView={tableView}
             setTableView={setTableView}
             setIsFiltersShown={setIsFiltersShown}
@@ -117,6 +120,11 @@ export const PoolsComponent: React.FC = () => {
           </Row>
         )}
         {isFiltersShown && <ExtendedFiltersSection />}
+        {tableView === 'yourPools' && (
+          <>
+            <PoolInfo />
+          </>
+        )}
         <TableRow
           setIsPoolsDetailsPopupOpen={setIsPoolsDetailsPopupOpen}
           isFiltersShown={isFiltersShown}

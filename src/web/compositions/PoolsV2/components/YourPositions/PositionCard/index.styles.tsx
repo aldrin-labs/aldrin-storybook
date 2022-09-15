@@ -8,26 +8,35 @@ type TokenContainerProps = {
 
 type CardProps = {
   isPositionViewDetailed?: boolean
+  $margin?: string
+  $height?: string
 }
 
-export const ContainerWithBack = styled.div`
-  width: 28%;
+type ContainerWithBackProps = {
+  $width?: string
+  $height?: string
+}
+
+export const ContainerWithBack = styled.div<ContainerWithBackProps>`
+  width: ${(props) => props.$width || '28%'};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   border-radius: 1em;
+  height: ${(props) => props.$height || 'auto'};
 `
 export const Card = styled.div<CardProps>`
   overflow: hidden;
   position: relative;
   width: 100%;
-  height: ${(props) => (props.isPositionViewDetailed ? '13.5em' : '9.5em')};
+  height: ${(props) =>
+    props.isPositionViewDetailed ? '13.5em' : props.$height || '9.5em'};
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  margin-bottom: 1em;
+  margin-bottom: ${(props) => props.$margin || '1em'};
   background-image: url(${bg});
   background-size: cover;
   background-repeat: no-repeat;

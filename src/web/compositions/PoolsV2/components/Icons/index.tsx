@@ -257,6 +257,33 @@ export const YourPositionsIcon = ({ isActive }: { isActive: boolean }) => {
   )
 }
 
+export const YourPoolsIcon = ({ isActive }: { isActive: boolean }) => {
+  const theme = useTheme()
+
+  return (
+    <IconContainer
+      width="13"
+      height="14"
+      viewBox="0 0 13 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="4.0625"
+        y="1.3125"
+        width="4.875"
+        height="4.875"
+        rx="2.4375"
+        stroke={isActive ? theme.colors.white1 : theme.colors.white3}
+      />
+      <path
+        d="M11.1841 9.92156C12.2232 11.212 10.8447 12.6875 9.1878 12.6875C8.38741 12.6875 7.47219 12.6875 6.5 12.6875C5.52781 12.6875 4.61259 12.6875 3.8122 12.6875C2.15535 12.6875 0.776763 11.212 1.81593 9.92156C2.84192 8.64745 4.5572 7.8125 6.5 7.8125C8.4428 7.8125 10.1581 8.64745 11.1841 9.92156Z"
+        stroke={isActive ? theme.colors.white1 : theme.colors.white3}
+      />
+    </IconContainer>
+  )
+}
+
 export const ArrowsIcon = () => {
   return (
     <IconContainer
@@ -316,5 +343,59 @@ export const FlashIcon = ({ isActive }: { isActive: boolean }) => {
         strokeLinejoin="round"
       />
     </IconContainer>
+  )
+}
+
+export const CopyIcon = () => {
+  return (
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 10 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9 4.33333V7.96296C9 8.53333 8.53333 9 7.96296 9H4.33333"
+        stroke="#E0E0E5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.09091 1H5.90909C6.50909 1 7 1.49091 7 2.09091V5.90909C7 6.50909 6.50909 7 5.90909 7H2.09091C1.49091 7 1 6.50909 1 5.90909V2.09091C1 1.49091 1.49091 1 2.09091 1Z"
+        stroke="#E0E0E5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export const ClockIcon = ({ color }: { color: string }) => {
+  const theme = useTheme()
+
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M11 6C11 8.76 8.76 11 6 11C3.24 11 1 8.76 1 6C1 3.24 3.24 1 6 1C8.76 1 11 3.24 11 6Z"
+        stroke={theme.colors[color || 'white1']}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.85494 7.59L6.30494 6.665C6.03494 6.505 5.81494 6.12 5.81494 5.805V3.755"
+        stroke={theme.colors[color || 'white1']}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }
