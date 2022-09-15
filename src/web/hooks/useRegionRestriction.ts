@@ -14,3 +14,4 @@ export const useRegionRestriction = () => {
 
   return useSWR('region-restriction', fetcher)
 }
+ 
