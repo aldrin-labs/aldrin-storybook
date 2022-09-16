@@ -6,6 +6,8 @@ export interface TotalVolumeLockedChartProps {
       volumes: { date: number; vol?: number }[]
     }
   }
+  chartHeight: number
+  border: string
 }
 
 export interface TradingVolumeChartProps {
@@ -16,4 +18,6 @@ export interface TradingVolumeChartProps {
       volumes: { date: number; vol?: number }[]
     }
   }
+  chartHeight: number
+  border: string
 }

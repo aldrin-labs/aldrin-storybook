@@ -16,7 +16,6 @@ dayjs.extend(timezone)
 dayjs.extend(utc)
 
 export const NUMBER_OF_DAYS_TO_SHOW = 28
-const CHART_HEIGHT = 80
 
 interface ChartParams<T = { date: number; vol?: number }[]> {
   chart: Chart | null
@@ -24,6 +23,7 @@ interface ChartParams<T = { date: number; vol?: number }[]> {
   container: HTMLCanvasElement | null
   theme: DefaultTheme
   setBalanceData: ({ balance, date }: { balance: string; date: string }) => void
+  chartHeight: number
 }
 
 const createChart = ({
@@ -128,6 +128,7 @@ const createTradingVolumeChart = ({
   data,
   theme,
   setBalanceData,
+  chartHeight,
 }: ChartParams) => {
   const ctx = container?.getContext('2d')
 
@@ -135,7 +136,7 @@ const createTradingVolumeChart = ({
     throw Error('Not a canvas:')
   }
   if (container) {
-    container.height = CHART_HEIGHT
+    container.height = chartHeight
   }
   const transformedData = getEmptyData()
     .map((value) => ({

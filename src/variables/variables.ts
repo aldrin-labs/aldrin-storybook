@@ -162,6 +162,7 @@ export const WIDTH = {
   sm: '10%',
   qu: '20%',
   md: '30%',
+  emd: '35%',
   xmd: '40%',
   hf: '50%',
   rg: '49%',

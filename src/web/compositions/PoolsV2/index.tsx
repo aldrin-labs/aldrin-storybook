@@ -27,7 +27,7 @@ import {
 import { PoolInfo } from './components/YourPools'
 
 export const PoolsComponent: React.FC = () => {
-  const [tableView, setTableView] = useState('classicLiquidity')
+  const [tableView, setTableView] = useState('yourPools')
   const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
@@ -85,7 +85,7 @@ export const PoolsComponent: React.FC = () => {
         {tableView === 'classicLiquidity' && (
           <RootRow margin="30px 0 0 0">
             <TVLChart />
-            <VolumeChart />
+            <VolumeChart chartHeight={80} />
           </RootRow>
         )}
         {showPositionsChart && <PositionsCharts />}

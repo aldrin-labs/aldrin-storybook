@@ -7,6 +7,7 @@ type CanvasProps = {
   bottom?: string
   left?: string
   needPadding?: boolean
+  $border?: string
 }
 
 type CanvasContainerProps = {
@@ -17,10 +18,19 @@ type TooltipContainerProps = {
   padding?: string
 }
 
-export const ChartContainer = styled.div`
+type ChartContainerProps = {
+  $background?: string
+}
+
+type ChartMaskProps = {
+  $background?: string
+}
+
+export const ChartContainer = styled.div<ChartContainerProps>`
   width: 90%;
   position: relative;
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) =>
+    props.theme.colors[props.$background] || props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: row;
@@ -61,15 +71,16 @@ export const Canvas = styled.canvas<CanvasProps>`
   margin: auto;
   margin-bottom: ${(props) => props.bottom || '-7px'};
   margin-left: ${(props) => props.left || '0px'};
-  border-left: 1px solid ${(props) => props.theme.colors.white5};
+  border-left: 1px solid
+    ${(props) => props.theme.colors[props.$border || 'white5']};
   padding: ${(props) => (props.needPadding ? '0 0 0 8px' : '0')};
 `
 
-export const ChartMask = styled.div`
+export const ChartMask = styled.div<ChartMaskProps>`
   position: absolute;
   height: 65%;
   width: 2px;
-  background: #14141f;
+  background: ${(props) => props.theme.colors[props.$background || 'white6']};
   right: 0;
   top: 20%;
 `

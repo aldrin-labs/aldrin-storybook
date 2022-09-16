@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import { Button, PADDINGS } from '@sb/components/Button'
 import { StretchedBlock, WideContent } from '@sb/components/Layout'
+import Bg from './components/YourPools/components/assets/bg.png'
 
 type FilterButtonType = {
   isActive: boolean
@@ -60,7 +61,7 @@ export const StyledWideContent = styled(WideContent)`
 export const ButtonsContainer = styled(StretchedBlock)`
   width: 90%;
   margin-top: 1em;
-  @media (min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.md}) {
     margin-top: 0;
     min-width: 25%;
     width: auto;
@@ -126,4 +127,17 @@ export const Line = styled.div<LineProps>`
   height: ${(props) => props.$height || '100%'};
   background: none;
   border-left: 1px solid ${(props) => props.theme.colors.white4};
+`
+
+export const BannerBg = styled.div`
+  width: 100%;
+  height: 70%;
+  border-radius: 16px;
+  background-image: url(${Bg});
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
 `

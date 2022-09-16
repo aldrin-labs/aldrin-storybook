@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { StyledLink, VARIANTS } from './index.styles'
 
@@ -123,15 +124,21 @@ export const LinkToTelegram = ({
   margin,
   height,
   $variant,
+  width,
+  color,
 }: {
   margin?: string
   height?: string
+  width?: string
   $variant?: keyof typeof VARIANTS
+  color?: string
 }) => {
+  const theme = useTheme()
   return (
     <StyledLink
       $variant={$variant}
       height={height}
+      width={width}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"
@@ -146,7 +153,7 @@ export const LinkToTelegram = ({
       >
         <path
           d="M25.785 10.5986L9.84049 16.708C8.75234 17.1423 8.75863 17.7455 9.64085 18.0144L13.7344 19.2833L23.2058 13.3455C23.6537 13.0747 24.0629 13.2204 23.7265 13.5171L16.0528 20.3985H16.051L16.0528 20.3994L15.7705 24.5921C16.1841 24.5921 16.3667 24.4035 16.5987 24.181L18.5871 22.2598L22.7229 25.2953C23.4855 25.7126 24.0332 25.4982 24.2229 24.5939L26.9379 11.88C27.2158 10.7729 26.5126 10.2716 25.785 10.5986Z"
-          fill="#A8A8B2FF"
+          fill={theme.colors[color || 'white1']}
         />
       </svg>
     </StyledLink>

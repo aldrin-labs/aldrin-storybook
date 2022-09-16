@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
@@ -32,12 +33,18 @@ const farmingDurations = [
 
 export const SetupFarming = ({
   onClose,
-  setCreationStep,
-  creationStep,
+  needSteps,
+  header,
+  description,
+  setCreationStep = () => {},
+  creationStep = 'setupFarming',
 }: {
   onClose: () => void
-  setCreationStep: (a: string) => void
-  creationStep: string
+  needSteps?: boolean
+  header: string
+  description: string
+  setCreationStep?: (a: string) => void
+  creationStep?: string
 }) => {
   const { wallet } = useWallet()
   const [stepOfSetup, setStepOfSetup] = useState(0)
@@ -45,20 +52,23 @@ export const SetupFarming = ({
   return (
     <>
       <Header
-        header="Setup Farming"
-        description="You will be able to prolong your farming for as long as you like."
+        header={header}
+        description={description}
         creationStep={creationStep}
-        arrow
+        needSteps={needSteps}
+        arrow={!!needSteps}
         onClose={() =>
-          stepOfSetup === 0
-            ? setCreationStep('createPool')
-            : setStepOfSetup(stepOfSetup - 1)
+          needSteps
+            ? stepOfSetup === 0
+              ? setCreationStep('createPool')
+              : setStepOfSetup(stepOfSetup - 1)
+            : onClose()
         }
       />
       <Column
         justify="center"
-        height={stepOfSetup === 1 ? '32em' : '30em'}
-        margin={stepOfSetup === 1 ? '1em 0' : '2em 0'}
+        height={stepOfSetup === 1 || !needSteps ? '32em' : '30em'}
+        margin={stepOfSetup === 1 || !needSteps ? '1em 0' : '2em 0'}
         width="100%"
       >
         <Container needBorder height="8.5em" width="100%">
@@ -97,7 +107,7 @@ export const SetupFarming = ({
             </Row>
           </Column>
         </Container>
-        {stepOfSetup === 0 && (
+        {stepOfSetup === 0 && needSteps && (
           <InputContainer>
             <AmountInput
               title="Rewards"
@@ -118,15 +128,15 @@ export const SetupFarming = ({
             />
           </InputContainer>
         )}
-        {stepOfSetup === 1 && <ValuesContainer />}
-        {stepOfSetup === 1 && (
+        {(stepOfSetup === 1 || !needSteps) && <ValuesContainer />}
+        {(stepOfSetup === 1 || !needSteps) && (
           <RationContainer
             needElement={false}
             needPadding={false}
             token="RIN"
           />
         )}
-        {stepOfSetup === 0 && (
+        {stepOfSetup === 0 && needSteps && (
           <RootRow margin="1em 0 0 0">
             <Container height="5em" needBorder width="49%">
               <RootRow margin="0" width="100%">
@@ -165,7 +175,7 @@ export const SetupFarming = ({
             </Container>
           </RootRow>
         )}
-        {stepOfSetup === 1 && (
+        {(stepOfSetup === 1 || !needSteps) && (
           <Container padding="0.5em 1em" height="4em" needBorder width="100%">
             <RootRow margin="0" width="100%">
               <Column margin="0" width="auto">

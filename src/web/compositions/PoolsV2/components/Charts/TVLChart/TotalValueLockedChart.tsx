@@ -28,8 +28,13 @@ import { TotalVolumeLockedChartProps } from '../types'
 import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
-  const { getTotalVolumeLockedHistoryQuery, setBalanceData, setFirstBalance } =
-    props
+  const {
+    getTotalVolumeLockedHistoryQuery,
+    setBalanceData,
+    setFirstBalance,
+    chartHeight,
+    border,
+  } = props
 
   const data =
     getTotalVolumeLockedHistoryQuery?.getTotalVolumeLockedHistory?.volumes
@@ -51,6 +56,7 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
           chart: chartRef.current,
           theme,
           setBalanceData,
+          chartHeight,
         })
       } catch (e) {
         console.warn('Erorr on chart update:', e)
@@ -73,6 +79,7 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
   return (
     <CanvasContainer padding="6px">
       <Canvas
+        $border={border}
         bottom="0"
         left="6px"
         id="tvl-chart-inner"
@@ -99,7 +106,15 @@ const TotalVolumeLockedChartInner = compose(
   })
 )(ChartInner)
 
-export const TVLChart: React.FC = () => {
+export const TVLChart = ({
+  background,
+  chartHeight,
+  border,
+}: {
+  background?: string
+  chartHeight?: number
+  border?: string
+}) => {
   const [balanceData, setBalanceData] = useState({ date: '', balance: '' })
   const [firstBalance, setFirstBalance] = useState('')
   const [isMouseOverTheChart, setIfMouseOverTheChart] = useState(false)
@@ -124,8 +139,8 @@ export const TVLChart: React.FC = () => {
   }, [])
 
   return (
-    <ChartContainer>
-      <ChartMask />
+    <ChartContainer $background={background}>
+      <ChartMask $background={background} />
       <TooltipContainer padding="6px">
         <InlineText color="white1" size="xs">
           TVL {isMouseOverTheChart ? `at ${balanceData.date}` : `Now`}
@@ -136,8 +151,10 @@ export const TVLChart: React.FC = () => {
         </ValueTitle>
       </TooltipContainer>
       <TotalVolumeLockedChartInner
+        chartHeight={chartHeight}
         setFirstBalance={setFirstBalance}
         setBalanceData={setBalanceData}
+        border={border}
       />
     </ChartContainer>
   )

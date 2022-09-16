@@ -28,6 +28,7 @@ export const StyledModal = styled.div`
   }
   .modal-body {
     width: 39em;
+    height: 45em;
     margin: 0;
     border-radius: 1.5em 1.5em 0 0;
     background: ${(props) => props.theme.colors.modal};

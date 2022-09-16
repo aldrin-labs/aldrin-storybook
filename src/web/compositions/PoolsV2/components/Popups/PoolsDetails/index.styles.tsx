@@ -5,6 +5,7 @@ type GrayBoxType = {
   height?: string
   align?: string
   $justify?: string
+  $padding?: string
 }
 
 export const GrayBox = styled.div<GrayBoxType>`
@@ -16,7 +17,7 @@ export const GrayBox = styled.div<GrayBoxType>`
   align-items: ${(props) => props.align || 'center'};
   background: ${(props) => props.theme.colors.white4};
   border-radius: ${BORDER_RADIUS.rg};
-  padding: 0.5em 1em;
+  padding: ${props => props.$padding || '0.5em 1em'};
 `
 export const GrayContainer = styled.div<GrayBoxType>`
   width: 100%;

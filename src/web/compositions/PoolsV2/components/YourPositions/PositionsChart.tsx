@@ -56,7 +56,7 @@ export const PositionsCharts = () => {
           </Row>
         </GrayContainer>
       </Row>
-      <VolumeChart />
+      <VolumeChart chartHeight={80} />
     </RootRow>
   )
 }

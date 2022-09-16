@@ -16,7 +16,6 @@ dayjs.extend(timezone)
 dayjs.extend(utc)
 
 export const NUMBER_OF_DAYS_TO_SHOW = 30
-const CHART_HEIGHT = 80
 
 interface ChartParams<T = { date: number; vol?: number }[]> {
   chart: Chart | null
@@ -129,9 +128,10 @@ export const createTotalVolumeLockedChart = ({
   data,
   chart,
   setBalanceData,
+  chartHeight,
 }: ChartParams) => {
   if (container) {
-    container.height = CHART_HEIGHT
+    container.height = chartHeight
   }
   const ctx = container?.getContext('2d')
 

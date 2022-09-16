@@ -31,8 +31,11 @@ export const CreatePoolModal = ({
         )}
         {creationStep === 'setupFarming' && (
           <SetupFarming
+            header="Setup Farming"
+            description="You will be able to prolong your farming for as long as you like."
             onClose={onClose}
             creationStep={creationStep}
+            needSteps
             setCreationStep={setCreationStep}
           />
         )}

@@ -44,7 +44,13 @@ export const SetPreferences = ({
       <Column
         overflow="scroll"
         justify="center"
-        height="30em"
+        height={
+          !launchPoolValues.launchPoolImmediately ||
+          launchPoolValues.lockUpLiquidity ||
+          launchPoolValues.notifyUser
+            ? 'auto'
+            : '30em'
+        }
         margin="2em 0"
         width="100%"
       >

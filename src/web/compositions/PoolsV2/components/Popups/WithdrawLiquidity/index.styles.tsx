@@ -111,4 +111,7 @@ export const ModalContainer = styled(StyledModal)<ModalType>`
     backdrop-filter: ${(props) => (props.needBlur ? '5px' : 'none')};
     background: ${(props) => (props.needBlur ? 'rgba(0, 0, 0, 0.5)' : 'none')};
   }
+  .modal-content {
+    height: 100%;
+  }
 `

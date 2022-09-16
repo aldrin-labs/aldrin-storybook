@@ -113,12 +113,6 @@ const VARIANTS = {
     font-weight: 600;
     background: rgba(94, 85, 242, 0.15);
   `,
-
-  red: css`
-    color: ${({ theme }) => theme.colors.red1};
-    background: ${({ theme }) => rgba(theme.colors.red1, 0.15)};
-  `,
-
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
     background: ${COLORS.cardsBack};
@@ -152,7 +146,8 @@ const VARIANTS = {
     }
 
     &:disabled {
-      color: ${(props) => rgba(props.theme.colors.blue1, 0.5)};
+      color: ${(props) => rgba(props.theme.colors.white2, 1)};
+      background: ${(props) => rgba(props.theme.colors.white3, 0.15)};
     }
   `,
   red: css`
@@ -309,7 +304,7 @@ export const Button = styled.button<ButtonProps>`
     cursor: not-allowed;
     pointer-events: none;
     border: none;
-    background-color: ${(props) => rgba(props.theme.colors.blue1, 0.05)};
+    background-color: ${(props) => rgba(props.theme.colors.white3, 0.15)};
   }
 
   ${({ $loading: loading }: ButtonProps) =>

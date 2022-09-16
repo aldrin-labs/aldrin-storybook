@@ -31,8 +31,13 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
 
-  const { getTradingVolumeHistoryQuery, setFirstBalance, setBalanceData } =
-    props
+  const {
+    getTradingVolumeHistoryQuery,
+    setFirstBalance,
+    setBalanceData,
+    chartHeight,
+    border,
+  } = props
   const theme = useTheme()
 
   const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
@@ -55,6 +60,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
           chart: chartRef.current,
           theme,
           setBalanceData,
+          chartHeight,
         })
       } catch (e) {
         console.warn('Erorr on chart update:', e)
@@ -77,6 +83,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   return (
     <CanvasContainer padding="0px">
       <Canvas
+        $border={border}
         needPadding
         bottom="0px"
         left="4px"
@@ -104,7 +111,15 @@ export const ChartBlockInnerWithData = compose(
   })
 )(ChartBlockInner)
 
-export const VolumeChart = () => {
+export const VolumeChart = ({
+  background,
+  chartHeight,
+  border,
+}: {
+  background?: string
+  chartHeight: number
+  border?: string
+}) => {
   const [balanceData, setBalanceData] = useState({ date: '', balance: '' })
   const [firstBalance, setFirstBalance] = useState('')
   const [isMouseOverTheChart, setIfMouseOverTheChart] = useState(false)
@@ -134,7 +149,7 @@ export const VolumeChart = () => {
     formattedTodayDate === balanceData.date ? 'Today' : `at ${balanceData.date}`
 
   return (
-    <ChartContainer>
+    <ChartContainer $background={background}>
       <TooltipContainer padding="8px">
         <InlineText color="white1" size="xs">
           Volume {isMouseOverTheChart ? `${date}` : `All Time`}
@@ -145,8 +160,10 @@ export const VolumeChart = () => {
         </ValueTitle>
       </TooltipContainer>
       <ChartBlockInnerWithData
+        chartHeight={chartHeight}
         setBalanceData={setBalanceData}
         setFirstBalance={setFirstBalance}
+        border={border}
       />
     </ChartContainer>
   )

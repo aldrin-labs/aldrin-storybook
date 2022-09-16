@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 type StyledLinkProps = {
   margin?: string
   height?: string
+  width?: string
   $variant?: keyof typeof VARIANTS
 }
 
@@ -40,7 +41,7 @@ export const VARIANTS = {
 }
 
 export const StyledLink = styled.a<StyledLinkProps>`
-  width: 35px;
+  width: ${(props) => props.width || '35px'} !important;
   transition: ${TRANSITION};
   background: ${(props) => props.theme.colors.white4};
   border-radius: 0.5em;
