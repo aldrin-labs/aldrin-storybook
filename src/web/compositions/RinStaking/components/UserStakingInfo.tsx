@@ -72,7 +72,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const { stakingPool, currentFarmingState, getDexTokensPricesQuery } = props
   const theme = useTheme()
 
-  const { data: isRegionRestricted } = useRegionRestriction()
+  const isRegionRestricted = useRegionRestriction()
 
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: new PublicKey(stakingPool.stakingVault),

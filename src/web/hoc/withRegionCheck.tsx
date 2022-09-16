@@ -29,7 +29,6 @@ export const getRegionData = async () => {
           return true
         }
 
-        console.log({ result })
         return false
       })
     return result

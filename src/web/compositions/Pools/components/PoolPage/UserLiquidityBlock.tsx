@@ -37,8 +37,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
     tokenMap,
   } = props
 
-  const { data: isRegionRestricted } = useRegionRestriction()
-  console.log({ isRegionRestricted })
+  const isRegionRestricted = useRegionRestriction()
   const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
 
   // Hide tiny balances (we cannot withdraw all LP tokens so...)

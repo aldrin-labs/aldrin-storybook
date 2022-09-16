@@ -88,8 +88,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   } = props
   const tokensInfo = useTokenInfos()
   const { wallet } = useWallet()
-  const { data: isRegionRestricted } = useRegionRestriction()
-
+  const isRegionRestricted = useRegionRestriction()
+  console.log({ isRegionRestricted })
   const [farmingExtending, setFarmingExtending] = useState(false)
   const [extendFarmingModalOpen, setExtendFarmingModalOpen] = useState(false)
 
