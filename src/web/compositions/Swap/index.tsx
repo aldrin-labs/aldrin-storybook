@@ -188,11 +188,6 @@ const SwapPage = ({
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
   const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
 
-  // const { pricesMap: coingeckoPricesMap } = useCoingeckoPrices([
-  //   inputSymbol,
-  //   outputSymbol,
-  // ])
-
   const {
     mints: tokenSelectorMints,
     swapRoute,
@@ -220,28 +215,8 @@ const SwapPage = ({
 
   const outputDexTokenPrice = dexTokensPricesMap.get(outputSymbol) || 0
 
-  // const inputCgcTokenPrice =
-  //   coingeckoPricesMap.get(inputSymbol.toUpperCase()) || 0
-  // const outputCgcTokenPrice =
-  //   coingeckoPricesMap.get(outputSymbol.toUpperCase()) || 0
-
-  // const estimatedPrice = inputCgcTokenPrice / outputCgcTokenPrice
-  // const estimatedPriceFromRoute = +outputAmount / +inputAmount
-
-  // const pricesDiffPct = stripDigitPlaces(
-  //   ((estimatedPriceFromRoute - estimatedPrice) / estimatedPrice) * 100,
-  //   2
-  // )
   const isHighPriceImpact = swapRoute.priceImpact > 2
-
   const isHighPriceDiff = isHighPriceImpact
-
-  // const priceDiffText =
-  //   pricesDiffPct > 0
-  //     ? `${pricesDiffPct}% cheaper than`
-  //     : pricesDiffPct < -1
-  //     ? `${-pricesDiffPct}% more expensive than`
-  //     : `Within 1% of `
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -313,7 +288,6 @@ const SwapPage = ({
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
-    // pricesDiffPct: isHighPriceDiff ? +pricesDiffPct : 0,
     pricesDiffPct: 0,
     swapStatus,
   })
