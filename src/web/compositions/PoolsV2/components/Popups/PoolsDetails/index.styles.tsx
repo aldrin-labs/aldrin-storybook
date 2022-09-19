@@ -6,6 +6,8 @@ type GrayBoxType = {
   align?: string
   $justify?: string
   $padding?: string
+  $cursor?: string
+  $background?: string
 }
 
 export const GrayBox = styled.div<GrayBoxType>`
@@ -15,9 +17,10 @@ export const GrayBox = styled.div<GrayBoxType>`
   flex-direction: column;
   justify-content: ${(props) => props.$justify || 'space-between'};
   align-items: ${(props) => props.align || 'center'};
-  background: ${(props) => props.theme.colors.white4};
+  background: ${(props) => props.theme.colors[props.$background || 'white4']};
   border-radius: ${BORDER_RADIUS.rg};
-  padding: ${props => props.$padding || '0.5em 1em'};
+  padding: ${(props) => props.$padding || '0.5em 1em'};
+  cursor: ${(props) => props.$cursor || 'auto'};
 `
 export const GrayContainer = styled.div<GrayBoxType>`
   width: 100%;

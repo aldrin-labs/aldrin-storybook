@@ -35,9 +35,19 @@ import { PoolsCard } from './PoolCard'
 export const LaunchedPool = ({
   poolInfo,
   setIsLaunchFarmingModalOpen,
+  setIsBoostAPRModalOpen,
+  setIsDepositModalOpen,
+  setIsRescheduleFarmingModalOpen,
+  setIsEditModalOpen,
+  scheduleNewFarming,
 }: {
   poolInfo: any
   setIsLaunchFarmingModalOpen: (a: boolean) => void
+  setIsBoostAPRModalOpen: (a: boolean) => void
+  setIsDepositModalOpen: (a: boolean) => void
+  setIsRescheduleFarmingModalOpen: (a: boolean) => void
+  setIsEditModalOpen: (a: boolean) => void
+  scheduleNewFarming: (a: boolean) => void
 }) => {
   return (
     <Container height="auto" margin="0" width="100%">
@@ -93,6 +103,7 @@ export const LaunchedPool = ({
                     </RootColumn>
                   </GrayBox>
                   <Button
+                    onClick={() => setIsDepositModalOpen(true)}
                     $width="xl"
                     $padding="xxxl"
                     $variant="violet"
@@ -217,6 +228,9 @@ export const LaunchedPool = ({
                       </RootColumn>
                     </GrayBox>
                     <Button
+                      onClick={() => {
+                        setIsBoostAPRModalOpen(true)
+                      }}
                       $width="xl"
                       $padding="xxxl"
                       $variant="green"
@@ -349,6 +363,14 @@ export const LaunchedPool = ({
                       $padding="xxxl"
                       $variant="green"
                       $fontSize="sm"
+                      onClick={() => {
+                        if (poolInfo.isNextFarmingScheduled) {
+                          setIsRescheduleFarmingModalOpen(true)
+                        } else {
+                          scheduleNewFarming(true)
+                          setIsLaunchFarmingModalOpen(true)
+                        }
+                      }}
                     >
                       <ClockIcon color="green2" margin="0 0.5em 0 0" />{' '}
                       {poolInfo.isNextFarmingScheduled
@@ -377,7 +399,12 @@ export const LaunchedPool = ({
                     </GrayBox>
                   </Row>
                   <Row width="2.5em">
-                    <GrayBox $justify="center" height="2.5em">
+                    <GrayBox
+                      $cursor="pointer"
+                      onClick={() => setIsEditModalOpen(true)}
+                      $justify="center"
+                      height="2.5em"
+                    >
                       <EditIcon />
                     </GrayBox>
                   </Row>
@@ -401,7 +428,12 @@ export const LaunchedPool = ({
                     </GrayBox>
                   </Row>
                   <Row width="2.5em">
-                    <GrayBox $justify="center" height="2.5em">
+                    <GrayBox
+                      $cursor="pointer"
+                      onClick={() => setIsEditModalOpen(true)}
+                      $justify="center"
+                      height="2.5em"
+                    >
                       <EditIcon />
                     </GrayBox>
                   </Row>
@@ -422,7 +454,12 @@ export const LaunchedPool = ({
                     </GrayBox>
                   </Row>
                   <Row width="2.5em">
-                    <GrayBox $justify="center" height="2.5em">
+                    <GrayBox
+                      $cursor="pointer"
+                      onClick={() => setIsEditModalOpen(true)}
+                      $justify="center"
+                      height="2.5em"
+                    >
                       <EditIcon />
                     </GrayBox>
                   </Row>
@@ -448,7 +485,12 @@ export const LaunchedPool = ({
                     </GrayBox>
                   </Row>
                   <Row width="2.5em">
-                    <GrayBox $justify="center" height="2.5em">
+                    <GrayBox
+                      $cursor="pointer"
+                      onClick={() => setIsEditModalOpen(true)}
+                      $justify="center"
+                      height="2.5em"
+                    >
                       <EditIcon />
                     </GrayBox>
                   </Row>
@@ -465,7 +507,12 @@ export const LaunchedPool = ({
                     </GrayBox>
                   </Row>
                   <Row width="2.5em">
-                    <GrayBox $justify="center" height="2.5em">
+                    <GrayBox
+                      $cursor="pointer"
+                      onClick={() => setIsEditModalOpen(true)}
+                      $justify="center"
+                      height="2.5em"
+                    >
                       <EditIcon />
                     </GrayBox>
                   </Row>

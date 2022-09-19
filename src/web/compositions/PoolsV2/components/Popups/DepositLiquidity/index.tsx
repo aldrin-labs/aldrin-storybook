@@ -22,9 +22,11 @@ import { PeriodButton, PeriodSwitcher } from './index.styles'
 export const DepositLiquidity = ({
   onClose,
   open,
+  arrow = true,
 }: {
   onClose: () => void
   open: boolean
+  arrow: boolean
 }) => {
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
   const [isUserVerified, setIsUserVerified] = useState(false)
@@ -33,10 +35,10 @@ export const DepositLiquidity = ({
   return (
     <ModalContainer needBlur>
       <Modal open={open} onClose={onClose}>
-        <HeaderComponent arrow close={onClose} />
+        <HeaderComponent arrow={arrow} onClose={onClose} />
         <Column height="calc(100% - 11em)" margin="2em 0">
           <Row width="100%">
-            <InlineText color="gray1" size="sm">
+            <InlineText color="white1" size="sm">
               Deposit
             </InlineText>
             <Row
@@ -46,10 +48,10 @@ export const DepositLiquidity = ({
             >
               <CheckboxContainer>
                 <HiddenCheckbox type="checkbox" checked={isRebalanceChecked} />
-                <StyledCheckbox hoverColor="blue2" color="blue2">
+                <StyledCheckbox hoverColor="blue1" color="blue1">
                   <Icon
-                    hoverColor="blue2"
-                    color="blue2"
+                    hoverColor="blue1"
+                    color="blue1"
                     checked={isRebalanceChecked}
                     viewBox="0 0 24 24"
                   >
@@ -57,12 +59,12 @@ export const DepositLiquidity = ({
                   </Icon>
                 </StyledCheckbox>
               </CheckboxContainer>
-              <InlineText color="blue2" size="sm">
+              <InlineText color="blue1" size="sm">
                 Rebalance uneven amounts
               </InlineText>
               <DarkTooltip title="Liquidity must be deposited according to the ratio of the pool. Enable rebalance to auto-trade any entered amount to the pool ratio. When you withdraw the liquidity, you will get values equal to the ratio of the pool at withdrawal time.">
                 <span>
-                  <TooltipIcon color="blue2" />
+                  <TooltipIcon color="blue1" />
                 </span>
               </DarkTooltip>
             </Row>
@@ -77,8 +79,8 @@ export const DepositLiquidity = ({
                       <InlineText size="sm">Network Fee:</InlineText>
                     </Row>
                     <Row>
-                      <InlineText size="sm" color="gray0" weight={600}>
-                        0.0005 SOL <TooltipIcon color="gray1" />
+                      <InlineText size="sm" color="white1" weight={600}>
+                        0.0005 SOL <TooltipIcon color="white2" />
                       </InlineText>
                     </Row>
                   </Row>
@@ -90,8 +92,8 @@ export const DepositLiquidity = ({
                       <InlineText size="sm">Rebalance Fee:</InlineText>
                     </Row>
                     <Row>
-                      <InlineText size="sm" color="gray0" weight={600}>
-                        $14.42 <TooltipIcon color="gray1" />
+                      <InlineText size="sm" color="white1" weight={600}>
+                        $14.42 <TooltipIcon color="white2" />
                       </InlineText>
                     </Row>
                   </Row>
@@ -106,12 +108,12 @@ export const DepositLiquidity = ({
                 <Row width="100%">
                   <Column height="auto" width="35%">
                     <Box padding="1em" height="6em">
-                      <InlineText size="sm" weight={300} color="gray1">
-                        <TooltipIcon color="gray1" margin="0 5px 0 0" />
+                      <InlineText size="sm" weight={300} color="white2">
+                        <TooltipIcon color="white2" margin="0 5px 0 0" />
                         Position Value{' '}
                       </InlineText>
-                      <InlineText color="gray0" size="xmd" weight={600}>
-                        <InlineText color="gray1" size="md" weight={600}>
+                      <InlineText color="white1" size="xmd" weight={600}>
+                        <InlineText color="white2" size="md" weight={600}>
                           $
                         </InlineText>{' '}
                         120.50
@@ -120,13 +122,13 @@ export const DepositLiquidity = ({
                   </Column>
                   <Column height="auto" width="60%">
                     <Box padding="1em" height="6em">
-                      <InlineText size="sm" weight={300} color="gray1">
-                        <TooltipIcon color="gray1" margin="0 5px 0 0" />
+                      <InlineText size="sm" weight={300} color="white2">
+                        <TooltipIcon color="white2" margin="0 5px 0 0" />
                         Estimated Earnings
                       </InlineText>
                       <Row width="100%">
-                        <InlineText color="gray0" size="xmd" weight={600}>
-                          <InlineText color="gray1" size="md" weight={600}>
+                        <InlineText color="white1" size="xmd" weight={600}>
+                          <InlineText color="white2" size="md" weight={600}>
                             $
                           </InlineText>{' '}
                           20.50
@@ -174,10 +176,10 @@ export const DepositLiquidity = ({
             >
               <CheckboxContainer marginRight="0.5em">
                 <HiddenCheckbox type="checkbox" checked={isUserVerified} />
-                <StyledCheckbox hoverColor="yellow7" color="yellow7">
+                <StyledCheckbox hoverColor="yellow1" color="yellow1">
                   <Icon
-                    hoverColor="yellow7"
-                    color="yellow7"
+                    hoverColor="yellow1"
+                    color="yellow1"
                     checked={isUserVerified}
                     viewBox="0 0 24 24"
                   >
@@ -185,10 +187,10 @@ export const DepositLiquidity = ({
                   </Icon>
                 </StyledCheckbox>
               </CheckboxContainer>
-              <InlineText color="yellow7" size="xs">
+              <InlineText color="yellow1" size="xs">
                 I verify that I have read the{' '}
                 <InlineText
-                  color="yellow7"
+                  color="yellow1"
                   as="a"
                   target="_blank"
                   href="https://docs.aldrin.com/amm/aldrin-pools-guide-for-farmers"
@@ -203,12 +205,12 @@ export const DepositLiquidity = ({
               onClick={() => {
                 // connect wallet
               }}
-              $variant={isRebalanceChecked ? 'violet' : 'green'}
+              $variant="green"
               $width="xl"
               $padding="xxxl"
               $fontSize="sm"
             >
-              {isRebalanceChecked || !wallet.connected ? (
+              {!wallet.connected ? (
                 'Connect Wallet to Add Liquidity'
               ) : (
                 <>

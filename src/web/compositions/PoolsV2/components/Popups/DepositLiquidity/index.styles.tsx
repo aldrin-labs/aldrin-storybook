@@ -14,7 +14,7 @@ export const CircleIconContainer = styled.div<CircleIconContainerType>`
   align-items: center;
   width: ${(props) => props.size || '2em'};
   height: ${(props) => props.size || '2em'};
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 50%;
   font-family: Avenir Next Bold;
   color: ${(props) => props.theme.colors.gray0};
@@ -44,10 +44,10 @@ export const InputsContainer = styled.div`
   align-items: center;
   flex-direction: column;
   position: relative;
-  border: 1px solid ${(props) => props.theme.colors.white5};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   border-radius: 0.8em;
   padding: 0.8em 0;
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.white5};
 `
 
 export const FirstInputContainer = styled.div`
@@ -59,7 +59,7 @@ export const FirstInputContainer = styled.div`
   flex-wrap: nowrap;
   justify-content: space-between;
   padding: 0 0 0.8em 0;
-  border-bottom: 1px solid ${(props) => props.theme.colors.white5};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white4};
 `
 
 export const SecondInputContainer = styled.div`

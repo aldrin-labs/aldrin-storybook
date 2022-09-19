@@ -21,8 +21,8 @@ export const Header = ({
   onClose: () => void
   header: string
   description: string
-  creationStep: string
-  arrow: boolean
+  creationStep?: string
+  arrow?: boolean
   needSteps: boolean
 }) => {
   return (

@@ -53,7 +53,11 @@ export const PositionInfo = ({
               <Row width="47%" height={rootRowHeight}>
                 <RootColumn width="100%" height="100%">
                   <RootColumn width="100%" height="65%">
-                    <GrayBox align="flex-start" height={grayBoxHeight}>
+                    <GrayBox
+                      $background="white5"
+                      align="flex-start"
+                      height={grayBoxHeight}
+                    >
                       <Row width="100%">
                         <InlineText size="sm" weight={400} color="white2">
                           Your Liquidity
@@ -72,7 +76,11 @@ export const PositionInfo = ({
                     </GrayBox>
 
                     {isPositionViewDetailed && (
-                      <GrayBox align="flex-start" height={grayBoxHeight}>
+                      <GrayBox
+                        $background="white5"
+                        align="flex-start"
+                        height={grayBoxHeight}
+                      >
                         <Row width="100%">
                           <TokenIcon size={20} mint={RIN_MINT} />
                           <InlineText size="sm" weight={400} color="gray1">
@@ -108,7 +116,11 @@ export const PositionInfo = ({
               <Row width="47%" height={rootRowHeight}>
                 <RootColumn height="100%" width="100%">
                   <RootColumn width="100%" height="65%">
-                    <GrayBox align="flex-start" height={grayBoxHeight}>
+                    <GrayBox
+                      $background="white5"
+                      align="flex-start"
+                      height={grayBoxHeight}
+                    >
                       <Row width="100%">
                         <InlineText size="sm" weight={400} color="white2">
                           Fees Earned
@@ -127,7 +139,11 @@ export const PositionInfo = ({
                     </GrayBox>
 
                     {isPositionViewDetailed && (
-                      <GrayBox align="flex-start" height={grayBoxHeight}>
+                      <GrayBox
+                        $background="white5"
+                        align="flex-start"
+                        height={grayBoxHeight}
+                      >
                         <Row width="100%">
                           <TokenIcon size={20} mint={RIN_MINT} />
                           <InlineText size="sm" weight={400} color="gray1">
@@ -166,7 +182,11 @@ export const PositionInfo = ({
             <Row width="26%" height={rootRowHeight}>
               <RootColumn width="100%" height="100%">
                 <RootColumn width="100%" height="65%">
-                  <GrayBox align="flex-start" height={grayBoxHeight}>
+                  <GrayBox
+                    $background="white5"
+                    align="flex-start"
+                    height={grayBoxHeight}
+                  >
                     <Row width="100%">
                       <InlineText size="sm" weight={400} color="white2">
                         Rewards
@@ -185,7 +205,7 @@ export const PositionInfo = ({
                   </GrayBox>
 
                   {isPositionViewDetailed && (
-                    <GrayBox height={grayBoxHeight}>
+                    <GrayBox $background="white5" height={grayBoxHeight}>
                       <Row height="100%" width="100%">
                         <TokenIcon size={20} mint={RIN_MINT} />
                         <InlineText size="sm" weight={400} color="gray1">

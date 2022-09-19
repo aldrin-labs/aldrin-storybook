@@ -81,15 +81,16 @@ export const Row = styled.div<RowType>`
 `
 
 export const Box = styled.div<BoxType>`
-  border-radius: 0.5em;
+  border-radius: 0.7em;
   width: ${(props) => props.width || '100%'};
   height: ${(props) => props.height || '4.5em'};
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   padding: ${(props) => props.padding || '0.5em 1em'};
+  border: 1px solid ${(props) => props.theme.colors.white4};
 `
 export const Column = styled.div<ColumnType>`
   height: ${(props) => props.height || '100%'};
@@ -110,4 +111,14 @@ export const Container = styled.div`
   align-items: center;
   border-radius: 0.6em;
   padding: 0.5em;
+`
+
+export const SmallModal = styled.div`
+  padding: 0 1em 1em 1em;
+  display: flex;
+  height: 100%;
+  width: 35em;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 `

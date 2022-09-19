@@ -12,10 +12,10 @@ import { TokenIconsContainer } from '../../TokenIconsContainer'
 import { Header, Row } from '../index.styles'
 
 export const HeaderComponent = ({
-  close,
+  onClose,
   arrow,
 }: {
-  close: () => void
+  onClose: () => void
   arrow: boolean
 }) => {
   return (
@@ -27,11 +27,10 @@ export const HeaderComponent = ({
         </InlineText>
       </Row>
       <Row width="36%">
-        <LinkToTwitter height="40px" />
-        <LinkToDiscord height="40px" />
-        <LinkToCoinMarketcap height="40px" />
-        <EscapeButton arrow={arrow} size="2.5" close={() => close()} />
-        {/* TODO: last button should be replaced with Esc when swaps merged */}
+        <LinkToTwitter height="40px" width="40px" />
+        <LinkToDiscord height="40px" width="40px" />
+        <LinkToCoinMarketcap height="40px" width="40px" />
+        <EscapeButton arrow={arrow} size="2.5" onClose={() => onClose()} />
       </Row>
     </Header>
   )

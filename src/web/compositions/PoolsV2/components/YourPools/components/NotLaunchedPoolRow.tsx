@@ -17,7 +17,13 @@ import { GrayBox, GrayContainer } from '../../Popups/PoolsDetails/index.styles'
 import { Container } from '../../TableRow/index.styles'
 import { PoolsCard } from './PoolCard'
 
-export const NotLaunchedPool = () => {
+export const NotLaunchedPool = ({
+  setIsRescheduleModalOpen,
+  setNeedReschedulePool,
+}: {
+  setIsRescheduleModalOpen: (a: boolean) => void
+  setNeedReschedulePool: (a: boolean) => void
+}) => {
   return (
     <Container height="auto" margin="0" width="100%">
       <RootRow align="center" margin="0" width="100%">
@@ -148,6 +154,10 @@ export const NotLaunchedPool = () => {
                 $padding="xxl"
                 $variant="violet"
                 $fontSize="sm"
+                onClick={() => {
+                  setNeedReschedulePool(true)
+                  setIsRescheduleModalOpen(true)
+                }}
               >
                 <ClockIcon color="blue1" />
                 &nbsp;Reschedule

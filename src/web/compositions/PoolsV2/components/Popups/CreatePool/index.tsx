@@ -41,7 +41,6 @@ export const CreatePoolModal = ({
         )}
         {creationStep === 'setPreferences' && (
           <SetPreferences
-            onClose={onClose}
             creationStep={creationStep}
             setCreationStep={setCreationStep}
           />

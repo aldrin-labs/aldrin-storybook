@@ -11,8 +11,10 @@ import { Row } from './components/Popups/index.styles'
 import { PoolsDetails } from './components/Popups/PoolsDetails'
 import { SearchInput } from './components/SearchInput'
 import { TableRow } from './components/TableRow'
+import { EmptyRow } from './components/TableRow/EmptyRow'
 import { TablesSwitcher } from './components/TablesSwitcher'
 import { Container as SwitcherContainer } from './components/TablesSwitcher/index.styles'
+import { PoolInfo } from './components/YourPools'
 import { PositionInfo } from './components/YourPositions'
 import { PositionsCharts } from './components/YourPositions/PositionsChart'
 import { PositionsSwitcher } from './components/YourPositions/Switcher'
@@ -24,7 +26,6 @@ import {
   SButton,
   FilterRow,
 } from './index.styles'
-import { PoolInfo } from './components/YourPools'
 
 export const PoolsComponent: React.FC = () => {
   const [tableView, setTableView] = useState('yourPools')
@@ -129,7 +130,7 @@ export const PoolsComponent: React.FC = () => {
           setIsPoolsDetailsPopupOpen={setIsPoolsDetailsPopupOpen}
           isFiltersShown={isFiltersShown}
         />
-        {/* <EmptyRow /> */}
+        <EmptyRow />
       </StyledWideContent>
       <PoolsDetails
         open={isPoolsDetailsPopupOpen}

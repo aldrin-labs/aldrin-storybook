@@ -92,3 +92,10 @@ export const POOL_CARD_LABELS = [
     hoverStyle: LABEL_TYPES.blue,
   },
 ]
+
+export const farmingDurations = [
+  { value: '14', title: '14 Days' },
+  { value: '30', title: '30 Days' },
+  { value: '90', title: '90 Days' },
+  { value: '365', title: '365 Days' },
+]

@@ -16,7 +16,7 @@ type InputContainerProps = {
 export const InvisibleInput = styled.input`
   width: 100%;
   background: inherit;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   outline: none;
   border: none;
   font-family: ${FONTS.main};
@@ -29,7 +29,7 @@ export const InvisibleInput = styled.input`
   }
 `
 export const Input = styled.div<InputProps>`
-  background: ${(props) => props.theme.colors[props.background || 'white6']};
+  background: ${(props) => props.theme.colors[props.background || 'white5']};
   width: 100%;
   display: flex;
   justify-content: space-between;

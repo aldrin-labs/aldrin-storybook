@@ -39,7 +39,6 @@ export const SetPreferences = ({
         header="Set Preferences"
         description="You will be able to update them later."
         onClose={() => setCreationStep('setupFarming')}
-        arrow
       />
       <Column
         overflow="scroll"

@@ -82,16 +82,19 @@ export const LinkToCoinGecko = ({
 export const LinkToCoinMarketcap = ({
   margin,
   height,
+  width,
   $variant,
 }: {
   margin?: string
   height?: string
+  width?: string
   $variant?: keyof typeof VARIANTS
 }) => {
   return (
     <StyledLink
       $variant={$variant}
       height={height}
+      width={width}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"
@@ -163,16 +166,19 @@ export const LinkToTelegram = ({
 export const LinkToTwitter = ({
   margin,
   height,
+  width,
   $variant,
 }: {
   margin?: string
   height?: string
+  width?: string
   $variant?: keyof typeof VARIANTS
 }) => {
   return (
     <StyledLink
       $variant={$variant}
       height={height}
+      width={width}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"
@@ -204,16 +210,19 @@ export const LinkToTwitter = ({
 export const LinkToDiscord = ({
   margin,
   height,
+  width,
   $variant,
 }: {
   margin?: string
   height?: string
+  width?: string
   $variant?: keyof typeof VARIANTS
 }) => {
   return (
     <StyledLink
       $variant={$variant}
       height={height}
+      width={width}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"

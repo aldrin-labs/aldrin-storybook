@@ -6,6 +6,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { AmountInput } from '@sb/compositions/PoolsV2/components/Inputs'
 import { InputContainer } from '@sb/compositions/PoolsV2/components/Inputs/index.styles'
+import { farmingDurations } from '@sb/compositions/PoolsV2/config'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -23,13 +24,6 @@ import {
   InvisibleInput,
   TokenSelectorContainer,
 } from '../../index.styles'
-
-const farmingDurations = [
-  { value: '14', title: '14 Days' },
-  { value: '30', title: '30 Days' },
-  { value: '90', title: '90 Days' },
-  { value: '365', title: '365 Days' },
-]
 
 export const SetupFarming = ({
   onClose,

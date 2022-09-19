@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import { Button, PADDINGS } from '@sb/components/Button'
 import { StretchedBlock, WideContent } from '@sb/components/Layout'
+
 import Bg from './components/YourPools/components/assets/bg.png'
 
 type FilterButtonType = {
@@ -25,7 +26,7 @@ type LineProps = {
 export const RootRow = styled.div<RootRowType>`
   height: ${(props) => props.height || 'auto'};
   display: flex;
-  justify-content: space-between;
+  justify-content: ${(props) => props.$justify || 'space-between'};
   flex-direction: column;
   align-items: ${(props) => props.align || 'center'};
   margin: ${(props) => props.margin || '30px 0'};
@@ -44,6 +45,7 @@ export const RootColumn = styled.div<RootRowType>`
   justify-content: ${(props) => props.$justify || 'space-between'};
   flex-direction: column;
   align-items: flex-start;
+  margin: ${(props) => props.margin || '0'};
 `
 
 export const SpacedColumn = styled(RootColumn)<RootRowType>`
