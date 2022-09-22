@@ -1,6 +1,12 @@
+import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
 
 import { Page } from '@sb/components/Layout'
+import { useConnection } from '@sb/dexUtils/connection'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { RIN_MINT } from '@core/solana'
+import { buildCreatePoolInstruction } from '@core/solana/programs/amm/instructions/createPoolTransaction'
 
 import { ConnectWalletPopup } from '../Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { TVLChart, VolumeChart } from './components/Charts'
@@ -11,7 +17,6 @@ import { Row } from './components/Popups/index.styles'
 import { PoolsDetails } from './components/Popups/PoolsDetails'
 import { SearchInput } from './components/SearchInput'
 import { TableRow } from './components/TableRow'
-import { EmptyRow } from './components/TableRow/EmptyRow'
 import { TablesSwitcher } from './components/TablesSwitcher'
 import { Container as SwitcherContainer } from './components/TablesSwitcher/index.styles'
 import { PoolInfo } from './components/YourPools'
@@ -28,7 +33,7 @@ import {
 } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
-  const [tableView, setTableView] = useState('yourPools')
+  const [tableView, setTableView] = useState('classicLiquidity')
   const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
@@ -36,6 +41,8 @@ export const PoolsComponent: React.FC = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
+  const wallet = useWallet()
+  const connection = useConnection()
   const positionsAmount = 2
   const showPositionsChart =
     tableView === 'yourPositions' && positionsAmount > 1
@@ -49,6 +56,25 @@ export const PoolsComponent: React.FC = () => {
 
   const isUserHavePositions = true
   const isUserHavePools = true
+
+  useEffect(() => {
+    const getData = async () => {
+      const createPool = await buildCreatePoolInstruction({
+        wallet,
+        connection,
+        amplifier: 0,
+        baseTokenMint: new PublicKey(RIN_MINT),
+        quoteTokenMint: new PublicKey(RIN_MINT),
+      })
+      // const pool = await loadPoolData({ connection, wallet })
+      // const programToll = await loadProgramToll({ connection, wallet })
+      // console.log({ pool, programToll })
+      // return pool
+      console.log({ createPool })
+    }
+
+    getData()
+  }, [])
 
   return (
     <Page>
@@ -126,11 +152,14 @@ export const PoolsComponent: React.FC = () => {
             <PoolInfo />
           </>
         )}
-        <TableRow
-          setIsPoolsDetailsPopupOpen={setIsPoolsDetailsPopupOpen}
-          isFiltersShown={isFiltersShown}
-        />
-        <EmptyRow />
+        {(tableView === 'classicLiquidity' ||
+          tableView === 'yourPositions') && (
+          <TableRow
+            setIsPoolsDetailsPopupOpen={setIsPoolsDetailsPopupOpen}
+            isFiltersShown={isFiltersShown}
+          />
+        )}
+        {/* <EmptyRow /> */}
       </StyledWideContent>
       <PoolsDetails
         open={isPoolsDetailsPopupOpen}

@@ -318,8 +318,8 @@ export const LaunchedPool = ({
                       )}
                     {poolInfo.isFarmingActive &&
                       poolInfo.isNextFarmingScheduled && (
-                        <>
-                          <GrayBox align="flex-start" height="32%">
+                        <RootColumn height="69%">
+                          <GrayBox align="flex-start" height="47%">
                             <Row width="100%">
                               <InlineText size="sm" weight={400} color="white2">
                                 Farming Till
@@ -337,7 +337,7 @@ export const LaunchedPool = ({
                               </InlineText>
                             </Row>
                           </GrayBox>
-                          <GrayBox height="32%">
+                          <GrayBox height="47%">
                             <Row width="100%">
                               <InlineText size="sm" weight={400} color="white2">
                                 Next Farming
@@ -355,7 +355,7 @@ export const LaunchedPool = ({
                               </InlineText>
                             </Row>
                           </GrayBox>
-                        </>
+                        </RootColumn>
                       )}
 
                     <Button
