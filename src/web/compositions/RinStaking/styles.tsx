@@ -19,10 +19,6 @@ export const StakingPage = styled(BlackPage)`
   display: flex;
   justify-content: center;
   align-items: center;
-  // height: 100%;
-  @media (max-width: ${BREAKPOINTS.lg}) {
-    align-items: flex-start;
-  }
 `
 
 export const StyledTextDiv = styled.div`
@@ -45,8 +41,8 @@ export const StyledTextDiv = styled.div`
 `
 
 export const RootRow = styled(Row)`
-  margin: 40px 0;
-  background: ${(props) => props.theme.colors.white5};
+  margin: 0;
+  background: ${(props) => props.theme.colors.gray6};
   border-radius: 2rem;
   padding: 2rem;
 `
@@ -377,8 +373,11 @@ export const FormsWrap = styled.div`
 `
 export const StakingContent = styled(Content)`
   width: auto;
-
+  margin: 0 15px;
+  background: ${(props) => props.theme.colors.white5};
+  border-radius: 2rem;
   @media (min-width: ${BREAKPOINTS.md}) {
-    width: 100%;
+    width: 50%;
+    margin: 0 10px;
   }
 `

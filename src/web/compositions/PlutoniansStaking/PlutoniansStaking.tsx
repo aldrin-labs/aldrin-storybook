@@ -386,7 +386,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   key={`tier_${tier.publicKey.toString()}`}
                   checked={selectedTierIndex === idx}
                   onClick={() => setSelectedTierIndex(idx)}
-                  backgroundColor={COLORS.cardsBack}
                 >
                   <FlexBlock direction="column">
                     <StretchedBlock align="center">
@@ -507,7 +506,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             align="center"
                             width="xl"
                           >
-                            <InlineText color="green4" size="lg" weight={700}>
+                            <InlineText color="green3" size="lg" weight={700}>
                               {stripByAmount(apr, 2)} %
                             </InlineText>
                             <RewardDescription size="md" weight={600}>

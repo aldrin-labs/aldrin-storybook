@@ -76,13 +76,19 @@ export const Modal: React.FC<ModalProps> = (props) => {
   }, [])
 
   return (
-    <ModalContainer backdrop={backdrop} onClick={onClose} style={styles.root}>
+    <ModalContainer
+      className="modal-container"
+      backdrop={backdrop}
+      onClick={onClose}
+      style={styles.root}
+    >
       <ModalBody
+        className="modal-body"
         onClick={(e) => e.stopPropagation()}
         $width={width}
         style={styles.body}
       >
-        <ModalContent style={styles.content}>
+        <ModalContent className="modal-content" style={styles.content}>
           <>
             {title && <ModalTitleBlock title={title} onClose={onClose} />}
             {children}

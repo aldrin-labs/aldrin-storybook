@@ -110,6 +110,7 @@ const THEMES = {
       white5: THEME_COLORS.D5,
       white6: THEME_COLORS.D6,
 
+      yellow1: THEME_COLORS.YD1,
       yellow4: THEME_COLORS.YD4,
 
       background1: THEME_COLORS.BGD1,
@@ -160,6 +161,7 @@ const THEMES = {
       white5: THEME_COLORS.L5,
       white6: THEME_COLORS.L6,
 
+      yellow1: THEME_COLORS.YL1,
       yellow4: THEME_COLORS.YL4,
 
       background1: THEME_COLORS.BGL1,
