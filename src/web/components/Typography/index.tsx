@@ -1,5 +1,4 @@
-import { UCOLORS, FONT_SIZES, FONTS } from '@variables/variables'
-import { get } from 'lodash-es'
+import { FONT_SIZES, FONTS } from '@variables/variables'
 import styled from 'styled-components'
 
 type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700

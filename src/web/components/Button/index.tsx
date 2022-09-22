@@ -131,6 +131,55 @@ const VARIANTS = {
     border-color: ${COLORS.hint};
   `,
 
+  violet: css`
+    background: ${(props) => rgba(props.theme.colors.blue1, 0.15)};
+    border: none;
+    color: ${(props) => props.theme.colors.blue1};
+    white-space: nowrap;
+    font-weight: 600;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+
+    &:hover {
+      background: ${(props) => rgba(props.theme.colors.blue1, 0.25)};
+    }
+
+    &:active {
+      background: ${(props) => rgba(props.theme.colors.blue1, 0.35)};
+    }
+
+    &:disabled {
+      color: ${(props) => rgba(props.theme.colors.blue1, 0.5)};
+    }
+  `,
+
+  green: css`
+    background: ${(props) => rgba(props.theme.colors.green3, 0.15)};
+    border: none;
+    color: ${(props) => props.theme.colors.green3};
+    white-space: nowrap;
+    font-weight: 700;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+
+    &:hover {
+      background: ${(props) => rgba(props.theme.colors.green3, 0.25)};
+    }
+
+    &:active {
+      background: ${(props) => rgba(props.theme.colors.green3, 0.35)};
+    }
+
+    &:disabled {
+      color: ${(props) => rgba(props.theme.colors.blue1, 0.15)};
+    }
+  `,
   none: css``,
 }
 
@@ -139,6 +188,9 @@ export const PADDINGS = {
   sm: '2px 8px',
   md: '4px 10px', // 16px
   lg: '8px 16px',
+  xl: '11px 10px',
+  xxl: '15px 11px',
+  xxxl: '18px 20px',
 }
 
 export type ButtonVariants = keyof typeof VARIANTS
@@ -219,7 +271,7 @@ export const Button = styled.button<ButtonProps>`
     cursor: not-allowed;
     pointer-events: none;
     border: none;
-    background-color: ${(props) => props.theme.colors.disabled};
+    background-color: ${(props) => rgba(props.theme.colors.blue1, 0.05)};
   }
 
   ${({ $loading: loading }: ButtonProps) =>

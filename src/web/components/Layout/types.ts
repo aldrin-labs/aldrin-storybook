@@ -1,4 +1,4 @@
-import { WIDTH } from "../../../variables/variables";
+import { WIDTH } from '../../../variables/variables'
 
 export interface RowProps {
   wrap?: string
@@ -23,4 +23,5 @@ export interface StretchedBlockProps {
   align?: string
   direction?: 'row' | 'column'
   width?: keyof typeof WIDTH
+  margin?: string
 }

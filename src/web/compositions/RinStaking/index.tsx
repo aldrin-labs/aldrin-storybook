@@ -14,7 +14,7 @@ export const RinStaking = () => {
   return (
     <StakingPage>
       <StakingContent>
-        <LogoWrap radius="12px">
+        <LogoWrap>
           <img src={AldrinLogo} height="70" alt="Aldrin" />
           <AbsoluteImg src={Coins} height="auto" left="87.5%" alt="Aldrin" />
         </LogoWrap>
