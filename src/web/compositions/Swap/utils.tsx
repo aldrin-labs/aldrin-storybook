@@ -21,7 +21,6 @@ export const getSwapButtonText = ({
   baseSymbol: string
   isSwapRouteExists: boolean
   isEmptyInputAmount: boolean
-  isSwapInProgress: boolean
   pricesDiffPct: number
   swapStatus: string | null
 }) => {

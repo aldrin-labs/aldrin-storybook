@@ -27,7 +27,7 @@ export const SearchInput = styled(Input)`
   margin: 0;
   border: 0.1rem solid ${(props) => props.theme.colors.white6};
   background: ${(props) => props.theme.colors.white6};
-  height: 4.6em;
+  height: 4em;
   padding: 0 1.8em;
 
   ${InputContainer} {
