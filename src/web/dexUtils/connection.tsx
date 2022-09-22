@@ -1,19 +1,17 @@
-import {
-  AccountInfo,
-  clusterApiUrl,
-  Connection,
-  PublicKey,
-} from '@solana/web3.js'
+import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 import React, { useContext, useCallback } from 'react'
 import useSWR from 'swr'
 
-import { MultiEndpointsConnection, AldrinConnection } from '@core/solana'
+import {
+  MultiEndpointsConnection,
+  AldrinConnection,
+  MAINNET_URL,
+} from '@core/solana'
 
-export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta',
-    endpoint: MAINNET_BETA_ENDPOINT,
+    endpoint: MAINNET_URL,
   },
 ]
 

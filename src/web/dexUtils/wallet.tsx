@@ -36,8 +36,6 @@ export const WRAPPED_SOL_MINT = new PublicKey(
   'So11111111111111111111111111111111111111112'
 )
 
-export const MAINNET_URL = 'https://api.mainnet-beta.solana.com'
-
 export interface WalletContextType {
   wallet: WalletAdapter
   connected: boolean
@@ -248,101 +246,6 @@ export function parseMintData(data) {
   const { decimals } = MINT_LAYOUT.decode(data)
   return { decimals }
 }
-
-// const TokenListContext = React.createContext({});
-
-// export const CLUSTERS = [
-//   {
-//     name: 'mainnet-beta',
-//     apiUrl: MAINNET_URL,
-//     label: 'Mainnet Beta'
-//   },
-//   {
-//     name: 'devnet',
-//     apiUrl: clusterApiUrl('devnet'),
-//     label: 'Devnet'
-//   },
-//   {
-//     name: 'testnet',
-//     apiUrl: clusterApiUrl('testnet'),
-//     label: 'Testnet'
-//   },
-//   {
-//     name: 'localnet',
-//     apiUrl: 'http://localhost:8899',
-//     label: null
-//   }
-// ];
-
-// export function clusterForEndpoint(endpoint) {
-//   return CLUSTERS.find(({ apiUrl }) => apiUrl === endpoint);
-// }
-
-// export function useTokenInfos() {
-//   const { tokenInfos } = useContext(TokenListContext);
-//   return tokenInfos;
-// }
-
-// const nameUpdated = new EventEmitter();
-// nameUpdated.setMaxListeners(100);
-
-// export function useTokenInfo(mint) {
-//   const { endpoint } = useConnectionConfig();
-//   useListener(nameUpdated, 'update');
-//   const tokenInfos = useTokenInfos();
-//   return getTokenInfo(mint, endpoint, tokenInfos);
-// }
-
-// export function TokenRegistryProvider(props) {
-//   const { endpoint } = useConnectionConfig();
-//   const [tokenInfos, setTokenInfos] = useState(null);
-//   useEffect(() => {
-//     const tokenListProvider = new TokenListProvider();
-//     tokenListProvider.resolve().then((tokenListContainer) => {
-//       const cluster = clusterForEndpoint(endpoint);
-
-//       const filteredTokenListContainer = tokenListContainer?.filterByClusterSlug(
-//         cluster?.name,
-//       );
-//       const tokenInfos =
-//         tokenListContainer !== filteredTokenListContainer
-//           ? filteredTokenListContainer?.getList()
-//           : null; // Workaround for filter return all on unknown slug
-//       setTokenInfos(tokenInfos);
-//     });
-//   }, [endpoint]);
-
-//   return (
-//     <TokenListContext.Provider value={{ tokenInfos }}>
-//       {props.children}
-//     </TokenListContext.Provider>
-//   );
-// }
-
-// const customTokenNamesByNetwork = JSON.parse(
-//   localStorage.getItem('tokenNames') ?? '{}',
-// );
-
-// export function getTokenInfo(mint, endpoint, tokenInfos) {
-//   if (!mint) {
-//     return { name: null, symbol: null };
-//   }
-
-//   let info = customTokenNamesByNetwork?.[endpoint]?.[mint.toBase58()];
-//   let match = tokenInfos?.find(
-//     (tokenInfo) => tokenInfo.address === mint.toBase58(),
-//   );
-//   if (match) {
-//     if (!info) {
-//       info = { ...match, logoUri: match.logoURI };
-//     }
-//     // The user has overridden a name locally.
-//     else {
-//       info = { ...info, logoUri: match.logoURI };
-//     }
-//   }
-//   return { ...info };
-// }
 
 export function useBalanceInfo(publicKey) {
   const { data: accountInfo, isLoading: accountInfoLoading } =
