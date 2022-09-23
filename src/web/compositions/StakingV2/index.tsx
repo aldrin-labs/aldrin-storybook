@@ -97,12 +97,9 @@ const Block: React.FC<StakingPageProps> = (props) => {
     farm?.stakeVaultDecimals
   )
 
-  const totalStakedWithDecimalsInUSD =
-    totalStakedWithDecimals * (dexTokensPricesMap.get('RIN')?.price || 0)
-
   const stakedPercentage =
-    (totalStakedWithDecimalsInUSD /
-      (getStakingInfo?.supply || totalStakedWithDecimalsInUSD)) *
+    (totalStakedWithDecimals /
+      (getStakingInfo?.supply || totalStakedWithDecimals)) *
     100
 
   useEffect(() => {
