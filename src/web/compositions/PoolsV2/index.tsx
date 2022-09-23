@@ -5,7 +5,7 @@ import { Page } from '@sb/components/Layout'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { RIN_MINT } from '@core/solana'
+import { buildTransactions, RIN_MINT } from '@core/solana'
 import { buildCreatePoolInstruction } from '@core/solana/programs/amm/instructions/createPoolTransaction'
 
 import { ConnectWalletPopup } from '../Chart/components/ConnectWalletPopup/ConnectWalletPopup'
@@ -31,6 +31,8 @@ import {
   SButton,
   FilterRow,
 } from './index.styles'
+import { createPoolTransaction } from '@core/solana/programs/amm/instructions/createPoolTransaction2'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 
 export const PoolsComponent: React.FC = () => {
   const [tableView, setTableView] = useState('classicLiquidity')
@@ -41,7 +43,7 @@ export const PoolsComponent: React.FC = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
-  const wallet = useWallet()
+  const { wallet } = useWallet()
   const connection = useConnection()
   const positionsAmount = 2
   const showPositionsChart =
@@ -57,24 +59,31 @@ export const PoolsComponent: React.FC = () => {
   const isUserHavePositions = true
   const isUserHavePools = true
 
-  useEffect(() => {
-    const getData = async () => {
-      const createPool = await buildCreatePoolInstruction({
-        wallet,
-        connection,
-        amplifier: 0,
-        baseTokenMint: new PublicKey(RIN_MINT),
-        quoteTokenMint: new PublicKey(RIN_MINT),
-      })
-      // const pool = await loadPoolData({ connection, wallet })
-      // const programToll = await loadProgramToll({ connection, wallet })
-      // console.log({ pool, programToll })
-      // return pool
-      console.log({ createPool })
-    }
+  const createPool = async () => {
+    const createPool = await createPoolTransaction({
+      wallet,
+      connection,
+      amplifier: 0,
+      tokenMintA: RIN_MINT,
+      tokenMintB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    })
 
-    getData()
-  }, [])
+    console.log({ createPool })
+
+    const ts = buildTransactions(
+      createPool.instructions.map((instr) => ({ instruction: instr })),
+      wallet.publicKey,
+      createPool.signers
+    )
+
+    const signedTs = await signAndSendTransactions({
+      transactionsAndSigners: ts,
+      wallet,
+      connection,
+    })
+
+    console.log({ signedTs })
+  }
 
   return (
     <Page>
@@ -99,7 +108,10 @@ export const PoolsComponent: React.FC = () => {
               Aldrin Pools Guide
             </SButton>
             <SButton
-              onClick={() => setIsCreatPoolPopupOpen(true)}
+              onClick={() =>
+                // setIsCreatPoolPopupOpen(true)
+                createPool()
+              }
               $borderRadius="md"
               $width="rg"
               $variant="violet"
