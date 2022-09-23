@@ -105,7 +105,7 @@ export const StretchedRow = styled(RootRow)`
   @media (max-width: ${BREAKPOINTS.md}) {
     width: 100%;
     flex-direction: column;
-    height: 40em;
+    height: 100%;
 
     .iconColumn {
       position: relative;
