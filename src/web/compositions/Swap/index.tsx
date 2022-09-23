@@ -54,27 +54,32 @@ import SettingIcon from '@icons/settings.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { ArrowsExchangeIcon } from './components/Inputs/images/arrowsExchangeIcon'
-import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
+import { SwapAmountInput, TokenSelector } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapSearch } from './components/SwapSearch'
 import { SwapSettingsPopup } from './components/SwapSettingsPopup'
 import { getDefaultBaseToken, getDefaultQuoteToken } from './config'
 import {
-  SwapPageContainer,
-  SwapContentContainer,
-  SwapBlockTemplate,
-  SwapPageLayout,
-  ReverseTokensContainer,
-  SwapButton,
   BlackRow,
+  DropdownIconContainer,
+  FailedButtonsRow,
+  ReverseTokensContainer,
+  RightColumn,
   RowImpactTitle,
   SlippageButton,
-  RightColumn,
+  SwapBlockTemplate,
+  SwapButton,
+  SwapContentContainer,
+  SwapPageContainer,
+  SwapPageLayout,
   TextButton,
-  FailedButtonsRow,
-  DropdownIconContainer,
 } from './styles'
-import { getEstimatedPrice, getSwapButtonText } from './utils'
+import {
+  getEstimatedPrice,
+  getSwapButtonText,
+  getEstimatedPrice,
+  getSwapButtonText,
+} from './utils'
 
 const SwapPage = ({
   getPoolsInfoQuery,

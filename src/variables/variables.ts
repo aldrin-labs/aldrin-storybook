@@ -1,7 +1,8 @@
-export const MAIN_FONT = 'Avenir Next'
+export const MAIN_FONT = 'Prompt'
+export const SECOND_FONT = 'Syncopate'
 export const FONTS = {
-  main: `${MAIN_FONT}, sans-serif;`,
-  demi: `${MAIN_FONT} Demi, sans-serif`,
+  main: `${MAIN_FONT}`,
+  demi: `${MAIN_FONT}`,
 }
 
 export const COLORS = {
@@ -105,7 +106,7 @@ export const UCOLORS = {
   blue1: '#B4B1F9FF',
   blue0: '#E7E6FDFF',
   gray9: '#0B0B12FF',
-  gray8: '#14131FFF',
+  white5: '#14131FFF',
   gray7: '#181824FF',
   gray6: '#212030FF',
   gray5: '#2F2F40FF',
@@ -122,6 +123,7 @@ export const BORDER_RADIUS = {
   xs: '2px',
   sm: '4px',
   md: '8px',
+  rg: '11px',
   lg: '16px',
   xl: '32px',
   xxl: '56px',
@@ -158,6 +160,7 @@ export const SIZE = {
 
 export const WIDTH = {
   sm: '10%',
+  qu: '20%',
   md: '30%',
   xmd: '40%',
   hf: '50%',

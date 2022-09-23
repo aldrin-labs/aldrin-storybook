@@ -48,15 +48,15 @@ export const Button = styled.button<StyledSwitcher>`
 export const BlockWithRadio = styled.div<RadioContainer>`
   position: relative;
   width: ${(props) => props.width || '48%'};
-  background-color: ${(props) => props.theme.colors.white4 || 'transparent'};
+  background-color: ${(props) => props.theme.colors.white6 || 'transparent'};
   display: flex;
   padding: 1.5rem;
   flex-direction: column;
   justify-content: space-between;
   border: ${(props) =>
     props.checked
-      ? `0.1rem solid ${props.theme.colors.green3}`
-      : `0.1rem solid ${props.theme.colors.white4}`};
+      ? `0.1rem solid ${props.theme.colors.green2}`
+      : `0.1rem solid ${props.theme.colors.white5}`};
   border-radius: 8px;
   height: ${(props) => props.height || '10rem'};
   margin: ${(props) => props.margin || '0'};

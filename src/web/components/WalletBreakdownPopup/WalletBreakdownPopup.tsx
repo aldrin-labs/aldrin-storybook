@@ -205,20 +205,16 @@ const WalletBreakdownPopup = ({
         <PrimaryCardTop>
           <PrimaryCardTopLeft>
             <Wallet>
-              <SvgIcon
-                src={wallet.icon}
-                width="1em"
-                height="100%"
-              />
+              <SvgIcon src={wallet.icon} width="1em" height="100%" />
               <WalletName>
-                {formatSymbol({ symbol: wallet.publicKey.toString() })}
+                {formatSymbol({ symbol: wallet?.publicKey.toString() })}
               </WalletName>
             </Wallet>
           </PrimaryCardTopLeft>
           <PrimaryCardTopRight>
             <CopyButton
               onClick={() => {
-                copy(wallet.publicKey.toString())
+                copy(wallet?.publicKey.toString())
                 enqueueSnackbar('Wallet address copied to the clipboard', {
                   variant: 'success',
                 })

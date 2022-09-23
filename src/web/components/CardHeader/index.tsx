@@ -1,7 +1,8 @@
-import React from 'react'
-import { withStyles, CardHeader, createStyles, Theme } from '@material-ui/core'
+import { withStyles, createStyles, Theme } from '@material-ui/core'
 import { CardHeaderProps } from '@material-ui/core/CardHeader'
 import { fade } from '@material-ui/core/styles/colorManipulator'
+import React from 'react'
+
 import { CardHeaderCustom } from './CardHeader.styles.tsx'
 
 const styles = (theme: Theme) =>

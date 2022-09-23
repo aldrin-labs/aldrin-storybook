@@ -52,9 +52,10 @@ export const TwitterIcon = () => {
   )
 }
 
-export const LinkToTwitter = () => {
+export const LinkToTwitter = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href={socialLinks.twitter}
@@ -93,9 +94,10 @@ export const DiscordIcon = () => {
   )
 }
 
-export const LinkToDiscord = () => {
+export const LinkToDiscord = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href={socialLinks.discord}
@@ -246,9 +248,10 @@ export const CoinMarketcapIcon = () => {
   )
 }
 
-export const LinkToCoinMarketcap = () => {
+export const LinkToCoinMarketcap = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href={socialLinks.coinmarketcap}
