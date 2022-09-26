@@ -21,7 +21,7 @@ export const getRegionData = async () => {
             obj[splittedPair[0]] = splittedPair[1]
             return obj
           }, {})
-
+        console.log({ result })
         if (restrictedContriesCodes.includes(result.loc)) {
           Metrics.sendMetrics({
             metricName: `user.restricted_region_access.${result.loc}`,
