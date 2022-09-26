@@ -2,18 +2,13 @@ import React, { useState, useEffect } from 'react'
 
 import { Redirect } from '@sb/components/Redirect'
 
-import { sleep } from '@core/utils/helpers'
 import { Metrics } from '@core/utils/metrics'
 
-const restrictedContriesCodes = ['IR', 'KP', 'YE', 'VE', 'YV', 'SD', 'SO']
+const restrictedContriesCodes = ['US']
 
-const getRegionData = async ({
-  setIsFromRestrictedRegion,
-}: {
-  setIsFromRestrictedRegion: (value: boolean) => void
-}) => {
+export const getRegionData = async () => {
   try {
-    await fetch('https://www.cloudflare.com/cdn-cgi/trace')
+    const result = await fetch('https://www.cloudflare.com/cdn-cgi/trace')
       .then((res) => {
         return res.text()
       })
@@ -26,19 +21,23 @@ const getRegionData = async ({
             obj[splittedPair[0]] = splittedPair[1]
             return obj
           }, {})
-
+        console.log({ result })
         if (restrictedContriesCodes.includes(result.loc)) {
           Metrics.sendMetrics({
             metricName: `user.restricted_region_access.${result.loc}`,
           })
-          setIsFromRestrictedRegion(true)
+          return true
         }
+
+        return false
       })
+    return result
   } catch (e) {
     console.error('getRegionData error:', e)
-    await sleep(2000).then(() => {
-      getRegionData({ setIsFromRestrictedRegion })
-    })
+    return false
+    // await sleep(2000).then(() => {
+    //   getRegionData({ setIsFromRestrictedRegion })
+    // })
   }
 }
 
@@ -48,7 +47,11 @@ export function withRegionCheck(Component: React.ComponentType<any>) {
       useState<boolean>(false)
 
     useEffect(() => {
-      getRegionData({ setIsFromRestrictedRegion })
+      const getIsRegionRestricted = async () => {
+        const isRegionRestricted = await getRegionData()
+        setIsFromRestrictedRegion(isRegionRestricted)
+      }
+      getIsRegionRestricted()
     }, [setIsFromRestrictedRegion])
 
     if (isFromRestrictedRegion) {
