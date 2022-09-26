@@ -28,7 +28,8 @@ export const UnstakeContainer = ({
   loading: boolean
 }) => {
   const wallet = useWallet()
-
+  const isMaxAmount = unstakeAmount === stripByAmount(maxAmount)
+  const amountToUnstake = isMaxAmount ? +maxAmount : unstakeAmount
   return (
     <InputsContainer margin="0">
       <FirstInputContainer>
@@ -54,7 +55,7 @@ export const UnstakeContainer = ({
         onClick={() =>
           !wallet.connected
             ? setIsConnectWalletPopupOpen(true)
-            : end(unstakeAmount)
+            : end(amountToUnstake)
         }
         disabled={
           wallet.connected &&

@@ -28,7 +28,8 @@ export const StakeContainer = ({
   loading: boolean
 }) => {
   const wallet = useWallet()
-
+  const isMaxAmount = stakeAmount === stripByAmount(maxAmount)
+  const amountToStake = isMaxAmount ? +maxAmount : stakeAmount
   return (
     <InputsContainer>
       <FirstInputContainer>
@@ -57,7 +58,7 @@ export const StakeContainer = ({
         onClick={() =>
           !wallet.connected
             ? setIsConnectWalletPopupOpen(true)
-            : start(stakeAmount)
+            : start(amountToStake)
         }
         $variant="violet"
         $width="xl"
