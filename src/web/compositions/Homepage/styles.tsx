@@ -4,6 +4,10 @@ import styled from 'styled-components'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+type StyledLinkProps = {
+  margin?: string
+}
+
 export const TextContainer = styled(RowContainer)`
   position: absolute;
   justify-content: space-between;
@@ -246,10 +250,11 @@ export const StyledPicture = styled.picture`
   height: 100%;
 `
 
-export const StyledLink = styled.a`
+export const StyledLink = styled.a<StyledLinkProps>`
   width: 36px;
   height: 36px;
   transition: ${TRANSITION};
+  margin: ${(props) => props.margin || '0'};
 
   &:hover {
     svg path:not(.not-fill) {

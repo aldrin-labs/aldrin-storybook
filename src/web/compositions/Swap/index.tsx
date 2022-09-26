@@ -16,7 +16,6 @@ import { Toast } from '@sb/components/Toast/Toast'
 import { InlineText } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
-import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
   getTokenMintAddressByName,
@@ -35,11 +34,7 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
-import {
-  walletAdapterToWallet,
-  getTokenDataByMint,
-  RIN_MINT,
-} from '@core/solana'
+import { walletAdapterToWallet, getTokenDataByMint } from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -53,34 +48,38 @@ import {
   removeDecimalsFromBN,
 } from '@core/utils/helpers'
 import { Metrics } from '@core/utils/metrics'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import HalfArrowsIcon from '@icons/halfArrows.svg'
 import SettingIcon from '@icons/settings.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { ArrowsExchangeIcon } from './components/Inputs/images/arrowsExchangeIcon'
-import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
+import { SwapAmountInput, TokenSelector } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapSearch } from './components/SwapSearch'
 import { SwapSettingsPopup } from './components/SwapSettingsPopup'
 import { getDefaultBaseToken, getDefaultQuoteToken } from './config'
 import {
-  SwapPageContainer,
-  SwapContentContainer,
-  SwapBlockTemplate,
-  SwapPageLayout,
-  ReverseTokensContainer,
-  SwapButton,
   BlackRow,
+  DropdownIconContainer,
+  FailedButtonsRow,
+  ReverseTokensContainer,
+  RightColumn,
   RowImpactTitle,
   SlippageButton,
-  RightColumn,
+  SwapBlockTemplate,
+  SwapButton,
+  SwapContentContainer,
+  SwapPageContainer,
+  SwapPageLayout,
   TextButton,
-  FailedButtonsRow,
-  DropdownIconContainer,
 } from './styles'
-import { getEstimatedPrice, getSwapButtonText } from './utils'
+import {
+  getEstimatedPrice,
+  getSwapButtonText,
+  getEstimatedPrice,
+  getSwapButtonText,
+} from './utils'
 
 const SwapPage = ({
   getPoolsInfoQuery,
@@ -194,11 +193,6 @@ const SwapPage = ({
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
   const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
 
-  const { pricesMap: coingeckoPricesMap } = useCoingeckoPrices([
-    inputSymbol,
-    outputSymbol,
-  ])
-
   const {
     mints: tokenSelectorMints,
     swapRoute,
@@ -226,31 +220,8 @@ const SwapPage = ({
 
   const outputDexTokenPrice = dexTokensPricesMap.get(outputSymbol) || 0
 
-  const inputCgcTokenPrice =
-    coingeckoPricesMap.get(inputSymbol.toUpperCase()) || 0
-  const outputCgcTokenPrice =
-    coingeckoPricesMap.get(outputSymbol.toUpperCase()) || 0
-
-  const estimatedPrice = inputCgcTokenPrice / outputCgcTokenPrice
-  const estimatedPriceFromRoute = +outputAmount / +inputAmount
-
-  const pricesDiffPct = stripDigitPlaces(
-    ((estimatedPriceFromRoute - estimatedPrice) / estimatedPrice) * 100,
-    2
-  )
   const isHighPriceImpact = swapRoute.priceImpact > 2
-
-  const isHighPriceDiff =
-    inputTokenMintAddress === RIN_MINT || outputTokenMintAddress === RIN_MINT
-      ? isHighPriceImpact
-      : pricesDiffPct < -1
-
-  const priceDiffText =
-    pricesDiffPct > 0
-      ? `${pricesDiffPct}% cheaper than`
-      : pricesDiffPct < -1
-      ? `${-pricesDiffPct}% more expensive than`
-      : `Within 1% of `
+  const isHighPriceDiff = isHighPriceImpact
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -322,7 +293,7 @@ const SwapPage = ({
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
-    pricesDiffPct: isHighPriceDiff ? +pricesDiffPct : 0,
+    pricesDiffPct: 0,
     swapStatus,
   })
 

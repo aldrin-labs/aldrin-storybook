@@ -10,7 +10,7 @@ import { ContentBlockProps } from './types'
 export const StakingBlock = styled(Block)`
   display: flex;
   flex-direction: column;
-  background: ${(props) => props.theme.colors.white5};
+  background: ${(props) => props.theme.colors.white6};
   @media (max-width: ${BREAKPOINTS.md}) {
     margin: 8px 15px;
   }
@@ -29,7 +29,7 @@ export const ContentBlock = styled.div<ContentBlockProps>`
   padding: 1em;
   flex-direction: column;
   justify-content: space-between;
-  background: ${(props) => props.theme.colors[props.background || 'white4']};
+  background: ${(props) => props.theme.colors[props.background || 'white5']};
   border-radius: ${BORDER_RADIUS.md};
 `
 

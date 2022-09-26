@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
-import { Block, BlockContent } from '@sb/components/Block'
+import { BlockContent } from '@sb/components/Block'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   dayDuration,
@@ -19,7 +19,13 @@ import { getRandomInt } from '@core/utils/helpers'
 import { useThemeName } from '../../../App/themes'
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
-import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
+import {
+  Canvas,
+  SubTitle,
+  TitleContainer,
+  DataContainer,
+  SBlock,
+} from './styles'
 import { TotalVolumeLockedChartProps } from './types'
 import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
@@ -93,7 +99,7 @@ const TotalVolumeLockedChartInner = compose(
 
 export const TotalVolumeLockedChart: React.FC = () => {
   return (
-    <Block>
+    <SBlock>
       <BlockContent>
         <TitleContainer>
           <SubTitle>Total Value Locked</SubTitle>
@@ -108,6 +114,6 @@ export const TotalVolumeLockedChart: React.FC = () => {
           <TotalVolumeLockedChartInner />
         </DataContainer>
       </BlockContent>
-    </Block>
+    </SBlock>
   )
 }

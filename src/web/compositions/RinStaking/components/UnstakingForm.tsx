@@ -19,16 +19,7 @@ import { UnStakingFormButton } from './styles'
 import { StakingFormProps } from './types'
 
 export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
-  const {
-    totalStaked,
-    loading,
-    end,
-    isUnstakeLocked,
-    unlockAvailableDate,
-    mint,
-  } = props
-
-  const now = Date.now() / 1000
+  const { totalStaked, loading, end, isUnstakeLocked, mint, tokenPrice } = props
 
   const form = useFormik({
     validateOnMount: true,
@@ -57,17 +48,15 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
   })
 
   const isUnstakeDisabled =
-    !form.isValid ||
-    isUnstakeLocked ||
-    totalStaked === 0 ||
-    loading.unstake ||
-    unlockAvailableDate > now
+    !form.isValid || isUnstakeLocked || totalStaked === 0 || loading.unstake
+  const usdAmountValue = +form.values.amount * tokenPrice
 
   return (
     <UnstakingFormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
           <AmountInput
+            usdValue={usdAmountValue}
             data-testid="rin-unstaking-amount-field"
             placeholder="0"
             amount={totalStaked}
