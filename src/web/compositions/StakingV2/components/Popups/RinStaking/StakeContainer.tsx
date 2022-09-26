@@ -19,6 +19,7 @@ export const StakeContainer = ({
   stakeAmount,
   maxAmount,
   loading,
+  isRegionRestricted,
 }: {
   setIsConnectWalletPopupOpen: (a: boolean) => void
   start: (a: number) => void
@@ -26,10 +27,15 @@ export const StakeContainer = ({
   stakeAmount: number
   maxAmount: number | string
   loading: boolean
+  isRegionRestricted: boolean
 }) => {
   const wallet = useWallet()
   const isMaxAmount = stakeAmount === stripByAmount(maxAmount)
   const amountToStake = isMaxAmount ? +maxAmount : stakeAmount
+  const disabled =
+    (wallet.connected &&
+      (stakeAmount === 0 || stakeAmount === '' || loading)) ||
+    isRegionRestricted
   return (
     <InputsContainer>
       <FirstInputContainer>
@@ -51,10 +57,7 @@ export const StakeContainer = ({
         />
       </FirstInputContainer>
       <Button
-        disabled={
-          wallet.connected &&
-          (stakeAmount === 0 || stakeAmount === '' || loading)
-        }
+        disabled={disabled}
         onClick={() =>
           !wallet.connected
             ? setIsConnectWalletPopupOpen(true)
