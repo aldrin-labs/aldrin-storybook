@@ -29,6 +29,7 @@ import {
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 
 import { getStakingInfo } from '@core/graphql/queries/staking/getStakingInfo'
 import { Farm, RIN_MINT, FARMING_V2_TOKEN } from '@core/solana'
@@ -68,6 +69,7 @@ export const RinStakingComp = ({
   const [isBalanceShowing, setIsBalanceShowing] = useState(true)
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
   const { wallet } = useWallet()
+  const isRegionRestricted = useRegionRestriction()
 
   const connection = useMultiEndpointConnection()
 
@@ -211,6 +213,7 @@ export const RinStakingComp = ({
         <Column height="calc(100% - 10em)" margin="0 0 3em">
           <Column height="auto" width="100%">
             <StakeContainer
+              isRegionRestricted={isRegionRestricted}
               loading={loading.stake}
               stakeAmount={stakeAmount}
               setStakeAmount={setStakeAmount}
