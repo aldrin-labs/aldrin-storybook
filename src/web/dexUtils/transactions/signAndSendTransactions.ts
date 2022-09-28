@@ -58,6 +58,7 @@ export const signAndSendTransactions = async (
       successMessage,
       commitment,
       onStatusChange,
+      skipPreflight: true,
     })
   } catch (e: any) {
     console.warn('transaction failed: ', e)

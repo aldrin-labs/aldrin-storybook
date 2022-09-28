@@ -1,27 +1,47 @@
-import { buildTransactions } from '@core/solana'
-import { buildCreatePoolInstruction } from '@core/solana/programs/amm/instructions/createPoolTransaction'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 
-import { walletAdapterToWallet } from '../../common'
-import { signAndSendTransactions } from '../../transactions'
+import {
+  AldrinConnection,
+  AuthorizedWalletAdapter,
+  buildTransactions,
+  walletAdapterToWallet,
+} from '@core/solana'
+import { createPoolTransaction } from '@core/solana/programs/amm/instructions/createPoolTransaction'
 
-export const initializeFarmingV2 = async (params: any) => {
-  const { connection } = params
-  const wallet = walletAdapterToWallet(params.wallet)
-
-  const { instructions, signers } = await buildCreatePoolInstruction({
-    ...params,
-    wallet,
-  })
-
-  const transactionsAndSigners = buildTransactions(
-    instructions.map((instruction) => ({ instruction })),
-    wallet.publicKey,
-    signers
-  )
-
-  return signAndSendTransactions({
+export const createPool = async ({
+  wallet,
+  connection,
+  amplifier,
+  tokenMintA,
+  tokenMintB,
+}: {
+  wallet: AuthorizedWalletAdapter
+  connection: AldrinConnection
+  amplifier: number
+  tokenMintA: string
+  tokenMintB: string
+}) => {
+  const createPoolInstructions = await createPoolTransaction({
     wallet,
     connection,
-    transactionsAndSigners,
+    amplifier,
+    tokenMintA,
+    tokenMintB,
   })
+
+  const walletWithPk = walletAdapterToWallet(wallet)
+
+  const tx = buildTransactions(
+    createPoolInstructions.instructions.map((instruction) => ({ instruction })),
+    walletWithPk.publicKey,
+    createPoolInstructions.signers
+  )
+
+  const result = await signAndSendTransactions({
+    transactionsAndSigners: tx,
+    connection,
+    wallet: walletWithPk,
+  })
+
+  return result
 }

@@ -1,12 +1,14 @@
-import { PublicKey } from '@solana/web3.js'
+import { BN } from 'bn.js'
 import React, { useEffect, useState } from 'react'
 
 import { Page } from '@sb/components/Layout'
 import { useConnection } from '@sb/dexUtils/connection'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { buildTransactions, RIN_MINT } from '@core/solana'
-import { buildCreatePoolInstruction } from '@core/solana/programs/amm/instructions/createPoolTransaction'
+import { buildTransactions } from '@core/solana'
+import { loadPoolData } from '@core/solana/programs/amm/fetchers/loadPool'
+import { depositLiquidityPoolTransaction } from '@core/solana/programs/amm/instructions/depositLiquidityTransaction'
 
 import { ConnectWalletPopup } from '../Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { TVLChart, VolumeChart } from './components/Charts'
@@ -31,8 +33,6 @@ import {
   SButton,
   FilterRow,
 } from './index.styles'
-import { createPoolTransaction } from '@core/solana/programs/amm/instructions/createPoolTransaction2'
-import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 
 export const PoolsComponent: React.FC = () => {
   const [tableView, setTableView] = useState('classicLiquidity')
@@ -60,30 +60,34 @@ export const PoolsComponent: React.FC = () => {
   const isUserHavePools = true
 
   const createPool = async () => {
-    const createPool = await createPoolTransaction({
+    const poolsData = await loadPoolData({ wallet, connection })
+    const pool = poolsData.filter((p) => {
+      return p.account.admin.toString() === wallet.publicKey.toString()
+    })[0]
+
+    const depositLiquidity = await depositLiquidityPoolTransaction({
       wallet,
       connection,
-      amplifier: 0,
-      tokenMintA: RIN_MINT,
-      tokenMintB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      maxAmountTokens: new BN(0.001),
+      pool,
     })
 
-    console.log({ createPool })
-
-    const ts = buildTransactions(
-      createPool.instructions.map((instr) => ({ instruction: instr })),
+    const tx = buildTransactions(
+      depositLiquidity.instructions.map((instruction) => ({ instruction })),
       wallet.publicKey,
-      createPool.signers
+      depositLiquidity.signers
     )
 
-    const signedTs = await signAndSendTransactions({
-      transactionsAndSigners: ts,
+    const status = await signAndSendTransactions({
+      transactionsAndSigners: tx,
       wallet,
       connection,
     })
 
-    console.log({ signedTs })
+    console.log({ status })
   }
+
+  // VaC2ZcdAdaqhBMH3rkC9ZdvPrgQBhvp5smnmD7Hm71
 
   return (
     <Page>
@@ -115,6 +119,7 @@ export const PoolsComponent: React.FC = () => {
               $borderRadius="md"
               $width="rg"
               $variant="violet"
+              disabled={!wallet.connected}
             >
               <PlusIcon />
               Create Pool
