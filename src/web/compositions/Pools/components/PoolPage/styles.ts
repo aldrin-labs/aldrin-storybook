@@ -359,3 +359,6 @@ export const TooltipText = styled(Text)`
 export const Link = styled.a`
   color: ${(props) => props.theme.colors.blue3};
 `
+export const SpanContainer = styled.span`
+  width: 100%;
+`

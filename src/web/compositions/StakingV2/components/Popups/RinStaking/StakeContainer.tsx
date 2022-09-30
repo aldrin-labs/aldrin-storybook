@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -10,7 +11,11 @@ import { stripByAmount } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../Inputs'
 import { Container } from '../index.styles'
-import { FirstInputContainer, InputsContainer } from './index.styles'
+import {
+  FirstInputContainer,
+  InputsContainer,
+  SpanContainer,
+} from './index.styles'
 
 export const StakeContainer = ({
   setIsConnectWalletPopupOpen,
@@ -56,20 +61,30 @@ export const StakeContainer = ({
           }
         />
       </FirstInputContainer>
-      <Button
-        disabled={disabled}
-        onClick={() =>
-          !wallet.connected
-            ? setIsConnectWalletPopupOpen(true)
-            : start(amountToStake)
+      <DarkTooltip
+        title={
+          wallet.connected && isRegionRestricted
+            ? "Sorry, Aldrin.com doesn't offer its services in your region."
+            : ''
         }
-        $variant="violet"
-        $width="xl"
-        $padding="xxxl"
-        $fontSize="md"
       >
-        {!wallet.connected ? 'Connect Wallet to Stake RIN' : <>Stake RIN</>}
-      </Button>
+        <SpanContainer>
+          <Button
+            disabled={disabled}
+            onClick={() =>
+              !wallet.connected
+                ? setIsConnectWalletPopupOpen(true)
+                : start(amountToStake)
+            }
+            $variant="violet"
+            $width="xl"
+            $padding="xxxl"
+            $fontSize="md"
+          >
+            {!wallet.connected ? 'Connect Wallet to Stake RIN' : <>Stake RIN</>}
+          </Button>
+        </SpanContainer>
+      </DarkTooltip>
     </InputsContainer>
   )
 }

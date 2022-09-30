@@ -130,3 +130,7 @@ export const SRow = styled(Row)`
     }
   }
 `
+
+export const SpanContainer = styled.span`
+  width: 100%;
+`

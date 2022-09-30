@@ -17,6 +17,7 @@ import {
   LiquidityItem,
   LiquidityText,
   LiquidityTitle,
+  SpanContainer,
 } from './styles'
 import { UserLiquidityBlockProps } from './types'
 
@@ -102,14 +103,24 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
             ${stripByAmountAndFormat(userLiquidityUsd, 2)}
           </LiquidityText>
         </div>
-        <LiquidityButton
-          disabled={processing || isRegionRestricted}
-          $loading={processing}
-          $variant="rainbow"
-          onClick={onDepositClick}
+        <DarkTooltip
+          title={
+            isRegionRestricted
+              ? "Sorry, Aldrin.com doesn't offer its services in your region."
+              : ''
+          }
         >
-          Deposit Liquidity
-        </LiquidityButton>
+          <SpanContainer>
+            <LiquidityButton
+              disabled={processing || isRegionRestricted}
+              $loading={processing}
+              $variant="rainbow"
+              onClick={onDepositClick}
+            >
+              Deposit Liquidity
+            </LiquidityButton>
+          </SpanContainer>
+        </DarkTooltip>
       </LiquidityItem>
       <LiquidityItem>
         <LiquidityTitle>Fees Earned:</LiquidityTitle>
