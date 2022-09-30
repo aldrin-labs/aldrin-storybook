@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -10,7 +11,11 @@ import { stripByAmount } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../Inputs'
 import { Container } from '../index.styles'
-import { FirstInputContainer, InputsContainer } from './index.styles'
+import {
+  FirstInputContainer,
+  InputsContainer,
+  SpanContainer,
+} from './index.styles'
 
 export const StakeContainer = ({
   setIsConnectWalletPopupOpen,
@@ -19,6 +24,7 @@ export const StakeContainer = ({
   stakeAmount,
   maxAmount,
   loading,
+  isRegionRestricted,
 }: {
   setIsConnectWalletPopupOpen: (a: boolean) => void
   start: (a: number) => void
@@ -26,9 +32,15 @@ export const StakeContainer = ({
   stakeAmount: number
   maxAmount: number | string
   loading: boolean
+  isRegionRestricted: boolean
 }) => {
   const wallet = useWallet()
-
+  const isMaxAmount = stakeAmount === stripByAmount(maxAmount)
+  const amountToStake = isMaxAmount ? +maxAmount : stakeAmount
+  const disabled =
+    (wallet.connected &&
+      (stakeAmount === 0 || stakeAmount === '' || loading)) ||
+    isRegionRestricted
   return (
     <InputsContainer>
       <FirstInputContainer>
@@ -49,23 +61,30 @@ export const StakeContainer = ({
           }
         />
       </FirstInputContainer>
-      <Button
-        disabled={
-          wallet.connected &&
-          (stakeAmount === 0 || stakeAmount === '' || loading)
+      <DarkTooltip
+        title={
+          wallet.connected && isRegionRestricted
+            ? "Sorry, Aldrin.com doesn't offer its services in your region."
+            : ''
         }
-        onClick={() =>
-          !wallet.connected
-            ? setIsConnectWalletPopupOpen(true)
-            : start(stakeAmount)
-        }
-        $variant="violet"
-        $width="xl"
-        $padding="xxxl"
-        $fontSize="md"
       >
-        {!wallet.connected ? 'Connect Wallet to Stake RIN' : <>Stake RIN</>}
-      </Button>
+        <SpanContainer>
+          <Button
+            disabled={disabled}
+            onClick={() =>
+              !wallet.connected
+                ? setIsConnectWalletPopupOpen(true)
+                : start(amountToStake)
+            }
+            $variant="violet"
+            $width="xl"
+            $padding="xxxl"
+            $fontSize="md"
+          >
+            {!wallet.connected ? 'Connect Wallet to Stake RIN' : <>Stake RIN</>}
+          </Button>
+        </SpanContainer>
+      </DarkTooltip>
     </InputsContainer>
   )
 }

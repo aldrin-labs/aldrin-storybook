@@ -13,6 +13,7 @@ import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 import { uniq } from '@sb/utils/collection'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
@@ -87,7 +88,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   } = props
   const tokensInfo = useTokenInfos()
   const { wallet } = useWallet()
-
+  const isRegionRestricted = useRegionRestriction()
   const [farmingExtending, setFarmingExtending] = useState(false)
   const [extendFarmingModalOpen, setExtendFarmingModalOpen] = useState(false)
 
@@ -204,9 +205,11 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     farmings.map((fs) => getTokenNameByMintAddress(fs.farmingTokenMint))
   ).join(' and ')
 
-  const showTooltip = !hasUnstaked && !hasStaked
+  const showTooltip = (!hasUnstaked && !hasStaked) || isRegionRestricted
   const tooltipText = showTooltip
-    ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+    ? isRegionRestricted
+      ? "Sorry, Aldrin.com doesn't offer its services in your region."
+      : `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
     : null
 
   const farmingRemain = farmings.reduce((acc, fs) => {
@@ -358,7 +361,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 <DarkTooltip title={tooltipText}>
                   <span>
                     <FarmingButton
-                      disabled={!hasUnstaked || processing || !hasFarming}
+                      disabled={
+                        !hasUnstaked ||
+                        processing ||
+                        !hasFarming ||
+                        isRegionRestricted
+                      }
                       $loading={processing}
                       onClick={onStakeClick}
                       $variant="rainbow"
