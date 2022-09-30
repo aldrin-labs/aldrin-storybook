@@ -3,9 +3,11 @@ import React, { useState } from 'react'
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { Pool } from '@sb/dexUtils/amm/types'
+import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { RIN_MINT } from '@core/solana'
+import { getTokenDataByMint, RIN_MINT } from '@core/solana'
 
 import { PlusIcon } from '../../Icons'
 import { DepositLiquidity } from '../DepositLiquidity'
@@ -17,14 +19,39 @@ import { PoolsChart } from './Chart'
 export const PoolsDetails = ({
   onClose,
   open,
+  pool,
+  allTokensData,
 }: {
   onClose: () => void
   open: boolean
+  pool: Pool
+  allTokensData: TokenInfo[]
 }) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
   const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false)
   const wallet = useWallet()
+
+  const {
+    address: userTokenAccountA,
+    amount: maxBaseAmount,
+    decimals: baseTokenDecimals,
+  } = getTokenDataByMint(
+    allTokensData,
+    pool.account.reserves[0].mint.toString()
+    // selectedBaseTokenAddressFromSeveral
+  )
+
+  const {
+    address: userTokenAccountB,
+    amount: maxQuoteAmount,
+    decimals: quoteTokenDecimals,
+  } = getTokenDataByMint(
+    allTokensData,
+    pool.account.reserves[1].mint.toString()
+    // selectedQuoteTokenAddressFromSeveral
+  )
+
   return (
     <StyledModal>
       <Modal open={open} onClose={onClose}>
@@ -61,6 +88,14 @@ export const PoolsDetails = ({
         </Row>
       </Modal>
       <DepositLiquidity
+        needBlur={false}
+        pool={pool}
+        userTokenAccountA={userTokenAccountA}
+        userTokenAccountB={userTokenAccountB}
+        baseTokenDecimals={baseTokenDecimals}
+        quoteTokenDecimals={quoteTokenDecimals}
+        maxBaseAmount={maxBaseAmount}
+        maxQuoteAmount={maxQuoteAmount}
         open={isDepositPopupOpen}
         onClose={() => {
           setIsDepositPopupOpen(false)

@@ -1,4 +1,9 @@
+import { TokenInfo } from '@aldrin_exchange/swap_hook'
 import React, { useState } from 'react'
+
+import { Pool } from '@sb/dexUtils/amm/types'
+
+import { getTokenDataByMint } from '@core/solana'
 
 import { RootRow } from '../../index.styles'
 import { BoostAPRModal } from '../Popups/BoostAPR'
@@ -42,7 +47,13 @@ const userPools = [
   },
 ]
 
-export const PoolInfo = () => {
+export const PoolInfo = ({
+  pool,
+  allTokensData,
+}: {
+  pool: Pool
+  allTokensData: TokenInfo[]
+}) => {
   const [isLaunchFarmingModalOpen, setIsLaunchFarmingModalOpen] =
     useState(false)
   const [isBoostAPRModalOpen, setIsBoostAPRModalOpen] = useState(false)
@@ -51,6 +62,26 @@ export const PoolInfo = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [needReschedulePool, setNeedReschedulePool] = useState(false)
   const [needScheduleNewFarming, scheduleNewFarming] = useState(false)
+
+  const {
+    address: userTokenAccountA,
+    amount: maxBaseAmount,
+    decimals: baseTokenDecimals,
+  } = getTokenDataByMint(
+    allTokensData,
+    pool.account.reserves[0].mint.toString()
+    // selectedBaseTokenAddressFromSeveral
+  )
+
+  const {
+    address: userTokenAccountB,
+    amount: maxQuoteAmount,
+    decimals: quoteTokenDecimals,
+  } = getTokenDataByMint(
+    allTokensData,
+    pool.account.reserves[1].mint.toString()
+    // selectedQuoteTokenAddressFromSeveral
+  )
 
   return (
     <>
@@ -85,9 +116,17 @@ export const PoolInfo = () => {
         onClose={() => setIsBoostAPRModalOpen(false)}
       />
       <DepositLiquidity
+        needBlur
         arrow={false}
         open={isDepositModalOpen}
         onClose={() => setIsDepositModalOpen(false)}
+        pool={pool}
+        userTokenAccountA={userTokenAccountA}
+        userTokenAccountB={userTokenAccountB}
+        baseTokenDecimals={baseTokenDecimals}
+        quoteTokenDecimals={quoteTokenDecimals}
+        maxBaseAmount={maxBaseAmount}
+        maxQuoteAmount={maxQuoteAmount}
       />
       <RescheduleModal
         open={isRescheduleModalOpen}

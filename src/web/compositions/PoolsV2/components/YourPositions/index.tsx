@@ -3,7 +3,11 @@ import React, { useState } from 'react'
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { TokenInfo } from '@sb/dexUtils/types'
 import { RIN_MINT } from '@sb/dexUtils/utils'
+
+import { getTokenDataByMint } from '@core/solana'
+import { Pool } from '@core/solana/programs/amm/types'
 
 import { RootColumn, RootRow } from '../../index.styles'
 import { MinusIcon, PlusIcon, TooltipIcon } from '../Icons'
@@ -30,8 +34,12 @@ export const PositionsCounter = () => {
 
 export const PositionInfo = ({
   positionsDataView,
+  pool,
+  allTokensData,
 }: {
   positionsDataView: string
+  pool: Pool
+  allTokensData: TokenInfo[]
 }) => {
   const [isWithdrawPopupOpen, setIsWithdrawPopupOpen] = useState(false)
   const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false)
@@ -39,6 +47,26 @@ export const PositionInfo = ({
   const isPositionViewDetailed = positionsDataView === 'detailed'
   const rootRowHeight = isPositionViewDetailed ? '16em' : '10em'
   const grayBoxHeight = isPositionViewDetailed ? '4.5em' : '6em'
+
+  const {
+    address: userTokenAccountA,
+    amount: maxBaseAmount,
+    decimals: baseTokenDecimals,
+  } = getTokenDataByMint(
+    allTokensData,
+    pool.account.reserves[0].mint.toString()
+    // selectedBaseTokenAddressFromSeveral
+  )
+
+  const {
+    address: userTokenAccountB,
+    amount: maxQuoteAmount,
+    decimals: quoteTokenDecimals,
+  } = getTokenDataByMint(
+    allTokensData,
+    pool.account.reserves[1].mint.toString()
+    // selectedQuoteTokenAddressFromSeveral
+  )
 
   return (
     <RootRow margin="30px 0 0 0">
@@ -233,10 +261,21 @@ export const PositionInfo = ({
       <WithdrawLiquidity
         open={isWithdrawPopupOpen}
         onClose={() => setIsWithdrawPopupOpen(false)}
+        pool={pool}
+        maxBaseAmount={maxBaseAmount}
+        maxQuoteAmount={maxQuoteAmount}
       />
       <DepositLiquidity
+        needBlur
         open={isDepositPopupOpen}
         onClose={() => setIsDepositPopupOpen(false)}
+        pool={pool}
+        userTokenAccountA={userTokenAccountA}
+        userTokenAccountB={userTokenAccountB}
+        baseTokenDecimals={baseTokenDecimals}
+        quoteTokenDecimals={quoteTokenDecimals}
+        maxBaseAmount={maxBaseAmount}
+        maxQuoteAmount={maxQuoteAmount}
       />
     </RootRow>
   )

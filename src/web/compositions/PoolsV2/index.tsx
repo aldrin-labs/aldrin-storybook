@@ -1,14 +1,12 @@
-import { BN } from 'bn.js'
 import React, { useEffect, useState } from 'react'
 
 import { Page } from '@sb/components/Layout'
+import { Pool } from '@sb/dexUtils/amm/types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { buildTransactions } from '@core/solana'
+import { getAllTokensData, TokenInfo } from '@core/solana'
 import { loadPoolData } from '@core/solana/programs/amm/fetchers/loadPool'
-import { depositLiquidityPoolTransaction } from '@core/solana/programs/amm/instructions/depositLiquidityTransaction'
 
 import { ConnectWalletPopup } from '../Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { TVLChart, VolumeChart } from './components/Charts'
@@ -42,52 +40,39 @@ export const PoolsComponent: React.FC = () => {
   const [isCreatePoolPopupOpen, setIsCreatPoolPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
+  const [selectedPool, selectPool] = useState<Pool>()
+  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const { wallet } = useWallet()
   const connection = useConnection()
+
   const positionsAmount = 2
   const showPositionsChart =
     tableView === 'yourPositions' && positionsAmount > 1
+  const isUserHavePositions = true
+  const isUserHavePools = true
 
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
+
+    const getPool = async () => {
+      const poolsData = await loadPoolData({ wallet, connection })
+      const pool = poolsData.filter((p) => {
+        return p?.account?.admin.toString() === wallet.publicKey.toString()
+      })[0]
+
+      const tokensData = await getAllTokensData(wallet.publicKey, connection)
+
+      setAllTokensData(tokensData)
+      selectPool(pool)
+    }
+    getPool()
     return () => {
       document.title = 'Aldrin'
     }
   }, [])
 
-  const isUserHavePositions = true
-  const isUserHavePools = true
-
-  const createPool = async () => {
-    const poolsData = await loadPoolData({ wallet, connection })
-    const pool = poolsData.filter((p) => {
-      return p.account.admin.toString() === wallet.publicKey.toString()
-    })[0]
-
-    const depositLiquidity = await depositLiquidityPoolTransaction({
-      wallet,
-      connection,
-      maxAmountTokens: new BN(0.001),
-      pool,
-    })
-
-    const tx = buildTransactions(
-      depositLiquidity.instructions.map((instruction) => ({ instruction })),
-      wallet.publicKey,
-      depositLiquidity.signers
-    )
-
-    const status = await signAndSendTransactions({
-      transactionsAndSigners: tx,
-      wallet,
-      connection,
-    })
-
-    console.log({ status })
-  }
-
-  // VaC2ZcdAdaqhBMH3rkC9ZdvPrgQBhvp5smnmD7Hm71
+  if (!selectedPool) return null
 
   return (
     <Page>
@@ -114,7 +99,7 @@ export const PoolsComponent: React.FC = () => {
             <SButton
               onClick={() =>
                 // setIsCreatPoolPopupOpen(true)
-                createPool()
+                {}
               }
               $borderRadius="md"
               $width="rg"
@@ -139,7 +124,11 @@ export const PoolsComponent: React.FC = () => {
               positionsDataView={positionsDataView}
               setPositionsDataView={setPositionsDataView}
             />
-            <PositionInfo positionsDataView={positionsDataView} />
+            <PositionInfo
+              pool={selectedPool}
+              allTokensData={allTokensData}
+              positionsDataView={positionsDataView}
+            />
           </>
         )}
         {tableView === 'classicLiquidity' && (
@@ -166,7 +155,7 @@ export const PoolsComponent: React.FC = () => {
         {isFiltersShown && <ExtendedFiltersSection />}
         {tableView === 'yourPools' && (
           <>
-            <PoolInfo />
+            <PoolInfo pool={selectedPool} allTokensData={allTokensData} />
           </>
         )}
         {(tableView === 'classicLiquidity' ||
@@ -179,7 +168,9 @@ export const PoolsComponent: React.FC = () => {
         {/* <EmptyRow /> */}
       </StyledWideContent>
       <PoolsDetails
+        allTokensData={allTokensData}
         open={isPoolsDetailsPopupOpen}
+        pool={selectedPool}
         onClose={() => {
           setIsPoolsDetailsPopupOpen(false)
         }}

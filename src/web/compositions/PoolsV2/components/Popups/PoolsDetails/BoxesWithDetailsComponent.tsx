@@ -15,24 +15,24 @@ export const BoxesWithDetails = () => {
     <Row height="15em" padding="2.5em 0" width="100%">
       <Box height="100%" width="31%">
         <Column height="3.5em">
-          <InlineText size="sm" weight={300} color="gray1">
+          <InlineText size="sm" weight={300} color="white2">
             Total Liquidity
           </InlineText>
-          <InlineText color="gray0" size="xmd" weight={600}>
-            <InlineText color="gray1">$</InlineText> 10.42m
+          <InlineText color="white1" size="xmd" weight={600}>
+            <InlineText color="white2">$</InlineText> 10.42m
           </InlineText>
         </Column>
 
         <GrayBox>
           <Row width="100%">
             <TokenIcon size={20} mint={RIN_MINT} />
-            <InlineText size="sm" weight={400} color="gray1">
+            <InlineText size="sm" weight={400} color="white2">
               124.42k
             </InlineText>
           </Row>
           <Row width="100%">
             <TokenIcon size={20} mint={RIN_MINT} />
-            <InlineText size="sm" weight={400} color="gray1">
+            <InlineText size="sm" weight={400} color="white2">
               124.42k
             </InlineText>
           </Row>
@@ -41,22 +41,22 @@ export const BoxesWithDetails = () => {
       <Row height="100%" width="66%">
         <Column width="48%">
           <Box>
-            <InlineText size="sm" weight={300} color="gray1">
-              <TooltipIcon color="gray1" margin="0 5px 0 0" />
+            <InlineText size="sm" weight={300} color="white2">
+              <TooltipIcon color="white2" margin="0 5px 0 0" />
               Trading Fee
             </InlineText>
-            <InlineText color="gray0" size="xmd" weight={600}>
+            <InlineText color="white1" size="xmd" weight={600}>
               0.038%
             </InlineText>
           </Box>
           <Box>
-            <InlineText size="sm" weight={300} color="gray1">
+            <InlineText size="sm" weight={300} color="white2">
               Farming Rewards
             </InlineText>
             <Row>
               <Row>
                 <TokenIcon margin="0 5px 0 0" mint={RIN_MINT} />
-                <InlineText color="gray0" size="md" weight={600}>
+                <InlineText color="white1" size="md" weight={600}>
                   RIN
                 </InlineText>
               </Row>
@@ -65,18 +65,18 @@ export const BoxesWithDetails = () => {
         </Column>
         <Column width="48%">
           <Box>
-            <InlineText size="sm" weight={300} color="gray1">
-              Volume <InlineText color="gray13">7d</InlineText>
+            <InlineText size="sm" weight={300} color="white2">
+              Volume <InlineText color="white23">7d</InlineText>
             </InlineText>
-            <InlineText color="gray0" size="xmd" weight={600}>
-              <InlineText color="gray1">$</InlineText> 924.42k
+            <InlineText color="white1" size="xmd" weight={600}>
+              <InlineText color="white2">$</InlineText> 924.42k
             </InlineText>
           </Box>
           <Box>
             <Row width="100%" height="100%">
               <Column>
-                <InlineText size="sm" weight={300} color="gray1">
-                  <TooltipIcon color="gray1" margin="0 5px 0 0" />
+                <InlineText size="sm" weight={300} color="white2">
+                  <TooltipIcon color="white2" margin="0 5px 0 0" />
                   APR
                 </InlineText>
                 <InlineText color="green4" size="xmd" weight={600}>

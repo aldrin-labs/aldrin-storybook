@@ -4,6 +4,9 @@ import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
+import { depositLiquidity } from '@sb/dexUtils/amm/actions/depositLiquidity'
+import { Pool } from '@sb/dexUtils/amm/types'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
@@ -23,17 +26,57 @@ export const DepositLiquidity = ({
   onClose,
   open,
   arrow = true,
+  pool,
+  needBlur,
+  userTokenAccountA,
+  userTokenAccountB,
+  baseTokenDecimals,
+  quoteTokenDecimals,
+  maxBaseAmount,
+  maxQuoteAmount,
 }: {
   onClose: () => void
   open: boolean
-  arrow: boolean
+  arrow?: boolean
+  pool: Pool
+  needBlur: boolean
+  userTokenAccountA: string
+  userTokenAccountB: string
+  baseTokenDecimals: number
+  quoteTokenDecimals: number
+  maxBaseAmount: number
+  maxQuoteAmount: number
 }) => {
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
   const [isUserVerified, setIsUserVerified] = useState(false)
   const [period, setPeriod] = useState('7D')
-  const wallet = useWallet()
+  const [baseAmount, setBaseAmount] = useState(0)
+  const [quoteAmount, setQuoteAmount] = useState(0)
+
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const baseMint = pool?.account?.reserves[0].mint.toString() || ''
+  const quoteMint = pool?.account?.reserves[1].mint.toString() || ''
+
+  const deposit = async () => {
+    const result = await depositLiquidity({
+      wallet,
+      connection,
+      pool,
+      userTokenAccountA,
+      userTokenAccountB,
+      baseTokenDecimals,
+      quoteTokenDecimals,
+      baseAmount,
+      quoteAmount,
+    })
+
+    console.log({ result })
+  }
+
   return (
-    <ModalContainer needBlur>
+    <ModalContainer needBlur={needBlur}>
       <Modal open={open} onClose={onClose}>
         <HeaderComponent arrow={arrow} onClose={onClose} />
         <Column height="calc(100% - 11em)" margin="2em 0">
@@ -70,7 +113,16 @@ export const DepositLiquidity = ({
             </Row>
           </Row>
           <Column height="auto" width="100%">
-            <ValuesContainer />
+            <ValuesContainer
+              setBaseAmount={setBaseAmount}
+              setQuoteAmount={setQuoteAmount}
+              quoteAmount={quoteAmount}
+              baseAmount={baseAmount}
+              baseMint={baseMint}
+              quoteMint={quoteMint}
+              baseMax={maxBaseAmount}
+              quoteMax={maxQuoteAmount}
+            />
             {isRebalanceChecked && (
               <Row margin="1em 0" width="100%">
                 <Box height="auto" width="48%">
@@ -203,7 +255,7 @@ export const DepositLiquidity = ({
             </Row>
             <Button
               onClick={() => {
-                // connect wallet
+                deposit()
               }}
               $variant="green"
               $width="xl"

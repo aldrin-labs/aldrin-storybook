@@ -6,11 +6,11 @@ import {
   buildTransactions,
   walletAdapterToWallet,
 } from '@core/solana'
-import { createDepositLiquidityInstructions } from '@core/solana/programs/amm/instructions/depositLiquidityTransaction'
+import { createRedeemLiquidityTransaction } from '@core/solana/programs/amm/instructions/redeemLiquidityTransaction'
 
 import { Pool } from '../types'
 
-export const depositLiquidity = async ({
+export const redeemLiquidity = async ({
   wallet,
   connection,
   pool,
@@ -18,8 +18,6 @@ export const depositLiquidity = async ({
   userTokenAccountB,
   baseTokenDecimals,
   quoteTokenDecimals,
-  baseAmount,
-  quoteAmount,
 }: {
   wallet: AuthorizedWalletAdapter
   connection: AldrinConnection
@@ -28,12 +26,10 @@ export const depositLiquidity = async ({
   userTokenAccountB: string
   baseTokenDecimals: number
   quoteTokenDecimals: number
-  baseAmount: number
-  quoteAmount: number
 }) => {
   const walletWithPk = walletAdapterToWallet(wallet)
 
-  const depositLiquidityTransaction = await createDepositLiquidityInstructions({
+  const depositLiquidityTransaction = await createRedeemLiquidityTransaction({
     wallet: walletWithPk,
     connection,
     pool,
@@ -41,8 +37,6 @@ export const depositLiquidity = async ({
     userTokenAccountB,
     baseTokenDecimals,
     quoteTokenDecimals,
-    baseAmount,
-    quoteAmount,
   })
 
   const tx = buildTransactions(
