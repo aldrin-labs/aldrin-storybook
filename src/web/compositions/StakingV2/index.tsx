@@ -16,7 +16,11 @@ import { toMap } from '@sb/utils'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
-import { ProgramsMultiton, FARMING_V2_TOKEN } from '@core/solana'
+import {
+  ProgramsMultiton,
+  FARMING_V2_TOKEN,
+  LIDO_STAKING_ADDRESS,
+} from '@core/solana'
 import { removeDecimals } from '@core/utils/helpers'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
@@ -31,7 +35,7 @@ import {
   TotalStakedRow,
 } from './index.styles'
 import { StakingPageProps } from './types'
-import { getStakingsData } from './utils'
+import { getLidoStakeApy, getStakingsData } from './utils'
 
 const Block: React.FC<StakingPageProps> = (props) => {
   const {
@@ -45,13 +49,34 @@ const Block: React.FC<StakingPageProps> = (props) => {
   const [lidoApy, setLidoApy] = useState(0)
   const [lidoMarketcap, setLidoMarketcap] = useState(0)
   const [lidoTotalStaked, setLidoTotalStaked] = useState(0)
-  const [lidoFee, setLidoFee] = useState(0)
 
   const { wallet } = useWallet()
   const connection = useConnection()
 
   const { data: mSolInfo, mutate: refreshStakingInfo } =
     useMarinadeStakingInfo()
+
+  const solidoSDK = new SolidoSDK(
+    'mainnet-beta',
+    connection,
+    LIDO_STAKING_ADDRESS
+  )
+
+  useEffect(() => {
+    const getStakingData = async () => {
+      const [totalStaked, marketCap, apy] = await Promise.all([
+        solidoSDK.getTotalStaked(),
+        solidoSDK.getMarketCap(),
+        getLidoStakeApy(),
+      ])
+
+      console.log({ apy, totalStaked, marketCap })
+      setLidoApy(apy)
+      setLidoMarketcap(marketCap)
+      setLidoTotalStaked(totalStaked)
+    }
+    getStakingData()
+  }, [])
 
   const stakingDataMap = toMap(getStakingInfo?.farming || [], (farming) =>
     farming?.stakeMint.toString()
@@ -72,12 +97,9 @@ const Block: React.FC<StakingPageProps> = (props) => {
     farm?.stakeVaultDecimals
   )
 
-  const totalStakedWithDecimalsInUSD =
-    totalStakedWithDecimals * (dexTokensPricesMap.get('RIN')?.price || 0)
-
   const stakedPercentage =
-    (totalStakedWithDecimalsInUSD /
-      (getStakingInfo?.supply || totalStakedWithDecimalsInUSD)) *
+    (totalStakedWithDecimals /
+      (getStakingInfo?.supply || totalStakedWithDecimals)) *
     100
 
   useEffect(() => {
@@ -122,26 +144,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
     publicKey: PLDStakeVault ? new PublicKey(PLDStakeVault) : undefined,
   })
 
-  const solidoSDK = new SolidoSDK(
-    'mainnet-beta',
-    connection,
-    'your_solana_referral_address'
-  )
-
-  useEffect(() => {
-    const getStakingData = async () => {
-      const { apy, totalStaked, marketCap } =
-        await solidoSDK.getLidoStatistics()
-      const { fee } = await solidoSDK.getStakingRewardsFee()
-
-      setLidoMarketcap(marketCap)
-      setLidoTotalStaked(totalStaked.value)
-      setLidoApy(apy)
-      setLidoFee(fee)
-    }
-    getStakingData()
-  }, [])
-
   const stakingsData = getStakingsData({
     farm,
     stakedPercentage,
@@ -182,8 +184,6 @@ const Block: React.FC<StakingPageProps> = (props) => {
             solidoSDK={solidoSDK}
             lidoTotalStaked={lidoTotalStaked}
             lidoApy={lidoApy}
-            lidoMarketcap={lidoMarketcap}
-            lidoFee={lidoFee}
           />
         ))}
       </StyledWideContent>

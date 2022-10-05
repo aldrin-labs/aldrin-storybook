@@ -123,16 +123,18 @@ export const FilterIcon = ({ isActive }: { isActive: boolean }) => {
 export const TooltipIcon = ({
   color,
   margin,
+  size = 11,
 }: {
   color: string
   margin?: string
+  size?: number
 }) => {
   const theme = useTheme()
   return (
     <TooltipIconContainer
       margin={margin}
-      width="11"
-      height="11"
+      width={size}
+      height={size}
       viewBox="0 0 12 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +171,7 @@ export const CLiquidityIcon = ({ isActive }: { isActive: boolean }) => {
     >
       <path
         d="M1.1104 7.54134H2.20024C2.33242 8.58844 2.84216 9.55132 3.6338 10.2493C4.42544 10.9473 5.44458 11.3324 6.49999 11.3324C7.5554 11.3324 8.57454 10.9473 9.36618 10.2493C10.1578 9.55132 10.6676 8.58844 10.7997 7.54134H11.8901C11.6182 10.2784 9.30853 12.4163 6.49999 12.4163C3.69145 12.4163 1.38178 10.2784 1.1104 7.54134ZM1.1104 6.45801C1.38124 3.72097 3.69091 1.58301 6.49999 1.58301C9.30907 1.58301 11.6182 3.72097 11.8896 6.45801H10.7997C10.6676 5.41091 10.1578 4.44803 9.36618 3.75004C8.57454 3.05205 7.5554 2.66692 6.49999 2.66692C5.44458 2.66692 4.42544 3.05205 3.6338 3.75004C2.84216 4.44803 2.33242 5.41091 2.20024 6.45801H1.10986H1.1104ZM6.49999 8.08301C6.21267 8.08301 5.93712 7.96887 5.73396 7.76571C5.53079 7.56254 5.41666 7.28699 5.41666 6.99967C5.41666 6.71236 5.53079 6.43681 5.73396 6.23364C5.93712 6.03048 6.21267 5.91634 6.49999 5.91634C6.78731 5.91634 7.06286 6.03048 7.26602 6.23364C7.46919 6.43681 7.58332 6.71236 7.58332 6.99967C7.58332 7.28699 7.46919 7.56254 7.26602 7.76571C7.06286 7.96887 6.78731 8.08301 6.49999 8.08301Z"
-        fill={isActive ? theme.colors.white1 : theme.colors.white3}
+        fill={isActive ? theme.colors.gray0 : theme.colors.gray1}
       />
     </IconContainer>
   )
@@ -243,13 +245,13 @@ export const YourPositionsIcon = ({ isActive }: { isActive: boolean }) => {
     >
       <path
         d="M9.92333 7C11.3317 7 11.9167 6.45833 11.3967 4.68166C11.0446 3.48458 10.0154 2.45541 8.81833 2.10333C7.04167 1.58333 6.5 2.16833 6.5 3.57666V5.13666C6.5 6.45833 7.04167 7 8.125 7H9.92333Z"
-        stroke={isActive ? theme.colors.white1 : theme.colors.white3}
+        stroke={isActive ? theme.colors.gray0 : theme.colors.gray1}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M10.8333 8.46251C10.3295 10.9704 7.92453 12.7904 5.18911 12.3463C3.13619 12.0158 1.48411 10.3638 1.14828 8.31084C0.709525 5.58626 2.51869 3.18126 5.01578 2.67209"
-        stroke={isActive ? theme.colors.white1 : theme.colors.white3}
+        stroke={isActive ? theme.colors.gray0 : theme.colors.gray1}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -310,7 +312,7 @@ export const FlashIcon = ({ isActive }: { isActive: boolean }) => {
     >
       <path
         d="M3.29885 7.69333H4.9726V11.5933C4.9726 12.5033 5.46551 12.6875 6.06676 12.005L10.1672 7.34666C10.6709 6.77791 10.4597 6.30666 9.69593 6.30666H8.02218V2.40666C8.02218 1.49666 7.52926 1.3125 6.92801 1.995L2.8276 6.65333C2.32926 7.2275 2.54051 7.69333 3.29885 7.69333Z"
-        stroke={isActive ? theme.colors.white1 : theme.colors.white3}
+        stroke={isActive ? theme.colors.gray0 : theme.colors.gray1}
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"

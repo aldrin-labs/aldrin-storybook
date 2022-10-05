@@ -159,7 +159,7 @@ export const TotalStakedCard = styled.div`
   box-shadow: -3px 3px 35px 10px rgba(145, 41, 122, 0.3);
   @media only screen and (max-width: 600px) {
     width: 90%;
-    margin: 1em auto;
+    // margin: 1em auto;
     position: absolute;
   }
 `

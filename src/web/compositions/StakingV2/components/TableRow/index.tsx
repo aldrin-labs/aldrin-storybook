@@ -39,7 +39,6 @@ export const TableRow = ({
   refreshStakingInfo,
   solidoSDK,
   lidoApy,
-  lidoMarketcap,
 }: {
   farms: Farm[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -48,7 +47,6 @@ export const TableRow = ({
   refreshStakingInfo: RefreshFunction
   solidoSDK: any // TODO
   lidoApy: number
-  lidoMarketcap: number
 }) => {
   const [isRinStakingPopupOpen, setIsRinStakingPopupOpen] = useState(false)
   const [isMSolStakingPopupOpen, setIsMSolStakingPopupOpen] = useState(false)
@@ -93,7 +91,7 @@ export const TableRow = ({
             <SRow>
               <TokenIconsContainer token={staking.token} />
               <InlineText size="md" weight={600} color="white2">
-                Stake {staking.token}
+                Stake {staking.token.includes('SOL') ? 'SOL' : staking.token}
               </InlineText>
               <Row width="100%" className="smallLinksRow">
                 <LinkToTwitter link={staking.socials.twitter} />
@@ -225,7 +223,6 @@ export const TableRow = ({
           dexTokensPricesMap={dexTokensPricesMap}
           solidoSDK={solidoSDK}
           lidoApy={lidoApy}
-          lidoMarketcap={lidoMarketcap}
         />
       )}
       <ConnectWalletPopup
