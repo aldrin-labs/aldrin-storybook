@@ -1,4 +1,4 @@
-import { useSwapRoute } from '@aldrin_exchange/swap_hook'
+import { SWAP_FEES_SETTINGS, useSwapRoute } from '@aldrin_exchange/swap_hook'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
@@ -16,7 +16,6 @@ import { Toast } from '@sb/components/Toast/Toast'
 import { InlineText } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
-import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
   getTokenMintAddressByName,
@@ -35,11 +34,7 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
-import {
-  getTokenDataByMint,
-  RIN_MINT,
-  walletAdapterToWallet,
-} from '@core/solana'
+import { walletAdapterToWallet, getTokenDataByMint } from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -48,11 +43,11 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
-import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+  numberWithOneDotRegexp,
+  removeDecimalsFromBN,
+} from '@core/utils/helpers'
+import { Metrics } from '@core/utils/metrics'
 
 import HalfArrowsIcon from '@icons/halfArrows.svg'
 import SettingIcon from '@icons/settings.svg'
@@ -160,13 +155,13 @@ const SwapPage = ({
 
     const inputTokenMint = inputFromRedirect
       ? getTokenMintAddressByName(inputFromRedirect) || ''
-      : getTokenMintAddressByName(getDefaultBaseToken(false)) || ''
+      : getTokenMintAddressByName(getDefaultBaseToken()) || ''
 
     setInputTokenMintAddress(inputTokenMint)
 
     const outputTokenMint = outputFromRedirect
       ? getTokenMintAddressByName(outputFromRedirect) || ''
-      : getTokenMintAddressByName(getDefaultQuoteToken(false)) || ''
+      : getTokenMintAddressByName(getDefaultQuoteToken()) || ''
 
     setOutputTokenMintAddress(outputTokenMint)
   }, [])
@@ -198,11 +193,6 @@ const SwapPage = ({
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
   const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
 
-  const { pricesMap: coingeckoPricesMap } = useCoingeckoPrices([
-    inputSymbol,
-    outputSymbol,
-  ])
-
   const {
     mints: tokenSelectorMints,
     swapRoute,
@@ -214,8 +204,6 @@ const SwapPage = ({
     buildTransactions,
     refreshOpenOrdersMap,
     depositAndFee,
-    feeMint,
-    feeAmount,
   } = useSwapRoute({
     wallet,
     connection: connection.getConnection(),
@@ -232,31 +220,8 @@ const SwapPage = ({
 
   const outputDexTokenPrice = dexTokensPricesMap.get(outputSymbol) || 0
 
-  const inputCgcTokenPrice =
-    coingeckoPricesMap.get(inputSymbol.toUpperCase()) || 0
-  const outputCgcTokenPrice =
-    coingeckoPricesMap.get(outputSymbol.toUpperCase()) || 0
-
-  const estimatedPrice = inputCgcTokenPrice / outputCgcTokenPrice
-  const estimatedPriceFromRoute = +outputAmount / +inputAmount
-
-  const pricesDiffPct = stripDigitPlaces(
-    ((estimatedPriceFromRoute - estimatedPrice) / estimatedPrice) * 100,
-    2
-  )
   const isHighPriceImpact = swapRoute.priceImpact > 2
-
-  const isHighPriceDiff =
-    inputTokenMintAddress === RIN_MINT || outputTokenMintAddress === RIN_MINT
-      ? isHighPriceImpact
-      : pricesDiffPct < -1
-
-  const priceDiffText =
-    pricesDiffPct > 0
-      ? `${pricesDiffPct}% cheaper than`
-      : pricesDiffPct < -1
-      ? `${-pricesDiffPct}% more expensive than`
-      : `Within 1% of `
+  const isHighPriceDiff = isHighPriceImpact
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -275,12 +240,6 @@ const SwapPage = ({
     pricesMap: dexTokensPricesMap,
     tokenInfosMap,
   })
-
-  const totalFeeUSD = depositAndFeeUSD + poolsFeeUSD
-
-  const formattedTotalFeeUSD = formatNumberToUSFormat(
-    stripDigitPlaces(totalFeeUSD, 2)
-  )
 
   const { amount: maxOutputAmount } = getTokenDataByMint(
     userTokensData,
@@ -334,7 +293,7 @@ const SwapPage = ({
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
-    pricesDiffPct: isHighPriceDiff ? +pricesDiffPct : 0,
+    pricesDiffPct: 0,
     swapStatus,
   })
 
@@ -370,6 +329,14 @@ const SwapPage = ({
 
   const marketsByMints = findMarketByMints()
   const selectedPoolForSwap = getSelectedPoolForSwap()
+
+  const { decimals: inputTokenDecimals } = tokenInfosMap.get(
+    inputTokenMintAddress
+  ) || { decimals: 0 }
+
+  const { decimals: outputTokenDecimals } = tokenInfosMap.get(
+    outputTokenMintAddress
+  ) || { decimals: 0 }
 
   const marketType = marketsByMints ? 0 : 2
 
@@ -469,6 +436,41 @@ const SwapPage = ({
           },
         })
 
+        // Send Metrics
+        if (result === 'success') {
+          // serum fee
+          if (SWAP_FEES_SETTINGS.enabled) {
+            const amountOut = removeDecimalsFromBN(
+              swapRoute.amountOut,
+              outputTokenDecimals
+            )
+
+            const serumFeeAmount = amountOut * SWAP_FEES_SETTINGS.percentage
+
+            const serumSteps = swapRoute.steps.filter(
+              (step) => step.ammLabel === 'Serum'
+            ).length
+
+            if (serumSteps > 0) {
+              const serumFeeUSD =
+                serumFeeAmount * serumSteps * outputDexTokenPrice
+
+              Metrics.sendMetrics({
+                metricName: 'fees',
+                metricScope: 'serum',
+                metricValue: serumFeeUSD,
+              })
+            }
+          }
+
+          // pools fee
+          Metrics.sendMetrics({
+            metricName: 'fees',
+            metricScope: 'pools',
+            metricValue: poolsFeeUSD,
+          })
+        }
+
         if (result === 'success') {
           callToast(toastId, {
             render: () => (
@@ -552,8 +554,8 @@ const SwapPage = ({
         // remove loader
         setSwapStatus(null)
 
-        refreshUserTokensData()
-        refreshAll()
+        await refreshAll()
+        await refreshUserTokensData()
 
         if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
           refreshOpenOrdersMap()
@@ -568,13 +570,17 @@ const SwapPage = ({
     }
   }, [swapStatus])
 
+  const formattedMinimumReceived = stripByAmount(
+    removeDecimalsFromBN(swapRoute.minAmountOut, outputTokenDecimals)
+  )
+
   const formattedPriceImpact =
     swapRoute.priceImpact < 0.01
       ? '< 0.01'
       : stripByAmount(swapRoute.priceImpact, 2)
 
   const formattedPoolsFeeUSD =
-    poolsFeeUSD < 0.01 ? '< $ 0.01' : `$ ${stripByAmount(poolsFeeUSD, 2)}`
+    poolsFeeUSD < 0.01 ? '< $0.01' : `$${stripByAmount(poolsFeeUSD, 2)}`
 
   const basePrice = dexTokensPricesMap.get(inputSymbol) || 0
   const quotePrice = dexTokensPricesMap.get(outputSymbol) || 0
@@ -583,6 +589,11 @@ const SwapPage = ({
     getEstimatedPrice({
       inputPrice: basePrice,
       outputPrice: quotePrice,
+      inputAmount: removeDecimalsFromBN(swapRoute.amountIn, inputTokenDecimals),
+      outputAmount: removeDecimalsFromBN(
+        swapRoute.amountOut,
+        outputTokenDecimals
+      ),
       field: priceShowField,
     })
   )
@@ -874,6 +885,17 @@ const SwapPage = ({
                       <RowContainer direction="column">
                         <RowContainer margin="1em 0" justify="space-between">
                           <InlineText weight={500} size="xs" color="white3">
+                            Minimum Received:
+                          </InlineText>
+                          <InlineText weight={600} size="xs" color="white2">
+                            {formattedMinimumReceived} {outputSymbol}
+                          </InlineText>
+                        </RowContainer>
+                        <RowContainer
+                          margin="0 0 1em 0"
+                          justify="space-between"
+                        >
+                          <InlineText weight={500} size="xs" color="white3">
                             Price Impact:
                           </InlineText>
                           <InlineText weight={600} size="xs" color="white2">
@@ -899,7 +921,10 @@ const SwapPage = ({
                             Network Fee:
                           </InlineText>
                           <InlineText weight={600} size="xs" color="white2">
-                            {stripByAmount(depositAndFeeUSD)} SOL
+                            {wallet.connected
+                              ? stripByAmount(depositAndFeeUSD)
+                              : '--'}{' '}
+                            SOL
                           </InlineText>
                         </RowContainer>
                       </RowContainer>

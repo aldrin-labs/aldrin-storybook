@@ -5,6 +5,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 
 import { getStakedTokensTotal } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -16,6 +17,7 @@ import {
   LiquidityItem,
   LiquidityText,
   LiquidityTitle,
+  SpanContainer,
 } from './styles'
 import { UserLiquidityBlockProps } from './types'
 
@@ -35,6 +37,8 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
     vesting,
     tokenMap,
   } = props
+
+  const isRegionRestricted = useRegionRestriction()
   const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
 
   // Hide tiny balances (we cannot withdraw all LP tokens so...)
@@ -99,14 +103,24 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
             ${stripByAmountAndFormat(userLiquidityUsd, 2)}
           </LiquidityText>
         </div>
-        <LiquidityButton
-          disabled={processing}
-          $loading={processing}
-          $variant="rainbow"
-          onClick={onDepositClick}
+        <DarkTooltip
+          title={
+            isRegionRestricted
+              ? "Sorry, Aldrin.com doesn't offer its services in your region."
+              : ''
+          }
         >
-          Deposit Liquidity
-        </LiquidityButton>
+          <SpanContainer>
+            <LiquidityButton
+              disabled={processing || isRegionRestricted}
+              $loading={processing}
+              $variant="rainbow"
+              onClick={onDepositClick}
+            >
+              Deposit Liquidity
+            </LiquidityButton>
+          </SpanContainer>
+        </DarkTooltip>
       </LiquidityItem>
       <LiquidityItem>
         <LiquidityTitle>Fees Earned:</LiquidityTitle>
