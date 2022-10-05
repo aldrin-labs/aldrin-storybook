@@ -280,7 +280,7 @@ export const SwapPageLayout = styled(Page)`
   }
 `
 export const SwapContentContainer = styled(Row)`
-  padding: 30px 0;
+  padding: 55px 0;
   width: 24em;
   height: 100%;
 
@@ -293,7 +293,7 @@ export const SwapContentContainer = styled(Row)`
   }
 
   @media (min-width: ${BREAKPOINTS.xxxl}) {
-    padding: 85px 0;
+    padding: 90px 0;
   }
 `
 
