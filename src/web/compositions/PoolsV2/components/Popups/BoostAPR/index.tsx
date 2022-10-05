@@ -8,11 +8,11 @@ import { RootColumn, RootRow } from '@sb/compositions/PoolsV2/index.styles'
 
 import { RIN_MINT } from '@core/solana'
 
+import { ValuesContainer } from '../../Inputs'
 import { Container } from '../../TableRow/index.styles'
 import { Header } from '../CreatePool/components/Header'
 import { RationContainer } from '../CreatePool/components/RationContainer'
 import { TokenSelectorContainer } from '../CreatePool/index.styles'
-import { ValuesContainer } from '../DepositLiquidity/DepositContainer'
 import { Column, StyledModal } from '../index.styles'
 
 export const BoostAPRModal = ({

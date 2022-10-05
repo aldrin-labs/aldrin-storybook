@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 
-type TooltipIconContainerType = {
-  margin?: string
-}
+import { TooltipIconContainerType } from './types'
 
 export const SearchIconContainer = styled.svg`
   position: absolute;

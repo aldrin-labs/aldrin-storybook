@@ -1,4 +1,4 @@
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { Pool } from './amm/types'
 
 /**
  * Get max amount in tokenA and tokenB to withdrawal from pool
@@ -8,14 +8,16 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 export const calculateWithdrawAmount = ({
   selectedPool,
   poolTokenAmount,
+  supply,
 }: {
-  selectedPool: PoolInfo
+  selectedPool: Pool
   poolTokenAmount: number
-}): [number, number] => {
-  const {
-    supply,
-    tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB },
-  } = selectedPool
+  supply: number
+}) => {
+  const poolTokenAmountA =
+    selectedPool.account.reserves[0].tokens.amount.toNumber()
+  const poolTokenAmountB =
+    selectedPool.account.reserves[1].tokens.amount.toNumber()
 
   if (supply === 0) return [0, 0]
 

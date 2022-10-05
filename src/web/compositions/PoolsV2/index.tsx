@@ -58,7 +58,10 @@ export const PoolsComponent: React.FC = () => {
     const getPool = async () => {
       const poolsData = await loadPoolData({ wallet, connection })
       const pool = poolsData.filter((p) => {
-        return p?.account?.admin.toString() === wallet.publicKey.toString()
+        return (
+          p?.account?.admin.toString() ===
+          'F1wL4GpmXx7exSSMTQM3fg4vMiALuN3vh5WWxWgYK8Rm'
+        )
       })[0]
 
       const tokensData = await getAllTokensData(wallet.publicKey, connection)

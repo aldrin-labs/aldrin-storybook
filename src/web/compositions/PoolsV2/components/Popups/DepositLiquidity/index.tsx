@@ -5,7 +5,6 @@ import { Modal } from '@sb/components/Modal'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { depositLiquidity } from '@sb/dexUtils/amm/actions/depositLiquidity'
-import { Pool } from '@sb/dexUtils/amm/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -16,44 +15,35 @@ import {
   StyledCheckbox,
 } from '../../FiltersSection/index.styles'
 import { PlusIcon, TooltipIcon } from '../../Icons'
+import { ValuesContainer } from '../../Inputs'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Row } from '../index.styles'
 import { ModalContainer } from '../WithdrawLiquidity/index.styles'
-import { ValuesContainer } from './DepositContainer'
 import { PeriodButton, PeriodSwitcher } from './index.styles'
+import { DepositLiquidityType } from './types'
 
-export const DepositLiquidity = ({
-  onClose,
-  open,
-  arrow = true,
-  pool,
-  needBlur,
-  userTokenAccountA,
-  userTokenAccountB,
-  baseTokenDecimals,
-  quoteTokenDecimals,
-  maxBaseAmount,
-  maxQuoteAmount,
-}: {
-  onClose: () => void
-  open: boolean
-  arrow?: boolean
-  pool: Pool
-  needBlur: boolean
-  userTokenAccountA: string
-  userTokenAccountB: string
-  baseTokenDecimals: number
-  quoteTokenDecimals: number
-  maxBaseAmount: number
-  maxQuoteAmount: number
-}) => {
+export const DepositLiquidity: React.FC<DepositLiquidityType> = (props) => {
+  const {
+    pool,
+    userTokenAccountA,
+    userTokenAccountB,
+    baseTokenDecimals,
+    quoteTokenDecimals,
+    needBlur,
+    onClose,
+    open,
+    arrow,
+    maxBaseAmount,
+    maxQuoteAmount,
+  } = props
+
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
   const [isUserVerified, setIsUserVerified] = useState(false)
   const [period, setPeriod] = useState('7D')
   const [baseAmount, setBaseAmount] = useState(0)
   const [quoteAmount, setQuoteAmount] = useState(0)
 
-  const { wallet } = useWallet()
+  const wallet = useWallet()
   const connection = useConnection()
 
   const baseMint = pool?.account?.reserves[0].mint.toString() || ''

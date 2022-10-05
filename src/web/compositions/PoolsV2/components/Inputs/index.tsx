@@ -1,11 +1,14 @@
 import React from 'react'
 
 import { StretchedBlock } from '@sb/components/Layout'
+import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { formatNumbersForState } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
+import { Container } from '../../index.styles'
 import { WalletIcon } from '../Icons'
 import {
   AmountInputContainer,
@@ -14,29 +17,30 @@ import {
   Input,
   InvisibleInput,
   StyledInlineText,
+  FirstInputContainer,
+  InputsContainer,
+  PositionatedIconContainer,
+  SecondInputContainer,
 } from './index.styles'
+import {
+  AmountInputProps,
+  CustomInputProps,
+  ValuesContainerType,
+} from './types'
 
-export const AmountInput = ({
-  amount = '',
-  maxAmount = '0.00',
-  disabled = false,
-  title = 'Title',
-  placeholder = '0.00',
-  onChange = () => {},
-  onMaxAmountClick = () => {},
-  appendComponent = null,
-  needPadding = true,
-}: {
-  amount?: string | number
-  maxAmount?: number | string
-  disabled?: boolean
-  title?: string
-  placeholder?: string
-  onChange?: (value: number | string) => void
-  onMaxAmountClick?: () => void
-  appendComponent?: any
-  needPadding?: boolean
-}) => {
+export const AmountInput: React.FC<AmountInputProps> = (props) => {
+  const {
+    needPadding,
+    title,
+    onMaxAmountClick,
+    maxAmount,
+    amount,
+    appendComponent,
+    disabled,
+    onChange,
+    placeholder,
+  } = props
+
   return (
     <Input needPadding={needPadding}>
       <StretchedBlock width="xl">
@@ -69,29 +73,18 @@ export const AmountInput = ({
   )
 }
 
-export const CustomTextInput = ({
-  width,
-  amount = '',
-  maxAmount = '0.00',
-  disabled = false,
-  title = 'Title',
-  placeholder = '0.00',
-  onChange = () => {},
-  onMaxAmountClick = () => {},
-  appendComponent = null,
-  needPadding = true,
-}: {
-  width?: string
-  amount?: string | number
-  maxAmount?: number | string
-  disabled?: boolean
-  title?: string
-  placeholder?: string
-  onChange?: (value: number | string) => void
-  onMaxAmountClick?: () => void
-  appendComponent?: any
-  needPadding?: boolean
-}) => {
+export const CustomTextInput: React.FC<CustomInputProps> = (props) => {
+  const {
+    width,
+    needPadding,
+    title,
+    amount,
+    disabled,
+    onChange,
+    placeholder,
+    appendComponent,
+  } = props
+
   return (
     <CustomTextInputContainer width={width}>
       <Input needPadding={needPadding} background="transparent">
@@ -117,5 +110,63 @@ export const CustomTextInput = ({
         </StretchedBlock>
       </Input>
     </CustomTextInputContainer>
+  )
+}
+
+export const ValuesContainer: React.FC<ValuesContainerType> = (props) => {
+  const {
+    baseMax,
+    baseAmount,
+    setBaseAmount,
+    baseMint,
+    quoteMax,
+    quoteAmount,
+    setQuoteAmount,
+    quoteMint,
+  } = props
+
+  return (
+    <InputsContainer>
+      <FirstInputContainer>
+        <AmountInput
+          title="Base"
+          maxAmount={baseMax}
+          amount={baseAmount}
+          onMaxAmountClick={() => {
+            setBaseAmount(baseMax)
+          }}
+          disabled={false}
+          onChange={setBaseAmount}
+          appendComponent={
+            <Container>
+              <TokenIcon margin="0 5px 0 0" mint={baseMint} />
+              <InlineText color="gray0" size="md" weight={600}>
+                {getTokenNameByMintAddress(baseMint)}
+              </InlineText>
+            </Container>
+          }
+        />
+      </FirstInputContainer>
+      <PositionatedIconContainer>+</PositionatedIconContainer>
+      <SecondInputContainer>
+        <AmountInput
+          title="Quote"
+          maxAmount={quoteMax}
+          amount={quoteAmount}
+          onMaxAmountClick={() => {
+            setQuoteAmount(quoteMax)
+          }}
+          onChange={setQuoteAmount}
+          appendComponent={
+            <Container>
+              <TokenIcon margin="0 5px 0 0" mint={quoteMint} />
+              <InlineText color="gray0" size="md" weight={600}>
+                {getTokenNameByMintAddress(quoteMint)}
+              </InlineText>
+            </Container>
+          }
+        />
+      </SecondInputContainer>
+    </InputsContainer>
   )
 }

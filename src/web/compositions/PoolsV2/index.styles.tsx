@@ -143,3 +143,13 @@ export const BannerBg = styled.div`
   align-items: center;
   font-weight: 600;
 `
+export const Container = styled.div`
+  background: ${(props) => props.theme.colors.white5};
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.6em;
+  padding: 0.5em;
+`

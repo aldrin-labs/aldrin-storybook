@@ -1,12 +1,6 @@
 import styled from 'styled-components'
 
-type CircleIconContainerType = {
-  size?: string
-}
-
-type PeriodButtonType = {
-  isActive: boolean
-}
+import { CircleIconContainerType, PeriodButtonType } from './types'
 
 export const CircleIconContainer = styled.div<CircleIconContainerType>`
   display: flex;
@@ -19,58 +13,6 @@ export const CircleIconContainer = styled.div<CircleIconContainerType>`
   font-family: Avenir Next Bold;
   color: ${(props) => props.theme.colors.gray0};
   line-height: ${(props) => props.size || '2em'};
-`
-
-export const PositionatedIconContainer = styled(CircleIconContainer)`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border: 1px solid ${(props) => props.theme.colors.white4};
-  transform: translate(-50%, -50%);
-  z-index: 2;
-
-  svg {
-    width: 1.2em;
-    height: auto;
-    path {
-      fill: ${(props) => props.theme.colors.gray0};
-    }
-  }
-`
-export const InputsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  position: relative;
-  border: 1px solid ${(props) => props.theme.colors.white4};
-  border-radius: 0.8em;
-  padding: 0.8em 0;
-  background: ${(props) => props.theme.colors.white5};
-`
-
-export const FirstInputContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding: 0 0 0.8em 0;
-  border-bottom: 1px solid ${(props) => props.theme.colors.white4};
-`
-
-export const SecondInputContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding: 0.8em 0 0 0;
 `
 
 export const PeriodSwitcher = styled.div`

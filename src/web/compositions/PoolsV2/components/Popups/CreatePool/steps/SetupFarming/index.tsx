@@ -4,7 +4,10 @@ import React, { useState } from 'react'
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { AmountInput } from '@sb/compositions/PoolsV2/components/Inputs'
+import {
+  AmountInput,
+  ValuesContainer,
+} from '@sb/compositions/PoolsV2/components/Inputs'
 import { InputContainer } from '@sb/compositions/PoolsV2/components/Inputs/index.styles'
 import { farmingDurations } from '@sb/compositions/PoolsV2/config'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
@@ -13,7 +16,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { RIN_MINT } from '@core/solana'
 
 import { Container } from '../../../../TableRow/index.styles'
-import { ValuesContainer } from '../../../DepositLiquidity/DepositContainer'
 import { Column, Row } from '../../../index.styles'
 import { Header } from '../../components/Header'
 import { RationContainer } from '../../components/RationContainer'

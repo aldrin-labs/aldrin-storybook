@@ -13,14 +13,7 @@ import {
   LabelContainer,
   StyledCheckbox,
 } from './index.styles'
-
-type VariantType = {
-  labelStyle: { backgroundColor: string; color: string }
-  text: string
-  hoverStyle: { backgroundColor: string; color: string }
-  tooltipText?: any
-  icon?: any
-}
+import { VariantType } from './types'
 
 export const LabelComponent = ({
   checkbox = false,

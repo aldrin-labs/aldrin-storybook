@@ -1,10 +1,9 @@
+/* eslint-disable no-nested-ternary */
 import { rgba } from 'polished'
 import ReactSlider from 'react-slider'
 import styled from 'styled-components'
 
-type StyledTrackProps = {
-  index: number
-}
+import { StyledTrackProps } from '../types'
 
 export const StyledSlider = styled(ReactSlider)`
   width: 100%;

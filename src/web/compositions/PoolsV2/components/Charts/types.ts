@@ -21,3 +21,26 @@ export interface TradingVolumeChartProps {
   chartHeight: number
   border: string
 }
+
+export type CanvasProps = {
+  bottom?: string
+  left?: string
+  needPadding?: boolean
+  $border?: string
+}
+
+export type CanvasContainerProps = {
+  padding?: string
+}
+
+export type TooltipContainerProps = {
+  padding?: string
+}
+
+export type ChartContainerProps = {
+  $background?: string
+}
+
+export type ChartMaskProps = {
+  $background?: string
+}

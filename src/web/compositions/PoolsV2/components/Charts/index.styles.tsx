@@ -3,28 +3,13 @@ import styled from 'styled-components'
 
 import { InlineText } from '@sb/components/Typography'
 
-type CanvasProps = {
-  bottom?: string
-  left?: string
-  needPadding?: boolean
-  $border?: string
-}
-
-type CanvasContainerProps = {
-  padding?: string
-}
-
-type TooltipContainerProps = {
-  padding?: string
-}
-
-type ChartContainerProps = {
-  $background?: string
-}
-
-type ChartMaskProps = {
-  $background?: string
-}
+import {
+  ChartContainerProps,
+  TooltipContainerProps,
+  CanvasContainerProps,
+  CanvasProps,
+  ChartMaskProps,
+} from './types'
 
 export const ChartContainer = styled.div<ChartContainerProps>`
   width: 90%;

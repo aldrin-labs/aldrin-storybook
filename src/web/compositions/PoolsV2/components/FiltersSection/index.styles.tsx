@@ -6,40 +6,15 @@ import styled from 'styled-components'
 import { PADDINGS } from '@sb/components/Button'
 
 import { RootRow } from '../../index.styles'
-
-type LabelContainerProps = {
-  background: string
-  hoverBackground?: string
-  hoverColor: string
-}
-
-type SCheckboxProps = {
-  color: string
-  hoverColor: string
-}
-
-type LabelProps = {
-  color: string
-  hoverColor: string
-}
-
-type IconProps = {
-  checked: boolean
-  color: string
-  hoverColor: string
-}
-
-type ContainerProps = {
-  width?: string
-}
-
-type SortByLabelProps = {
-  isActive: boolean
-}
-
-type CheckboxContainerProps = {
-  marginRight?: string
-}
+import {
+  CheckboxContainerProps,
+  ContainerProps,
+  IconProps,
+  LabelContainerProps,
+  LabelProps,
+  SCheckboxProps,
+  SortByLabelProps,
+} from './types'
 
 export const SRootRow = styled(RootRow)`
   @media (min-width: ${BREAKPOINTS.sm}) {

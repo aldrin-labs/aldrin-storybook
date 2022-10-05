@@ -6,7 +6,7 @@ import { InlineText } from '@sb/components/Typography'
 import { farmingDurations } from '@sb/compositions/PoolsV2/config'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
 
-import { CustomTextInput } from '../../Inputs'
+import { CustomTextInput, ValuesContainer } from '../../Inputs'
 import { Container } from '../../TableRow/index.styles'
 import { Header } from '../CreatePool/components/Header'
 import { RationContainer } from '../CreatePool/components/RationContainer'
@@ -18,7 +18,6 @@ import {
   SContainer,
   TokenSelectorContainer,
 } from '../CreatePool/index.styles'
-import { ValuesContainer } from '../DepositLiquidity/DepositContainer'
 import { Column, Row, StyledModal } from '../index.styles'
 
 export const LaunchFarmingModal = ({

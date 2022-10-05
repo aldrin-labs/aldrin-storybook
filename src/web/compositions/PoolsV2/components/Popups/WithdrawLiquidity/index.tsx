@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import { TokenInfo } from '@aldrin_exchange/swap_hook'
+import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { Keypair } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
 
 import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
@@ -6,10 +9,14 @@ import { InlineText } from '@sb/components/Typography'
 import { redeemLiquidity } from '@sb/dexUtils/amm/actions/redeemLiquidity'
 import { Pool } from '@sb/dexUtils/amm/types'
 import { useConnection } from '@sb/dexUtils/connection'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getAllTokensData, getTokenDataByMint } from '@core/solana'
+import { removeDecimals } from '@core/utils/helpers'
+
 import { MinusIcon, TooltipIcon } from '../../Icons'
-import { ValuesContainer } from '../DepositLiquidity/DepositContainer'
+import { ValuesContainer } from '../../Inputs'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Row } from '../index.styles'
 import { PeriodButton, PeriodSwitcher, ModalContainer } from './index.styles'
@@ -36,16 +43,73 @@ export const WithdrawLiquidity = ({
   quoteTokenDecimals: number
 }) => {
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
+  const [poolTokensSupply, setPoolTokensSupply] = useState(0)
   const [isUserVerified, setIsUserVerified] = useState(false)
+  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [baseAmount, setBaseAmount] = useState(0)
   const [quoteAmount, setQuoteAmount] = useState(0)
   const [period, setPeriod] = useState('7D')
 
-  const wallet = useWallet()
+  const { wallet } = useWallet()
   const connection = useConnection()
 
   const baseMint = pool?.account?.reserves[0].mint.toString() || ''
   const quoteMint = pool?.account?.reserves[1].mint.toString() || ''
+
+  const { address: usersLpTokensAddress, amount: usersLpTokensAmount } =
+    getTokenDataByMint(
+      allTokensData,
+      pool.account.mint.toString()
+      // selectedQuoteTokenAddressFromSeveral
+    )
+
+  const usersLpTokens = usersLpTokensAmount
+
+  const getPoolTokenSupply = async () => {
+    const poolToken = new Token(
+      connection,
+      pool.account.mint,
+      TOKEN_PROGRAM_ID,
+      Keypair.generate()
+    )
+
+    const poolMintInfo = await poolToken.getMintInfo()
+    const { supply } = poolMintInfo
+
+    return supply.toNumber()
+  }
+
+  useEffect(() => {
+    const getPool = async () => {
+      const tokensData = await getAllTokensData(wallet.publicKey, connection)
+      const tokenSupply = await getPoolTokenSupply()
+
+      setPoolTokensSupply(tokenSupply)
+      setAllTokensData(tokensData)
+    }
+    getPool()
+  }, [])
+
+  const [availableWithdrawAmountTokenA] = calculateWithdrawAmount({
+    selectedPool: pool,
+    poolTokenAmount: usersLpTokensAmount,
+    supply: poolTokensSupply,
+  })
+
+  const lpTokensToBurn =
+    (baseAmount / removeDecimals(availableWithdrawAmountTokenA, 9)) *
+    usersLpTokens
+
+  console.log({
+    lpTokensToBurn,
+    baseAmount,
+    availableWithdrawAmountTokenA: removeDecimals(
+      availableWithdrawAmountTokenA,
+      9
+    ),
+    usersLpTokens,
+    poolTokensSupply,
+  })
 
   const withdraw = async () => {
     const result = await redeemLiquidity({
@@ -56,6 +120,10 @@ export const WithdrawLiquidity = ({
       userTokenAccountB,
       baseTokenDecimals,
       quoteTokenDecimals,
+      baseTokenAmount: baseAmount,
+      quoteTokenAmount: quoteAmount,
+      lpTokenWalletMint: usersLpTokensAddress,
+      lpTokensToBurn,
     })
 
     console.log({ result })

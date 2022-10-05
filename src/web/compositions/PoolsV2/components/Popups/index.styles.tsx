@@ -102,16 +102,6 @@ export const Column = styled.div<ColumnType>`
   margin: ${(props) => props.margin || '0'};
   overflow: ${(props) => props.overflow || 'hidden'};
 `
-export const Container = styled.div`
-  background: ${(props) => props.theme.colors.white5};
-  width: auto;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.6em;
-  padding: 0.5em;
-`
 
 export const SmallModal = styled.div`
   padding: 0 1em 1em 1em;

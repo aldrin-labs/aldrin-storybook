@@ -264,6 +264,10 @@ export const PositionInfo = ({
         pool={pool}
         maxBaseAmount={maxBaseAmount}
         maxQuoteAmount={maxQuoteAmount}
+        userTokenAccountA={userTokenAccountA}
+        userTokenAccountB={userTokenAccountB}
+        baseTokenDecimals={baseTokenDecimals}
+        quoteTokenDecimals={quoteTokenDecimals}
       />
       <DepositLiquidity
         needBlur

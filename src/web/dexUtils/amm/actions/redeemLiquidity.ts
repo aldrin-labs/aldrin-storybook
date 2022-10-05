@@ -18,6 +18,10 @@ export const redeemLiquidity = async ({
   userTokenAccountB,
   baseTokenDecimals,
   quoteTokenDecimals,
+  baseTokenAmount,
+  quoteTokenAmount,
+  lpTokenWalletMint,
+  lpTokensToBurn,
 }: {
   wallet: AuthorizedWalletAdapter
   connection: AldrinConnection
@@ -26,10 +30,14 @@ export const redeemLiquidity = async ({
   userTokenAccountB: string
   baseTokenDecimals: number
   quoteTokenDecimals: number
+  baseTokenAmount: number
+  quoteTokenAmount: number
+  lpTokenWalletMint: string
+  lpTokensToBurn: number
 }) => {
   const walletWithPk = walletAdapterToWallet(wallet)
 
-  const depositLiquidityTransaction = await createRedeemLiquidityTransaction({
+  const redeemLiquidityTransaction = await createRedeemLiquidityTransaction({
     wallet: walletWithPk,
     connection,
     pool,
@@ -37,14 +45,18 @@ export const redeemLiquidity = async ({
     userTokenAccountB,
     baseTokenDecimals,
     quoteTokenDecimals,
+    baseTokenAmount,
+    quoteTokenAmount,
+    lpTokenWalletMint,
+    lpTokensToBurn,
   })
 
   const tx = buildTransactions(
-    depositLiquidityTransaction.instructions.map((instruction) => ({
+    redeemLiquidityTransaction.instructions.map((instruction) => ({
       instruction,
     })),
     wallet.publicKey,
-    depositLiquidityTransaction.signers
+    []
   )
 
   const result = await signAndSendTransactions({

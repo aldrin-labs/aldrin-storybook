@@ -2,11 +2,14 @@ import React from 'react'
 
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
+import {
+  RootRow,
+  Container as TokenContainer,
+} from '@sb/compositions/PoolsV2/index.styles'
 
 import { RIN_MINT } from '@core/solana'
 
-import { Container as TokenContainer, Column } from '../../../index.styles'
+import { Column } from '../../../index.styles'
 import {
   Container,
   LeftHalfContainer,
