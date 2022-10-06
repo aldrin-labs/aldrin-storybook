@@ -1,34 +1,10 @@
 import { FONT_SIZES, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { CircleIconContainer } from '@sb/compositions/StakingV2/index.styles'
+
 import { Row } from '../index.styles'
-
-type CircleIconContainerType = {
-  size?: string
-}
-
-type PeriodButtonType = {
-  isActive: boolean
-}
-
-type LabelType = {
-  weight?: string
-  size?: string
-  padding?: string
-}
-
-export const CircleIconContainer = styled.div<CircleIconContainerType>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: ${(props) => props.size || '2em'};
-  height: ${(props) => props.size || '2em'};
-  background: ${(props) => props.theme.colors.gray7};
-  border-radius: 50%;
-  font-family: Avenir Next Bold;
-  color: ${(props) => props.theme.colors.gray0};
-  line-height: ${(props) => props.size || '2em'};
-`
+import { LabelType, PeriodButtonType } from '../types'
 
 export const PositionatedIconContainer = styled(CircleIconContainer)`
   position: absolute;

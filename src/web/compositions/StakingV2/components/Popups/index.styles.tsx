@@ -1,11 +1,10 @@
 import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
-import { RootRow } from '../../index.styles'
+import { CircleIconContainer, RootRow } from '../../index.styles'
 import {
   RowType,
   BoxType,
-  CircleIconContainerType,
   ColumnType,
   PeriodButtonType,
   ModalType,
@@ -176,19 +175,6 @@ export const Container = styled.div`
   align-items: center;
   border-radius: 0.6em;
   padding: 0.5em;
-`
-
-export const CircleIconContainer = styled.div<CircleIconContainerType>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: ${(props) => props.size || '2em'};
-  height: ${(props) => props.size || '2em'};
-  background: ${(props) => props.theme.colors.gray7};
-  border-radius: 50%;
-  font-family: Avenir Next Bold;
-  color: ${(props) => props.theme.colors.gray0};
-  line-height: ${(props) => props.size || '2em'};
 `
 
 export const PositionatedIconContainer = styled(CircleIconContainer)`

@@ -5,6 +5,7 @@ import { Button, PADDINGS } from '@sb/components/Button'
 import { StretchedBlock, WideContent } from '@sb/components/Layout'
 
 import bg from './components/Icons/bg.png'
+import { CircleIconContainerType } from './components/Popups/types'
 
 type FilterButtonType = {
   isActive: boolean
@@ -201,4 +202,17 @@ export const ImageContainer = styled.div`
     height: 120px;
     left: 60%;
   }
+`
+
+export const CircleIconContainer = styled.div<CircleIconContainerType>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${(props) => props.size || '2em'};
+  height: ${(props) => props.size || '2em'};
+  background: ${(props) => props.theme.colors.gray7};
+  border-radius: 50%;
+  font-family: Avenir Next Bold;
+  color: ${(props) => props.theme.colors.gray0};
+  line-height: ${(props) => props.size || '2em'};
 `

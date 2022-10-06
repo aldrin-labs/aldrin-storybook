@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Row } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
 
+import { CircleIconContainer } from '../../index.styles'
 import { InputContainerProps, InputProps } from './types'
 
 export const InvisibleInput = styled.input`

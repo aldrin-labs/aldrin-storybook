@@ -1,31 +1,9 @@
 import styled from 'styled-components'
 
+import { CircleIconContainer } from '@sb/compositions/PoolsV2/index.styles'
+
 import { StyledModal } from '../index.styles'
-
-type CircleIconContainerType = {
-  size?: string
-}
-
-type PeriodButtonType = {
-  isActive: boolean
-}
-
-type ModalType = {
-  needBlur?: boolean
-}
-
-export const CircleIconContainer = styled.div<CircleIconContainerType>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: ${(props) => props.size || '2em'};
-  height: ${(props) => props.size || '2em'};
-  background: ${(props) => props.theme.colors.white6};
-  border-radius: 50%;
-  font-family: Avenir Next Bold;
-  color: ${(props) => props.theme.colors.gray0};
-  line-height: ${(props) => props.size || '2em'};
-`
+import { ModalType, PeriodButtonType } from '../types'
 
 export const PositionatedIconContainer = styled(CircleIconContainer)`
   position: absolute;

@@ -153,3 +153,16 @@ export const Container = styled.div`
   border-radius: 0.6em;
   padding: 0.5em;
 `
+
+export const CircleIconContainer = styled.div<CircleIconContainerType>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${(props) => props.size || '2em'};
+  height: ${(props) => props.size || '2em'};
+  background: ${(props) => props.theme.colors.white5};
+  border-radius: 50%;
+  font-family: Avenir Next Bold;
+  color: ${(props) => props.theme.colors.gray0};
+  line-height: ${(props) => props.size || '2em'};
+`

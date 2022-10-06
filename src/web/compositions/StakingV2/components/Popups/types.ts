@@ -36,3 +36,9 @@ export type PeriodButtonType = {
 export type ModalType = {
   needBlur?: boolean
 }
+
+export type LabelType = {
+  weight?: string
+  size?: string
+  padding?: string
+}
