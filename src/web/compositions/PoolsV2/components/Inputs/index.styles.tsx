@@ -74,6 +74,7 @@ export const CustomTextInputContainer = styled(
   padding: 0.3em 0;
   background: ${(props) => props.theme.colors.white4};
 `
+
 export const FirstInputContainer = styled.div`
   width: 100%;
   display: flex;
@@ -82,7 +83,7 @@ export const FirstInputContainer = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between;
-  padding: 0 0 0.8em 0;
+  padding: 0.5em 1em;
   border-bottom: 1px solid ${(props) => props.theme.colors.white4};
 `
 
@@ -94,7 +95,7 @@ export const SecondInputContainer = styled.div`
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-between;
-  padding: 0.8em 0 0 0;
+  padding: 0.8em 1em 0;
 `
 
 export const PositionatedIconContainer = styled(CircleIconContainer)`
