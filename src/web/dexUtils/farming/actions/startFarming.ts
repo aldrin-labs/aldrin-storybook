@@ -1,4 +1,9 @@
-import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import {
+  ComputeBudgetProgram,
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+} from '@solana/web3.js'
 import BN from 'bn.js'
 
 import {
@@ -45,7 +50,14 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
     wallet,
     connection,
   })
+
+  const requestCUIx = ComputeBudgetProgram.requestUnits({
+    units: 1_400_000,
+    additionalFee: 10_000,
+  })
+
   instructions.push(instruction)
+  instructions.push(requestCUIx)
 
   return signAndSendTransactions({
     wallet,
