@@ -283,6 +283,7 @@ export const SwapContentContainer = styled(Row)`
   padding: 55px 0;
   width: 24em;
   height: 100%;
+  background: transparent;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     width: 100%;
