@@ -1,5 +1,10 @@
 import { parseMintAccount } from '@project-serum/common'
-import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import {
+  ComputeBudgetProgram,
+  PublicKey,
+  Transaction,
+  TransactionInstruction,
+} from '@solana/web3.js'
 import { BN } from 'bn.js'
 
 import {
@@ -51,7 +56,13 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
     tokenAmount,
   })
 
+  const requestCUIx = ComputeBudgetProgram.requestUnits({
+    units: 1_400_000,
+    additionalFee: 10_000,
+  })
+
   instructions.push(instruction)
+  instructions.push(requestCUIx)
 
   return signAndSendTransactions({
     wallet,
