@@ -56,8 +56,8 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
     additionalFee: 10_000,
   })
 
-  instructions.push(instruction)
   instructions.push(requestCUIx)
+  instructions.push(instruction)
 
   return signAndSendTransactions({
     wallet,
