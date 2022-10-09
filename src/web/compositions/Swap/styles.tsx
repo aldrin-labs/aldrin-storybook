@@ -280,7 +280,7 @@ export const SwapPageLayout = styled(Page)`
   }
 `
 export const SwapContentContainer = styled(Row)`
-  padding: 55px 0px;
+  padding: 30px 0px;
   width: 24em;
   height: 100%;
 
