@@ -205,9 +205,11 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     farmings.map((fs) => getTokenNameByMintAddress(fs.farmingTokenMint))
   ).join(' and ')
 
-  const showTooltip = !hasUnstaked && !hasStaked
+  const showTooltip = (!hasUnstaked && !hasStaked) || isRegionRestricted
   const tooltipText = showTooltip
-    ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+    ? isRegionRestricted
+      ? "Sorry, Aldrin.com doesn't offer its services in your region."
+      : `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
     : null
 
   const farmingRemain = farmings.reduce((acc, fs) => {
