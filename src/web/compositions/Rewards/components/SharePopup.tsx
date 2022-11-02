@@ -1,25 +1,24 @@
-import React, { useState } from 'react'
-import { CardText } from '@sb/compositions/Rewards'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import styled from 'styled-components'
-import { compose } from 'recompose'
-import { notify } from '@sb/dexUtils/notifications'
-
+import { Paper } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
-import { ClearButton } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
 import { withTheme } from '@material-ui/styles'
+import React, { useState } from 'react'
+import { compose } from 'recompose'
+import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { ClearButton } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { CardText } from '@sb/compositions/Rewards'
+import { notify } from '@sb/dexUtils/notifications'
+
 import blackTwitter from '@icons/blackTwitter.svg'
 
-import DecefiTemplate1 from '@icons/DecefiTemplate1.png'
-import { Paper } from '@material-ui/core'
-import DecefiTemplate4 from '@icons/DecefiTemplate4.png'
-import DecefiTemplate3 from '@icons/DecefiTemplate3.png'
-import DecefiTemplate2 from '@icons/DecefiTemplate2.png'
+import DecefiTemplate1 from '../icons/DecefiTemplate1.png'
+import DecefiTemplate2 from '../icons/DecefiTemplate2.png'
+import DecefiTemplate3 from '../icons/DecefiTemplate3.png'
+import DecefiTemplate4 from '../icons/DecefiTemplate4.png'
 
 const SharePop = styled.div`
   height: 68rem;
@@ -132,21 +131,20 @@ export const SharePopup = (props) => {
             </GifContainer>
           </RowContainer>
         </RowContainer>{' '}
-
         <RowContainer style={{ margin: '2rem auto' }}>
           <BtnCustom
             theme={theme}
             btnColor={theme.palette.grey.main}
             backgroundColor={theme.palette.blue.serum}
             hoverBackground={theme.palette.blue.serum}
-            padding={'1.5rem 0'}
-            height={'5rem'}
-            fontSize={'1.6rem'}
-            btnWidth={'34%'}
-            textTransform={'none'}
+            padding="1.5rem 0"
+            height="5rem"
+            fontSize="1.6rem"
+            btnWidth="34%"
+            textTransform="none"
             href={`https://twitter.com/intent/tweet?text=Decefi.%20Self-custodial%20perpetual%20futures%20exchange%20with%20deep%20centralized%20liquidity.%0A%0AJoin%20%24DCFI%20promo%20farming%3A%20https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0AProduct%20demo%20coming%20soon.%20Follow%20%40Decefi_official%20to%20stay%20tuned.%0A%0A%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24CCAI%0A${choosenPic}`}
             rel="noopener noreferrel"
-            target={'_blank'}
+            target="_blank"
             onClick={(e) => {
               if (publicKey === '') {
                 e.preventDefault()
@@ -160,8 +158,8 @@ export const SharePopup = (props) => {
           >
             <SvgIcon
               src={blackTwitter}
-              width={'2.5rem'}
-              height={'2.5rem'}
+              width="2.5rem"
+              height="2.5rem"
               style={{ marginRight: '1rem' }}
             />{' '}
             Share

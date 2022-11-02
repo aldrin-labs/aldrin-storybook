@@ -8,10 +8,9 @@ import {
 
 import { getAggregationsFromPricePrecision } from '@core/utils/chartPageUtils'
 
-import SortByAsks from '@icons/SortByAsks.svg'
-import SortByBids from '@icons/SortByBids.svg'
-import SortByBoth from '@icons/SortByBoth.svg'
-
+import SortByAsks from './icons/SortByAsks.png'
+import SortByBids from './icons/SortByBids.png'
+import SortByBoth from './icons/SortByBoth.png'
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 import OrderBookTable from './Tables/Asks/OrderBookTable'
@@ -20,11 +19,13 @@ import LastTrade, { LastTradeMobile } from './Tables/LastTrade/LastTrade'
 import { OrderBookStyledContainer } from './Tables/LastTrade/LastTrade.styles'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
-  state: IState = {
-    // will use to compare data and update from query
-    lastQueryData: null,
-    mode: 'both',
-    i: 0,
+  constructor(props: IProps) {
+    super(props)
+
+    this.state = {
+      // will use to compare data and update from query
+      mode: 'both',
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -55,7 +56,6 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         size: newCachedOrder.info.origQty,
       }
 
-      console.log('add order to ob')
       addOrderToOrderbookTree(transformedOrder)
     }
   }

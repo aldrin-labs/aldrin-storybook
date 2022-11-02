@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16">
-    <g fill="none" fill-rule="evenodd">
-        <path d="M-6-6h24v24H-6z"/>
-        <text fill="#4ED8DA" stroke="#4ED8DA" font-family="ArialRoundedMTBold, Arial Rounded MT Bold" font-size="20" transform="translate(-6 -6)">
-            <tspan x="7" y="21">#</tspan>
-        </text>
-    </g>
-</svg>
