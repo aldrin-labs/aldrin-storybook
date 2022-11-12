@@ -21,7 +21,7 @@ export const MSOL_MINT: string = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
 
 export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
-  : 'https://develop.wallet.cryptocurrencies.ai/'
+  : 'https://wallet.aldrin.com'
 
 export const CCAIListingTime = 1623333600
 
