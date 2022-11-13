@@ -92,14 +92,12 @@ const _IGNORE_DEPRECATED = false
 export const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-      // {
-      //   address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-      //   name: 'RIN/USDC',
-      //   programId: new PublicKey(
-      //     '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-      //   ),
-      //   deprecated: false,
-      // },
+      {
+        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        name: 'RIN/USDC_deprecated',
+        programId: DEX_PID,
+        deprecated: true,
+      },
       {
         address: new PublicKey('5YdZxgCTLQrzASAeszgfMU61xbz44v8VzUzC2GGB1bur'),
         name: 'RIN/USDC',
@@ -608,11 +606,6 @@ export function useOpenOrdersAccounts() {
   const [openOrdersPubkeys] = useOpenOrdersPubkeys()
 
   async function getOpenOrdersAccounts() {
-    console.log(
-      '[useOpenOrdersAccounts] getOpenOrdersAccounts',
-      market,
-      openOrdersPubkeys
-    )
     if (!connected) {
       return null
     }
