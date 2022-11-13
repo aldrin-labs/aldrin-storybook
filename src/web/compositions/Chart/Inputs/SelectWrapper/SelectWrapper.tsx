@@ -33,6 +33,7 @@ import 'react-virtualized/styles.css'
 
 import { toMap } from '@core/collection'
 
+import { DEX_PID } from '../../../../../../../core/src/config/dex'
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
@@ -355,6 +356,23 @@ const SelectWrapper = (props: IProps) => {
         !isMarketDelisted
       )
     })
+
+  filtredMarketsByExchange.push({
+    address: null,
+    closePrice: 0,
+    isCustomUserMarket: null,
+    isPrivateCustomMarket: null,
+    lastPriceDiff: 0,
+    maxPrice: null,
+    minPrice: null,
+    precentageTradesDiff: -100,
+    programId: DEX_PID,
+    symbol: 'RIN_USDC_deprecated',
+    tradesCount: null,
+    tradesDiff: 0,
+    volume: 0,
+    volumeChange: 0,
+  })
 
   return (
     <SelectPairListComponent

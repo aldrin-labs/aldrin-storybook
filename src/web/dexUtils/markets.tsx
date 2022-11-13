@@ -96,7 +96,7 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
         address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
         name: 'RIN/USDC_deprecated',
         programId: DEX_PID,
-        deprecated: true,
+        deprecated: false,
       },
       {
         address: new PublicKey('5YdZxgCTLQrzASAeszgfMU61xbz44v8VzUzC2GGB1bur'),
