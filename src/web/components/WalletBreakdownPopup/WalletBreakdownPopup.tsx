@@ -24,12 +24,12 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useCurrentUserOpenOrders } from '@sb/hooks/useCurrentUserOpenOrders'
 
 import { getSignedMoonpayUrl } from '@core/api'
-import { DEX_PID } from '@core/config/dex'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { walletAdapterToWallet } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
+import { useAwesomeMarkets } from '../../../../../core/src/utils/awesomeMarkets/useAwesomeMarkets'
 import copyIcon from './images/copy.svg'
 import disconnectIcon from './images/disconnect.svg'
 import infoCircleIcon from './images/info-circle.svg'
@@ -102,6 +102,7 @@ const WalletBreakdownPopup = ({
   const { enqueueSnackbar } = useSnackbar()
   const isMobile = useMobileSize()
   const tokenMap = useTokenInfos()
+  const awesomeMarkets = useAwesomeMarkets()
   const [openOrders, refreshOpenOrders] = useCurrentUserOpenOrders()
 
   const FREE_SLOT_BITS_MAX = new BN('f'.repeat(32), 16) // https://doc.rust-lang.org/std/u128/constant.MAX.html
@@ -161,13 +162,19 @@ const WalletBreakdownPopup = ({
     const walletWithPk = walletAdapterToWallet(wallet)
 
     openOrderWhichMightBeClosed.forEach((item) => {
+      const market = awesomeMarkets.find(
+        (_) => _.address.toString() === item.market.toString()
+      )
+      if (!market) {
+        throw new Error('Market not found')
+      }
       transaction.add(
         DexInstructions.closeOpenOrders({
           market: item.market,
           openOrders: item.address,
           owner: item.owner,
           solWallet: wallet.publicKey,
-          programId: DEX_PID,
+          programId: market.programId,
         })
       )
     })

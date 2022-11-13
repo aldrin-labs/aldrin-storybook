@@ -15,7 +15,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { OrderWithMarket } from '@sb/dexUtils/send'
 
 import { toMap } from '@core/collection'
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  DEX_PID,
+  FORK_DEX_PID,
+  getDexProgramIdByEndpoint,
+} from '@core/config/dex'
 import { AWESOME_MARKETS } from '@core/utils/awesomeMarkets/dictionaries'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
@@ -88,12 +92,18 @@ const _IGNORE_DEPRECATED = false
 export const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
+      // {
+      //   address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+      //   name: 'RIN/USDC',
+      //   programId: new PublicKey(
+      //     '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+      //   ),
+      //   deprecated: false,
+      // },
       {
-        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        address: new PublicKey('5YdZxgCTLQrzASAeszgfMU61xbz44v8VzUzC2GGB1bur'),
         name: 'RIN/USDC',
-        programId: new PublicKey(
-          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-        ),
+        programId: FORK_DEX_PID,
         deprecated: false,
       },
     ].concat(MARKETS)
@@ -437,7 +447,8 @@ export function MarketProvider({ children }) {
 }
 
 export function useMarket() {
-  return useContext(MarketContext)
+  const ctx = useContext(MarketContext)
+  return ctx
 }
 
 export function useMarkPrice() {
@@ -597,6 +608,11 @@ export function useOpenOrdersAccounts() {
   const [openOrdersPubkeys] = useOpenOrdersPubkeys()
 
   async function getOpenOrdersAccounts() {
+    console.log(
+      '[useOpenOrdersAccounts] getOpenOrdersAccounts',
+      market,
+      openOrdersPubkeys
+    )
     if (!connected) {
       return null
     }
@@ -638,10 +654,11 @@ export function useOpenOrdersAccounts() {
       return null
     }
 
+    console.log('openOrdersAccount123', market)
     const openOrdersAccount = OpenOrders.fromAccountInfo(
       openOrdersPublicKey,
       openOrdersAccountInfo,
-      DEX_PID
+      market._programId
     )
 
     // for using several openOrdersAccoutns we'll need to update this method
@@ -665,6 +682,7 @@ export function useOpenOrdersAccounts() {
 export function useAllOpenOrdersAccounts() {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+  const { market } = useMarket()
 
   async function getOpenOrdersAccounts() {
     if (!connected) {
@@ -674,7 +692,7 @@ export function useAllOpenOrdersAccounts() {
     const openOrdersAccounts = await OpenOrders.findForOwner(
       connection,
       wallet.publicKey,
-      DEX_PID
+      market._programId
     )
 
     return openOrdersAccounts

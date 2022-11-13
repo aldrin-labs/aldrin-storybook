@@ -7,7 +7,6 @@ import { isTransactionFailed } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { DEX_PID } from '@core/config/dex'
 import { transferSOLToWrappedAccountAndClose } from '@core/solana'
 
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
@@ -182,7 +181,7 @@ export const placeAllOrders = async ({
           transaction.loadedMarket._decoded.ownAddress,
           wallet.publicKey,
           openOrdersAccount.publicKey,
-          DEX_PID
+          transaction.loadedMarket._programId
         )
       )
     }

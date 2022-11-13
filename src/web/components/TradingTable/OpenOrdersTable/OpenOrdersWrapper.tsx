@@ -23,6 +23,7 @@ export const OpenOrdersTableWrapper = ({
 }) => {
   const openOrders = useOpenOrders()
 
+  console.log('openOrders', openOrders)
   return (
     <OpenOrdersTable
       {...{
