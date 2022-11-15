@@ -12,6 +12,7 @@ import {
   Content,
   FormGroup,
   Label,
+  Li,
 } from './CreateSerumMarketModal.styles'
 import { CreateSerumMarketModalProps } from './CreateSerumMarketModal.types'
 
@@ -64,12 +65,14 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
               justifyContent="space-between"
             >
               <div>
-                <ol>Create Market</ol>
-                <ol>Submit Listing</ol>
+                <ol>
+                  <Li $isActive={step === 1}>Create Market</Li>
+                  <Li $isActive={step === 2}>Submit Listing</Li>
+                </ol>
               </div>
               <div>
-                <Text>Market Creation Guide</Text>
-                <Text>About Aldrin CLOB</Text>
+                <Text color="white2">Market Creation Guide</Text>
+                <Text color="white2">About Aldrin CLOB</Text>
               </div>
             </FlexBlock>
           </Sidebar>

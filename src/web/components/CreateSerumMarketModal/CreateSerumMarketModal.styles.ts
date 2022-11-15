@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+import { FONT_SIZES } from '../../../variables/variables'
 import { ModalBody } from '../Modal/styles'
 
 export const Body = styled(ModalBody)`
@@ -12,6 +13,19 @@ export const Sidebar = styled.div`
   padding: 24px;
   box-sizing: border-box;
   min-height: 100%;
+  font-size: ${FONT_SIZES.sm};
+  color: ${(props) => props.theme.colors.white2};
+
+  ol {
+    padding: 0 0 0 24px;
+  }
+`
+
+export const Li = styled.li<{ $isActive: boolean }>`
+  padding: 6px 0;
+  color: ${(props) =>
+    props.$isActive ? props.theme.colors.white1 : props.theme.colors.white2};
+  font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
 `
 
 export const Content = styled.div`
@@ -20,6 +34,11 @@ export const Content = styled.div`
   box-sizing: border-box;
 `
 
-export const FormGroup = styled.div``
+export const FormGroup = styled.div`
+  padding: 12px 0;
+`
 
-export const Label = styled.label``
+export const Label = styled.label`
+  color: ${(props) => props.theme.colors.white2};
+  font-size: ${FONT_SIZES.sm};
+`
