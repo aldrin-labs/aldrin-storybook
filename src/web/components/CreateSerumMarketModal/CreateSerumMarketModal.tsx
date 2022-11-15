@@ -106,7 +106,6 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
                       formatter={INPUT_FORMATTERS.DECIMAL}
                     />
                   </FormGroup>
-
                   <Button type="submit">Create Market</Button>
                 </form>
               </FormikProvider>
