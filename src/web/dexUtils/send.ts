@@ -691,7 +691,7 @@ export async function listMarket({
 
   const authWallet = walletAdapterToWallet(wallet)
 
-  await signAndSendTransactions({
+  const result = await signAndSendTransactions({
     transactionsAndSigners: [
       { transaction: tx1, signers: [baseVault, quoteVault] },
       {
@@ -703,7 +703,7 @@ export async function listMarket({
     connection,
   })
 
-  return market.publicKey
+  return { result, market: market.publicKey }
 }
 
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>

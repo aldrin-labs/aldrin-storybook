@@ -151,8 +151,15 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
       }
       console.log('marketInfo', marketInfo)
       const market = await listMarket(marketInfo)
-      setMarketAddress(market)
-      setStep(2)
+      if (market.result === 'success') {
+        setMarketAddress(market.market)
+        setStep(2)
+      } else {
+        notify({
+          message: 'Error creating market',
+          type: 'error',
+        })
+      }
     },
   })
 
@@ -350,7 +357,6 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
                       <ConnectWalletWrapper size="button-only">
                         <Button
                           disabled={!form.isValid}
-                          onClick={() => form.handleSubmit()}
                           $variant="red"
                           $padding="lg"
                           type="submit"
