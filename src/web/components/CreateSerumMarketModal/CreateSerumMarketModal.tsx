@@ -1,4 +1,5 @@
-import { PublicKey } from '@solana/web3.js'
+import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { Keypair, PublicKey } from '@solana/web3.js'
 import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
 import { useTheme } from 'styled-components'
@@ -120,15 +121,36 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
     },
     onSubmit: async (values) => {
       console.log('Submit form', values)
-      const market = await listMarket({
+      const kp = Keypair.generate()
+      const bt = new Token(
+        connection,
+        new PublicKey(values.baseTokenMintAddress),
+        TOKEN_PROGRAM_ID,
+        kp
+      )
+      const qt = new Token(
+        connection,
+        new PublicKey(values.quoteTokenMintAddress),
+        TOKEN_PROGRAM_ID,
+        kp
+      )
+      const [baseTokenInfo, quoteTokeInfo] = await Promise.all([
+        bt.getMintInfo(),
+        qt.getMintInfo(),
+      ])
+      const marketInfo = {
         baseMint: new PublicKey(values.baseTokenMintAddress),
         quoteMint: new PublicKey(values.quoteTokenMintAddress),
-        quoteLotSize: parseFloat(values.tickSize),
-        baseLotSize: parseFloat(values.minOrderSize),
+        quoteLotSize:
+          parseFloat(values.tickSize) * 10 ** quoteTokeInfo.decimals,
+        baseLotSize:
+          parseFloat(values.minOrderSize) * 10 ** baseTokenInfo.decimals,
         dexProgramId: FORK_DEX_PID,
         connection,
         wallet,
-      })
+      }
+      console.log('marketInfo', marketInfo)
+      const market = await listMarket(marketInfo)
       setMarketAddress(market)
       setStep(2)
     },
