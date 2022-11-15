@@ -46,13 +46,10 @@ export async function cancelOrder(params: CancelOrderParams) {
     throw new Error(`cancelOrders: no publicKey for wallet: ${wallet}`)
   }
   const { publicKey } = wallet
-  const transaction = market.makeMatchOrdersTransaction(5)
 
   transaction.add(
     market.makeCancelOrderInstruction(connection, publicKey, order)
   )
-
-  transaction.add(market.makeMatchOrdersTransaction(5))
 
   return signAndSendSingleTransaction({
     transaction,
@@ -258,7 +255,6 @@ export async function amendOrder(params: AmendOrderParams) {
   if (!wallet.publicKey) {
     throw new Error(`Wallet does not have public key: ${wallet}`)
   }
-  const transaction = market.makeMatchOrdersTransaction(5)
   transaction.add(
     market.makeCancelOrderInstruction(connection, wallet.publicKey, order)
   )
@@ -490,7 +486,6 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
       : { openOrdersAccount }),
   }
 
-  transaction.add(market.makeMatchOrdersTransaction(5))
   const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({
     quoteMintAddress: market.quoteMintAddress,
     supportsReferralFees: market.supportsReferralFees,
@@ -506,7 +501,6 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
   console.log('placeOrder rest', rest)
 
   transaction.add(placeOrderTx)
-  transaction.add(market.makeMatchOrdersTransaction(5))
 
   console.log('placeOrder transaction after add', transaction)
 

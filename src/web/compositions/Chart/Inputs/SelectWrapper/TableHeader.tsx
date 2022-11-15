@@ -1,10 +1,8 @@
-import { Theme } from '@material-ui/core'
 import React, { useMemo, useCallback } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { marketsByCategories } from '@core/config/marketsByCategories'
 
 import ExpandTableIcon from '@icons/expandIcon.svg'
 import SqueezeTableIcon from '@icons/squeezeIcon.svg'
@@ -71,34 +69,32 @@ const TableHeader = ({
         // style={{ borderLeft: '.1rem solid #383B45' }}
       >
         <StyledTab
-          isSelected={tab === 'all'}
-          onClick={() => onTabChange('all')}
+          isSelected={tab === 'live'}
+          onClick={() => onTabChange('live')}
         >
-          All{' '}
+          Live{' '}
           <span
             style={{
-              color: tab === 'all' ? '#fbf2f2' : '#96999C',
-              marginLeft: '0.5rem',
+              color: tab === 'live' ? '#fbf2f2' : '#96999C',
             }}
           >
-            {`(${dataWithoutCustomMarkets.length})`}
+            {/* {`(${dataWithoutCustomMarkets.length})`} */}
           </span>
         </StyledTab>
         <StyledTab
-          isSelected={tab === 'favourite'}
-          onClick={() => onTabChange('favourite')}
+          isSelected={tab === 'deprecated'}
+          onClick={() => onTabChange('deprecated')}
         >
-          Favourite{' '}
+          Deprecated{' '}
           <span
             style={{
-              color: tab === 'favourite' ? '#fbf2f2' : '#96999C',
-              marginLeft: '0.5rem',
+              color: tab === 'deprecated' ? '#fbf2f2' : '#96999C',
             }}
           >
-            {`(${favouriteMarkets.length})`}
+            {/* {`(${favouriteMarkets.length})`} */}
           </span>
         </StyledTab>
-        <StyledTab
+        {/* <StyledTab
           isSelected={tab === 'solanaNative'}
           onClick={() => onTabChange('solanaNative')}
         >
@@ -153,7 +149,7 @@ const TableHeader = ({
           >
             {`(${filterSelectorDataForTab('sol').length})`}
           </span>
-        </StyledTab>{' '}
+        </StyledTab>{' '} */}
         {/* <StyledTab
           theme={theme}
           isSelected={tab === 'topGainers'}
@@ -172,7 +168,7 @@ const TableHeader = ({
         >
           Top Losers 24h
         </StyledTab> */}
-        {isAdvancedSelectorMode && (
+        {/* {isAdvancedSelectorMode && (
           <>
             {Object.entries(marketsByCategories).map(
               ([category, categoriesData]) => {
@@ -210,7 +206,7 @@ const TableHeader = ({
               </span>
             </StyledTab>
           </>
-        )}
+        )} */}
       </Row>
     </StyledHeader>
   )

@@ -1,5 +1,4 @@
 import { Grid, InputAdornment } from '@material-ui/core'
-import marketsList from 'aldrin-registry/src/markets.json'
 import dayjs from 'dayjs'
 import { sortBy, partition } from 'lodash-es'
 import React, { useState, useEffect, useCallback } from 'react'
@@ -31,9 +30,8 @@ import search from '@icons/search.svg'
 
 import 'react-virtualized/styles.css'
 
-import { toMap } from '@core/collection'
-
 import { DEX_PID } from '../../../../../../../core/src/config/dex'
+import { useAllMarketsList } from '../../../../dexUtils/markets'
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
@@ -313,8 +311,10 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
 
 const SelectWrapper = (props: IProps) => {
   const [searchValue, setSearchValue] = useState('')
-  const [tab, setTab] = useState<SelectTabType>('all')
+  const [tab, setTab] = useState<SelectTabType>('live')
+  const markets = useAllMarketsList()
 
+  console.log('markets', markets)
   const [selectorMode, setSelectorMode] = useLocalStorageState(
     'selectorMode',
     'basic'
@@ -343,19 +343,18 @@ const SelectWrapper = (props: IProps) => {
     setSearchValue(e.target.value)
   }
 
-  const markets = toMap(marketsList, (market) => market.name)
-
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
-  const filtredMarketsByExchange =
-    getSerumMarketDataQuery.getSerumMarketData.filter((el) => {
-      const isMarketDelisted =
-        markets.get(el.symbol.replace('_', '/'))?.delisted || false
-      return (
-        el.symbol &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !isMarketDelisted
-      )
+
+  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData
+    .filter((el) => {
+      return el.symbol && !Array.isArray(el.symbol.match(fiatRegexp))
     })
+    .map((_) => ({
+      ..._,
+      programId: _.programId || markets.get(_.symbol)?.programId?.toString(),
+    }))
+
+  console.log('getSerumMarketData', markets, filtredMarketsByExchange)
 
   filtredMarketsByExchange.push({
     address: null,

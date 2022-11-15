@@ -99,7 +99,7 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
         deprecated: false,
       },
       {
-        address: new PublicKey('5YdZxgCTLQrzASAeszgfMU61xbz44v8VzUzC2GGB1bur'),
+        address: new PublicKey('AGfZg4Q2DfH5gvfie51LEG6AkVx5mA1pVW7SBusNm6aK'),
         name: 'RIN/USDC',
         programId: FORK_DEX_PID,
         deprecated: false,

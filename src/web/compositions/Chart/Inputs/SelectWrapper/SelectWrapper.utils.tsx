@@ -7,7 +7,6 @@ import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
-import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
 import {
   getNumberOfDecimalsFromNumber,
@@ -23,6 +22,7 @@ import favouriteUnselected from '@icons/favouriteUnselected.svg'
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
 
+import { DEX_PID, FORK_DEX_PID } from '../../../../../../../core/src/config/dex'
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
   IconContainer,
@@ -40,6 +40,8 @@ export const filterNativeSolanaMarkets = (data, tokenMap) =>
     return !baseTokenInfo?.name?.includes('Wrapped')
   })
 
+const FORK_PK = FORK_DEX_PID.toString()
+const LEGACY_SERUM_PK = DEX_PID.toString()
 export const filterSelectorDataByTab = ({
   tab,
   data,
@@ -53,127 +55,138 @@ export const filterSelectorDataByTab = ({
   tokenMap: Map<string, any>
   favouriteMarkets: string[]
 }) => {
-  let processedData = [...data]
+  const processedData = [...data]
 
-  const { usdcPairsMap, usdtPairsMap } = getMarketsMapsByCoins(data)
-
-  const marketsCategoriesData = Object.entries(marketsByCategories)
-
-  if (tab !== 'all') {
-    if (tab === 'favourite') {
-      processedData = processedData.filter((el) =>
-        favouriteMarkets.includes(el.symbol)
-      )
-    }
-    if (tab === 'usdc') {
-      processedData = processedData.filter(
-        (el) =>
-          !el.symbol.includes('BULL') &&
-          !el.symbol.includes('BEAR') &&
-          usdcPairsMap.has(el.symbol)
-      )
-    }
-
-    if (tab === 'usdt') {
-      processedData = processedData.filter(
-        (el) =>
-          !el.symbol.includes('BULL') &&
-          !el.symbol.includes('BEAR') &&
-          usdtPairsMap.has(el.symbol)
-      )
-    }
-
-    if (tab === 'sol') {
-      processedData = processedData.filter((el) => {
-        const [_, quote] = el.symbol.split('_')
-        return quote === 'SOL'
-      })
-    }
-
-    if (tab === 'solanaNative') {
-      processedData = processedData.filter((el) => {
-        const [base] = el.symbol.split('_')
-        const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
-
-        return !baseTokenInfo?.name?.includes('Wrapped')
-      })
-    }
-
-    marketsCategoriesData?.forEach(([category, data]) => {
-      const { tokens } = data
-
-      if (tab === category) {
-        processedData = processedData.filter((el) => {
-          const [base] = el.symbol.split('_')
-          return tokens.includes(base)
-        })
-      }
+  console.log('processedData', processedData)
+  if (tab === 'live') {
+    return processedData.filter((el) => {
+      return el.programId?.toString() === FORK_PK
     })
-
-    if (tab === 'leveraged') {
-      processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
-      )
-    }
-
-    if (tab === 'topGainers' || tab === 'topLosers') {
-      processedData = processedData.sort((a, b) => {
-        const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
-
-        const strippedLastPriceDiffA = +stripDigitPlaces(
-          a.lastPriceDiff,
-          pricePrecisionA
-        )
-
-        const strippedMarkPriceA = +stripDigitPlaces(
-          a.closePrice,
-          pricePrecisionA
-        )
-
-        const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
-
-        const priceChangePercentageA = !prevClosePriceA
-          ? 0
-          : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
-
-        const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
-
-        const strippedLastPriceDiffB = +stripDigitPlaces(
-          b.lastPriceDiff,
-          pricePrecisionB
-        )
-
-        const strippedMarkPriceB = +stripDigitPlaces(
-          b.closePrice,
-          pricePrecisionB
-        )
-
-        const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
-
-        const priceChangePercentageB = !prevClosePriceB
-          ? 0
-          : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
-
-        return tab === 'topGainers'
-          ? priceChangePercentageB - priceChangePercentageA
-          : priceChangePercentageA - priceChangePercentageB
-      })
-    }
-
-    if (tab === 'customMarkets') {
-      processedData = data.filter(
-        (el) =>
-          allMarketsMap.has(el.symbol) &&
-          allMarketsMap.get(el.symbol).isCustomUserMarket
-      )
-    } else {
-      processedData = processedData.filter((el) => !el.isCustomUserMarket)
-    }
-  } else {
-    processedData = processedData.filter((el) => !el.isCustomUserMarket)
   }
 
-  return processedData
+  return processedData.filter(
+    (el) => el.programId?.toString() === LEGACY_SERUM_PK
+  )
+
+  // const { usdcPairsMap, usdtPairsMap } = getMarketsMapsByCoins(data)
+
+  // const marketsCategoriesData = Object.entries(marketsByCategories)
+
+  // if (tab !== 'all') {
+  //   if (tab === 'favourite') {
+  //     processedData = processedData.filter((el) =>
+  //       favouriteMarkets.includes(el.symbol)
+  //     )
+  //   }
+  //   if (tab === 'usdc') {
+  //     processedData = processedData.filter(
+  //       (el) =>
+  //         !el.symbol.includes('BULL') &&
+  //         !el.symbol.includes('BEAR') &&
+  //         usdcPairsMap.has(el.symbol)
+  //     )
+  //   }
+
+  //   if (tab === 'usdt') {
+  //     processedData = processedData.filter(
+  //       (el) =>
+  //         !el.symbol.includes('BULL') &&
+  //         !el.symbol.includes('BEAR') &&
+  //         usdtPairsMap.has(el.symbol)
+  //     )
+  //   }
+
+  //   if (tab === 'sol') {
+  //     processedData = processedData.filter((el) => {
+  //       const [_, quote] = el.symbol.split('_')
+  //       return quote === 'SOL'
+  //     })
+  //   }
+
+  //   if (tab === 'solanaNative') {
+  //     processedData = processedData.filter((el) => {
+  //       const [base] = el.symbol.split('_')
+  //       const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+
+  //       return !baseTokenInfo?.name?.includes('Wrapped')
+  //     })
+  //   }
+
+  //   marketsCategoriesData?.forEach(([category, data]) => {
+  //     const { tokens } = data
+
+  //     if (tab === category) {
+  //       processedData = processedData.filter((el) => {
+  //         const [base] = el.symbol.split('_')
+  //         return tokens.includes(base)
+  //       })
+  //     }
+  //   })
+
+  //   if (tab === 'leveraged') {
+  //     processedData = processedData.filter(
+  //       (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+  //     )
+  //   }
+
+  //   if (tab === 'topGainers' || tab === 'topLosers') {
+  //     processedData = processedData.sort((a, b) => {
+  //       const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
+
+  //       const strippedLastPriceDiffA = +stripDigitPlaces(
+  //         a.lastPriceDiff,
+  //         pricePrecisionA
+  //       )
+
+  //       const strippedMarkPriceA = +stripDigitPlaces(
+  //         a.closePrice,
+  //         pricePrecisionA
+  //       )
+
+  //       const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
+
+  //       const priceChangePercentageA = !prevClosePriceA
+  //         ? 0
+  //         : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
+
+  //       const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
+
+  //       const strippedLastPriceDiffB = +stripDigitPlaces(
+  //         b.lastPriceDiff,
+  //         pricePrecisionB
+  //       )
+
+  //       const strippedMarkPriceB = +stripDigitPlaces(
+  //         b.closePrice,
+  //         pricePrecisionB
+  //       )
+
+  //       const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
+
+  //       const priceChangePercentageB = !prevClosePriceB
+  //         ? 0
+  //         : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
+
+  //       return tab === 'topGainers'
+  //         ? priceChangePercentageB - priceChangePercentageA
+  //         : priceChangePercentageA - priceChangePercentageB
+  //     })
+  //   }
+
+  //   if (tab === 'customMarkets') {
+  //     processedData = data.filter(
+  //       (el) =>
+  //         allMarketsMap.has(el.symbol) &&
+  //         allMarketsMap.get(el.symbol).isCustomUserMarket
+  //     )
+  //   } else {
+  //     processedData = processedData.filter((el) => !el.isCustomUserMarket)
+  //   }
+  // } else {
+  //   processedData = processedData.filter((el) => !el.isCustomUserMarket)
+  // }
+
+  // return processedData
 }
 
 export const filterDataBySymbolForDifferentDividers = ({
