@@ -4,6 +4,7 @@ import Logo from '@sb/components/Logo'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
+import { CreateSerumMarketModal } from '../CreateSerumMarketModal'
 import { DropDown } from './Dropdown'
 import {
   PoolsIcon,
@@ -32,6 +33,7 @@ import {
   MainLinksBlock,
   Left,
   Right,
+  ListMarketButton,
 } from './styles'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { WalletBlock } from './WalletBlock'
@@ -40,6 +42,7 @@ export const Header = React.memo(
   ({ setCurrentTheme }: { setCurrentTheme: (a: string) => void }) => {
     const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
     const [listingPopupOpen, setListingPopupOpen] = useState(false)
+    const [addMarketModalOpen, setAddMarketModalOpen] = useState(false)
 
     return (
       <>
@@ -176,6 +179,9 @@ export const Header = React.memo(
               <WalletContainer>
                 <WalletBlock />
               </WalletContainer>
+              <ListMarketButton onClick={() => setAddMarketModalOpen(true)}>
+                🔥 List Market
+              </ListMarketButton>
             </Right>
           </Container>
         </Wrapper>
@@ -191,6 +197,9 @@ export const Header = React.memo(
             setListingPopupOpen(false)
           }}
         />
+        {addMarketModalOpen && (
+          <CreateSerumMarketModal onClose={() => setAddMarketModalOpen(true)} />
+        )}
       </>
     )
   }
