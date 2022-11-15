@@ -47,6 +47,7 @@ export async function cancelOrder(params: CancelOrderParams) {
   }
   const { publicKey } = wallet
 
+  const transaction = new Transaction()
   transaction.add(
     market.makeCancelOrderInstruction(connection, publicKey, order)
   )

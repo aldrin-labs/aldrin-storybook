@@ -32,6 +32,7 @@ const OpenOrdersTable = (props) => {
   } = props
 
   const onCancelOrder = async (order) => {
+    console.log('onCancelOrder', order)
     try {
       await cancelOrder({
         order,
