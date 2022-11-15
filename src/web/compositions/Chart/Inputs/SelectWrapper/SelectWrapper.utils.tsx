@@ -56,8 +56,6 @@ export const filterSelectorDataByTab = ({
   favouriteMarkets: string[]
 }) => {
   const processedData = [...data]
-
-  console.log('processedData', processedData)
   if (tab === 'live') {
     return processedData.filter((el) => {
       return el.programId?.toString() === FORK_PK

@@ -314,7 +314,6 @@ const SelectWrapper = (props: IProps) => {
   const [tab, setTab] = useState<SelectTabType>('live')
   const markets = useAllMarketsList()
 
-  console.log('markets', markets)
   const [selectorMode, setSelectorMode] = useLocalStorageState(
     'selectorMode',
     'basic'
@@ -353,8 +352,6 @@ const SelectWrapper = (props: IProps) => {
       ..._,
       programId: _.programId || markets.get(_.symbol)?.programId?.toString(),
     }))
-
-  console.log('getSerumMarketData', markets, filtredMarketsByExchange)
 
   filtredMarketsByExchange.push({
     address: null,
