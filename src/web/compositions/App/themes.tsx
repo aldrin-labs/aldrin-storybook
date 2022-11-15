@@ -1,5 +1,11 @@
 import { merge } from 'lodash-es'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { ThemeProvider } from 'styled-components'
 
 export const THEME_DARK = 'dark'
@@ -186,10 +192,9 @@ const THEMES = {
   },
 }
 
-type ThemeProps = {
-  children: React.ReactNode
+type ThemeProps = PropsWithChildren<{
   theme: 'dark' | 'light'
-}
+}>
 
 const ThemeContext = React.createContext<{ themeName: string } | undefined>(
   undefined

@@ -71,7 +71,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
   const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
   const [isFeedbackPopupOpen, setIsFeedbackPopupOpen] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
-  const [addMarketModalOpen, setAddMarketModalOpen] = useState(false)
+  const [addMarketModalOpen, setAddMarketModalOpen] = useState(true)
   const {
     data,
     toggleFavouriteMarket,
