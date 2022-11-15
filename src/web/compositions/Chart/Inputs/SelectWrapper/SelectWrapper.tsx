@@ -30,7 +30,11 @@ import search from '@icons/search.svg'
 
 import 'react-virtualized/styles.css'
 
+import { useTheme } from 'styled-components'
+
 import { DEX_PID } from '../../../../../../../core/src/config/dex'
+import { FlexBlock } from '../../../../components/Layout'
+import { InlineText } from '../../../../components/Typography'
 import { useAllMarketsList } from '../../../../dexUtils/markets'
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
@@ -93,6 +97,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
   const isLoaded = isLoading === false
 
   const isAdvancedSelectorMode = selectorMode === 'advanced'
+  const t = useTheme()
 
   const changeChoosenMarketData = ({ symbol, marketAddress }) => {
     setChoosenMarketData({ symbol, marketAddress })
@@ -280,18 +285,24 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
             padding: '0 2rem',
             height: '4rem',
             fontFamily: 'Avenir Next Medium',
-            color: theme.palette.blue.serum,
             alignItems: 'center',
             fontSize: '1.5rem',
             textTransform: 'none',
-            textDecoration: 'underline',
-          }}
-          onClick={async (e) => {
-            e.stopPropagation()
-            setIsFeedbackPopupOpen(true)
+            flex: 1,
           }}
         >
-          Found an error in the catalog? Let us know!
+          <FlexBlock
+            style={{ width: '100%' }}
+            flex="1"
+            justifyContent="space-between"
+          >
+            <InlineText color={tab === 'live' ? 'white1' : 'red0'}>
+              {tab === 'live'
+                ? 'Want your market to be here?'
+                : 'Consider these markets to cancel your open orders only for your safety.'}
+            </InlineText>
+            {tab === 'live' && <InlineText color="green0">List it!</InlineText>}
+          </FlexBlock>
         </Row>
       </TableFooter>
       <WarningPopup />

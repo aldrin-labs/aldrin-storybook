@@ -17,7 +17,7 @@ export const StyledGrid = styled(Grid)`
   z-index: 900;
   background: ${(props) => props.theme.colors.white5};
   min-width: ${(props) => (props.isAdvancedSelectorMode ? '160rem' : '90rem')};
-  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '61rem')};
+  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '73rem')};
   border-radius: 2rem;
   overflow: hidden;
   border: 0.1rem solid ${(props) => props.theme.colors.white4};
@@ -65,9 +65,8 @@ export const IconContainer = styled.div`
 `
 
 export const StyledHeader = styled(RowContainer)`
-  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '10rem')};
-  padding: ${(props) =>
-    props.isAdvancedSelectorMode ? '0.5rem' : '1rem 0.5rem'};
+  height: 12rem;
+  padding: 1rem;
   justify-content: flex-start;
   flex-direction: row;
   flex-wrap: normal;
@@ -81,8 +80,7 @@ export const StyledHeader = styled(RowContainer)`
 `
 export const StyledTable = styled(Grid)`
   overflow: hidden;
-  height: ${(props) =>
-    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 15rem)'};
+  height: calc(100% - 21rem);
 
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
@@ -176,7 +174,8 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
       props.isSelected ? 'Avenir Next' : 'Avenir Next'};
     font-size: 1.4rem;
     margin: 0.6rem 0.55rem;
-    color: ${(props) => (props.isSelected ? '#fff' : props.theme.colors.white1)};
+    color: ${(props) =>
+      props.isSelected ? '#fff' : props.theme.colors.white1};
     width: auto;
     height: auto;
   }
