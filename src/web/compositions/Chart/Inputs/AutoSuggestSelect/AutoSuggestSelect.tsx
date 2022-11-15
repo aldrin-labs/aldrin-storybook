@@ -13,6 +13,7 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
+import { CreateSerumMarketModal } from '../../../../components/CreateSerumMarketModal'
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { IProps } from './AutoSuggestSeletec.types'
@@ -36,6 +37,7 @@ const IntegrationReactSelect = (props: IProps) => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const isMobile = useMobileSize()
+  const [addMarketModalOpen, setAddMarketModalOpen] = useState(false)
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -99,9 +101,13 @@ const IntegrationReactSelect = (props: IProps) => {
             isMintsPopupOpen={isMintsPopupOpen}
             setIsMintsPopupOpen={setIsMintsPopupOpen}
             marketName={marketName}
+            onMarketCreateRequest={() => setAddMarketModalOpen(true)}
           />
         )}
       </ExchangePair>
+      {addMarketModalOpen && (
+        <CreateSerumMarketModal onClose={() => setAddMarketModalOpen(false)} />
+      )}
     </>
   )
 }

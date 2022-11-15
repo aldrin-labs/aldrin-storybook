@@ -33,7 +33,6 @@ import 'react-virtualized/styles.css'
 import { useTheme } from 'styled-components'
 
 import { DEX_PID } from '../../../../../../../core/src/config/dex'
-import { CreateSerumMarketModal } from '../../../../components/CreateSerumMarketModal'
 import { FlexBlock } from '../../../../components/Layout'
 import { InlineText } from '../../../../components/Typography'
 import { useAllMarketsList } from '../../../../dexUtils/markets'
@@ -71,7 +70,6 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
   const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
   const [isFeedbackPopupOpen, setIsFeedbackPopupOpen] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
-  const [addMarketModalOpen, setAddMarketModalOpen] = useState(false)
   const {
     data,
     toggleFavouriteMarket,
@@ -91,6 +89,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
     setSelectorMode,
     setCustomMarkets,
     getSerumMarketDataQueryRefetch,
+    onMarketCreateRequest,
     onTabChange,
     marketName,
   } = props
@@ -308,7 +307,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
               </InlineText>
               {tab === 'live' && (
                 <InlineText
-                  onClick={() => setAddMarketModalOpen(true)}
+                  onClick={() => onMarketCreateRequest()}
                   style={{ textTransform: 'none' }}
                   color="green0"
                 >
@@ -330,9 +329,6 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
           onClose={() => setIsFeedbackPopupOpen(false)}
         />
       </StyledGrid>
-      {addMarketModalOpen && (
-        <CreateSerumMarketModal onClose={() => setAddMarketModalOpen(true)} />
-      )}
     </>
   )
 }
