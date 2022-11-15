@@ -339,7 +339,6 @@ function ChartPageComponent(props: any) {
         open={getTooltipSettings.chartPage}
         handleJoyrideCallback={handleJoyrideCallback}
       /> */}
-      <CreateSerumMarketModal onClose={() => {}} />
     </MainContainer>
   )
 }

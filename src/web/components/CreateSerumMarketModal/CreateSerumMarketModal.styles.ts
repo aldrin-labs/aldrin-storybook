@@ -1,6 +1,9 @@
 import styled from 'styled-components'
 
 import { FONT_SIZES } from '../../../variables/variables'
+import { Button } from '../Button'
+import { InputField } from '../Input'
+import { Append, InputContainer, InputEl } from '../Input/styles'
 import { ModalBody } from '../Modal/styles'
 
 export const Body = styled(ModalBody)`
@@ -21,10 +24,10 @@ export const Sidebar = styled.div`
   }
 `
 
-export const Li = styled.li<{ $isActive: boolean }>`
+export const Li = styled.li<{ $isActive: boolean; $color: string }>`
   padding: 6px 0;
   color: ${(props) =>
-    props.$isActive ? props.theme.colors.white1 : props.theme.colors.white2};
+    props.theme.colors[props.$color] || props.theme.colors.white2};
   font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
 `
 
@@ -41,4 +44,42 @@ export const FormGroup = styled.div`
 export const Label = styled.label`
   color: ${(props) => props.theme.colors.white2};
   font-size: ${FONT_SIZES.sm};
+`
+
+export const FormInput = styled(InputField)`
+  ${InputContainer} {
+    flex: 1;
+    display: flex;
+  }
+  ${InputEl} {
+    flex: 1;
+    font-size: ${FONT_SIZES.sm};
+  }
+  ${Append} {
+    flex: 0;
+  }
+`
+
+export const Step2Head = styled.div`
+  padding: 24px 0 48px;
+
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+`
+
+export const Step2Button = styled(Button)`
+  flex: 1;
+
+  margin: 12px 12px 0;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+`
+
+export const IconWrap = styled.div`
+  margin-right: 12px;
 `

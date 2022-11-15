@@ -119,6 +119,11 @@ const VARIANTS = {
     background: ${({ theme }) => rgba(theme.colors.red1, 0.15)};
   `,
 
+  'outline-red': css`
+    color: ${({ theme }) => theme.colors.red1};
+    border-color: ${({ theme }) => rgba(theme.colors.red1, 0.15)};
+  `,
+
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
     background: ${COLORS.cardsBack};

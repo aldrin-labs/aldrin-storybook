@@ -8,7 +8,6 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -18,6 +17,7 @@ import {
   SendTransactionStatus,
   SendTransactionDetails,
   buildInitializeFarmingTransaction,
+  signTransactions,
 } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
@@ -108,11 +108,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       })
 
       setFarmingTransactionStatus('signing')
-      const [signedTransaction] = await signTransactions({
-        transactionsAndSigners: [{ transaction, signers }],
+      const [signedTransaction] = await signTransactions(
+        [{ transaction, signers }],
         connection,
-        wallet,
-      })
+        wallet
+      )
 
       setFarmingTransactionStatus('sending')
 
