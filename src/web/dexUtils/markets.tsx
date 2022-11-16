@@ -106,7 +106,7 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
       },
       {
         name: 'SOL/USDC',
-        address: '2MqtAoWiQMcdbeezxFN9vmZui2axdhqMAtjFPRBDq1tB',
+        address: new PublicKey('2MqtAoWiQMcdbeezxFN9vmZui2axdhqMAtjFPRBDq1tB'),
         programId: FORK_DEX_PID,
         deprecated: false,
       },

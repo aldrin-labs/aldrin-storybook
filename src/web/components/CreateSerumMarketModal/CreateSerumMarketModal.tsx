@@ -231,7 +231,7 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
                     color="white2"
                     as="a"
                     size="sm"
-                    href="https://google.com"
+                    href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
                     target="_blank"
                   >
                     Market Creation Guide
@@ -243,7 +243,7 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
                     color="white2"
                     as="a"
                     size="sm"
-                    href="https://google.com"
+                    href="https://github.com/aldrin-exchange/CLOB"
                     target="_blank"
                   >
                     About Aldrin CLOB

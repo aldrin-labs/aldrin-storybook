@@ -7,7 +7,9 @@ import {
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 import { InlineText } from '@sb/components/Typography'
-import { useFeeDiscountKeys } from '@sb/dexUtils/markets'
+import { useFeeDiscountKeys, useMarket } from '@sb/dexUtils/markets'
+
+import { FORK_DEX_PID, SERUM_DEX_PID } from '@core/config/dex'
 
 export const feeTiers = [
   { feeTier: 0, taker: 0.04, maker: 0, token: '', balance: '' },
@@ -34,6 +36,11 @@ export const feeTiers = [
 export const forkFeeTiers = [
   { feeTier: 0, taker: 0.03, maker: -0.02, token: '', balance: '' },
 ]
+
+const feeTiersByPID = {
+  [SERUM_DEX_PID.toString()]: feeTiers,
+  [FORK_DEX_PID.toString()]: forkFeeTiers,
+}
 
 export const combineFeeTiers = (feeTiers, feeAccounts) => {
   const userTier =
@@ -64,6 +71,7 @@ export const combineFeeTiers = (feeTiers, feeAccounts) => {
 
 const FeeTiers = (props) => {
   const theme = useTheme()
+  const { market } = useMarket()
   const { tab, show, marketType } = props
 
   if (!show) {
@@ -71,8 +79,14 @@ const FeeTiers = (props) => {
   }
 
   const [feeAccounts] = useFeeDiscountKeys()
+  const feeTiersByMarketPID = market
+    ? feeTiersByPID[market.programId.toString()]
+    : []
 
-  const balancesProcessedData = combineFeeTiers(feeTiers, feeAccounts)
+  const balancesProcessedData = combineFeeTiers(
+    feeTiersByMarketPID,
+    feeAccounts
+  )
 
   return (
     <TableWithSort
