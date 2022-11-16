@@ -76,7 +76,7 @@ export const ActionButton = styled(Button)`
   height: 48px;
   font-weight: 600;
   font-size: 12px;
-  color: ${(props) => props.theme.colors.white1};
+  color: #fff;
   background: ${(props) => props.theme.colors.red1};
 
   flex: 1;
