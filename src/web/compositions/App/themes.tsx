@@ -38,11 +38,13 @@ export const THEME_COLORS = {
   RL1: '#E83B1A',
   RL2: '#B52E15',
   RL3: '#8C2410',
+  RL4: '#d26069',
 
   RD0: '#FF674A',
   RD1: '#FF8068',
   RD2: '#FF674A',
   RD3: '#E83B1A',
+  RD4: '#d26069',
 
   // yellow
   YL1: '#D7C202',
@@ -89,6 +91,7 @@ const THEMES = {
       red1: THEME_COLORS.RD1,
       red2: THEME_COLORS.RD2,
       red3: THEME_COLORS.RD3,
+      red4: THEME_COLORS.RD4,
 
       violet1: THEME_COLORS.VD1,
       violet2: THEME_COLORS.VD2,
@@ -140,6 +143,7 @@ const THEMES = {
       red1: THEME_COLORS.RL1,
       red2: THEME_COLORS.RL2,
       red3: THEME_COLORS.RL3,
+      red4: THEME_COLORS.RD4,
 
       violet1: THEME_COLORS.VL1,
       violet2: THEME_COLORS.VL2,

@@ -71,6 +71,7 @@ export const DefaultViewComponent = (
     showTableOnMobile,
     selectedKey,
     chartProps,
+    showSerumWarning,
     showChangePositionModeResult,
     terminalViewMode,
     updateTerminalViewMode,
@@ -111,7 +112,12 @@ export const DefaultViewComponent = (
   }, [currencyPair])
 
   return (
-    <Container container spacing={8} theme={theme}>
+    <Container
+      container
+      spacing={8}
+      theme={theme}
+      showSerumWarning={showSerumWarning}
+    >
       <Grid
         item
         container
@@ -275,6 +281,7 @@ export const DefaultViewComponent = (
               activeExchange={activeExchange}
               pair={baseQuoteArr}
               theme={theme}
+              showSerumWarning={showSerumWarning}
               chartPagePopup={chartPagePopup}
               closeChartPagePopup={closeChartPagePopup}
               quantityPrecision={quantityPrecision}
@@ -347,6 +354,7 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
     prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup &&
+    prev.showSerumWarning === next.showSerumWarning &&
     prev.maxLeverage === next.maxLeverage &&
     prev.themeMode === next.themeMode &&
     prev.minPriceDigits === next.minPriceDigits &&

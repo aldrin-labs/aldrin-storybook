@@ -1,5 +1,4 @@
 import { Grid, Theme } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
 import { withFormik } from 'formik'
 import { toNumber } from 'lodash-es'
 import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
@@ -25,6 +24,7 @@ import { formatNumberWithSpaces } from '../../dexUtils/utils'
 import { Button } from '../Button'
 import { INPUT_FORMATTERS } from '../Input'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
+import { DisabledTradingBanner } from '../TradingWrapper/components/DisabledTradingBanner'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
 import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
@@ -35,6 +35,7 @@ import {
   ConnectWalletButtonContainer,
   ConnectWalletDropdownContainer,
   Container,
+  DisabledTradingBannerContainer,
   SeparateInputTitle,
   SwitchersContainer,
   TerminalGridContainer,
@@ -252,7 +253,6 @@ const toFixedTrunc = (value, n) => {
   return `${v[0]}.${f}`
 }
 
-@withTheme()
 class TradingTerminal extends PureComponent<IPropsWithFormik> {
   state = {
     marketPrice: null,
@@ -548,6 +548,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       quoteCurrencyAccount,
       isButtonLoaderShowing,
       newTheme,
+      showSerumWarning,
     } = this.props
 
     const needCreateOpenOrdersAccount = !openOrdersAccount
@@ -857,89 +858,98 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               )}
             </InputsBlock>
           </Grid>
-          <ButtonBlock xs={3} item container>
-            <Grid xs={12} item container alignItems="center">
-              {!connected ? (
-                <>
-                  <ConnectWalletDropdownContainer>
-                    <Button
-                      $variant="primary"
-                      $width="xl"
-                      $padding="lg"
-                      $fontSize="lg"
-                      onClick={() => {
-                        this.setState({
-                          isConnectWalletPopupOpen: true,
-                        })
-                      }}
-                    >
-                      Connect wallet
-                    </Button>
-                  </ConnectWalletDropdownContainer>
-                  <ConnectWalletButtonContainer>
-                    <Button
-                      $variant="primary"
-                      $width="xl"
-                      $padding="lg"
-                      $fontSize="lg"
-                      onClick={() => this.setState({ isWalletPopupOpen: true })}
-                    >
-                      Connect wallet
-                    </Button>
-                  </ConnectWalletButtonContainer>
-                </>
-              ) : (
-                <InsufficientBalancePlaceholder
-                  pair={pair}
-                  SOLAmount={SOLAmount}
-                  sideType={sideType}
+          {!showSerumWarning && (
+            <ButtonBlock xs={3} item container>
+              <Grid xs={12} item container alignItems="center">
+                {!connected ? (
+                  <>
+                    <ConnectWalletDropdownContainer>
+                      <Button
+                        $variant="primary"
+                        $width="xl"
+                        $padding="lg"
+                        $fontSize="lg"
+                        onClick={() => {
+                          this.setState({
+                            isConnectWalletPopupOpen: true,
+                          })
+                        }}
+                      >
+                        Connect wallet
+                      </Button>
+                    </ConnectWalletDropdownContainer>
+                    <ConnectWalletButtonContainer>
+                      <Button
+                        $variant="primary"
+                        $width="xl"
+                        $padding="lg"
+                        $fontSize="lg"
+                        onClick={() =>
+                          this.setState({ isWalletPopupOpen: true })
+                        }
+                      >
+                        Connect wallet
+                      </Button>
+                    </ConnectWalletButtonContainer>
+                  </>
+                ) : (
+                  <InsufficientBalancePlaceholder
+                    pair={pair}
+                    SOLAmount={SOLAmount}
+                    sideType={sideType}
+                    theme={theme}
+                    isLoading={isButtonLoaderShowing}
+                    onClick={() => {
+                      onSendOrder({ values, market, wallet })
+                    }}
+                  />
+                )}
+                <MobileWalletDropdown
                   theme={theme}
-                  isLoading={isButtonLoaderShowing}
-                  onClick={() => {
-                    onSendOrder({ values, market, wallet })
-                  }}
+                  open={this.state.isWalletPopupOpen}
+                  onClose={() => this.setState({ isWalletPopupOpen: false })}
+                  setAutoConnect={setAutoConnect}
+                  providerUrl={providerUrl}
+                  setProvider={setProvider}
                 />
-              )}
-              <MobileWalletDropdown
-                theme={theme}
-                open={this.state.isWalletPopupOpen}
-                onClose={() => this.setState({ isWalletPopupOpen: false })}
-                setAutoConnect={setAutoConnect}
-                providerUrl={providerUrl}
-                setProvider={setProvider}
-              />
-              <ConfirmationPopup
-                theme={theme}
-                spread={spread}
-                open={this.state.isConfirmationPopupOpen}
-                pair={pair}
-                maxAmount={maxAmount}
-                minOrderSize={minOrderSize}
-                priceType={priceType}
-                onAmountChange={this.onAmountChange}
-                onTotalChange={this.onTotalChange}
-                isSPOTMarket={isSPOTMarket}
-                quantityPrecision={quantityPrecision}
-                priceForCalculate={priceForCalculate}
-                amount={values.amount}
-                total={values.total}
-                leverage={leverage}
-                isBuyType={isBuyType}
-                onPriceChange={this.onPriceChange}
-                values={values}
-                sideType={sideType}
-                onClose={this.closeConfirmationPopup}
-                costsOfTheFirstTrade={costsOfTheFirstTrade}
-                SOLFeeForTrade={SOLFeeForTrade}
-                needCreateOpenOrdersAccount={needCreateOpenOrdersAccount}
-                validateForm={validateForm}
-                handleSubmit={handleSubmit}
-                setIsButtonLoaderShowing={(value) =>
-                  this.setState({ isLoading: value })
-                }
-              />
-            </Grid>
-          </ButtonBlock>
+                <ConfirmationPopup
+                  theme={theme}
+                  spread={spread}
+                  open={this.state.isConfirmationPopupOpen}
+                  pair={pair}
+                  maxAmount={maxAmount}
+                  minOrderSize={minOrderSize}
+                  priceType={priceType}
+                  onAmountChange={this.onAmountChange}
+                  onTotalChange={this.onTotalChange}
+                  isSPOTMarket={isSPOTMarket}
+                  quantityPrecision={quantityPrecision}
+                  priceForCalculate={priceForCalculate}
+                  amount={values.amount}
+                  total={values.total}
+                  leverage={leverage}
+                  isBuyType={isBuyType}
+                  onPriceChange={this.onPriceChange}
+                  values={values}
+                  sideType={sideType}
+                  onClose={this.closeConfirmationPopup}
+                  costsOfTheFirstTrade={costsOfTheFirstTrade}
+                  SOLFeeForTrade={SOLFeeForTrade}
+                  needCreateOpenOrdersAccount={needCreateOpenOrdersAccount}
+                  validateForm={validateForm}
+                  handleSubmit={handleSubmit}
+                  setIsButtonLoaderShowing={(value) =>
+                    this.setState({ isLoading: value })
+                  }
+                />
+              </Grid>
+            </ButtonBlock>
+          )}
+          {showSerumWarning && (
+            <DisabledTradingBannerContainer>
+              <DisabledTradingBanner />
+            </DisabledTradingBannerContainer>
+          )}
         </TerminalGridContainer>
         <ConnectWalletPopup
           theme={theme}
