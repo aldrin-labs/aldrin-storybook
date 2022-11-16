@@ -33,6 +33,7 @@ import {
   MainLinksBlock,
   Left,
   Right,
+  ListMarketButton,
 } from './styles'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { WalletBlock } from './WalletBlock'
@@ -178,9 +179,9 @@ export const Header = React.memo(
               <WalletContainer>
                 <WalletBlock />
               </WalletContainer>
-              {/* <ListMarketButton onClick={() => setAddMarketModalOpen(true)}>
+              <ListMarketButton onClick={() => setAddMarketModalOpen(true)}>
                 🔥 List Market
-              </ListMarketButton> */}
+              </ListMarketButton>
             </Right>
           </Container>
         </Wrapper>

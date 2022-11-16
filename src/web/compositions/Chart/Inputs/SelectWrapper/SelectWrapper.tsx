@@ -306,7 +306,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
                     ''
                   : 'Consider these markets to cancel your open orders only for your safety.'}
               </InlineText>
-              {/* {tab === 'live' && (
+              {tab === 'live' && (
                 <InlineText
                   onClick={() => onMarketCreateRequest()}
                   style={{ textTransform: 'none' }}
@@ -314,7 +314,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
                 >
                   List it!
                 </InlineText>
-              )} */}
+              )}
             </FlexBlock>
           </Row>
         </TableFooter>
