@@ -1,23 +1,27 @@
 import { getFeeRates } from '@project-serum/serum'
 import { withSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
-
 import { graphql } from 'react-apollo'
+import { compose } from 'recompose'
+
 import TradingWrapper from '@sb/components/TradingWrapper'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
   useBaseCurrencyBalances,
-  useFeeDiscountKeys, useMarket,
+  useFeeDiscountKeys,
+  useMarket,
   useMarkPrice,
-  useOpenOrdersAccounts, useOrderbook, useQuoteCurrencyBalances,
-  useSelectedBaseCurrencyAccount, useSelectedOpenOrdersAccount,
-  useSelectedQuoteCurrencyAccount
+  useOpenOrdersAccounts,
+  useOrderbook,
+  useQuoteCurrencyBalances,
+  useSelectedBaseCurrencyAccount,
+  useSelectedOpenOrdersAccount,
+  useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { cancelOrder, placeOrder } from '@sb/dexUtils/send'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
-import { compose } from 'recompose'
 
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 import { roundDown } from '@core/utils/chartPageUtils'
@@ -440,6 +444,7 @@ const TradingComponent = (props: IProps) => {
       intervalId={intervalId}
       updateIntervalId={updateIntervalId}
       connected={wallet.connected}
+      showSerumWarning={props.showSerumWarning}
       wallet={wallet}
       spread={spread}
       setAutoConnect={setAutoConnect}

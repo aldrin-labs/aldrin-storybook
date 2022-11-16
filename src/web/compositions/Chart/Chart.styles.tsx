@@ -463,7 +463,9 @@ export const Container = styled(Grid)`
   font-family: Avenir Next Medium;
   background-color: ${(props) => props.theme.palette.dark.background};
 
-  height: calc(100% - 6rem);
+  height: calc(
+    100% - ${(props) => (props.showSerumWarning ? '14rem' : '6rem')}
+  );
 
   @media (max-width: 600px) {
     height: calc((var(--vh, 1vh) * 100) - 32rem);

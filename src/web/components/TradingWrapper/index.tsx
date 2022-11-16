@@ -18,6 +18,7 @@ import { client } from '@core/graphql/apolloClient'
 import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 
+import { DisabledTradingBanner } from './components/DisabledTradingBanner'
 import {
   TerminalContainer,
   TerminalMainGrid,
@@ -224,6 +225,7 @@ class SimpleTabs extends React.Component<any, any> {
       quoteCurrencyAccount,
       isButtonLoaderShowing,
       newTheme,
+      showSerumWarning,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -452,7 +454,13 @@ class SimpleTabs extends React.Component<any, any> {
             </div>
           </TerminalHeader>
 
-          <TerminalMainGrid item xs={12} container marketType={marketType}>
+          <TerminalMainGrid
+            item
+            xs={12}
+            container
+            marketType={marketType}
+            showSerumWarning={showSerumWarning}
+          >
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
               {TVAlertsBotEnabled ? (
                 <TradingViewBotTerminalMemo
@@ -503,6 +511,7 @@ class SimpleTabs extends React.Component<any, any> {
                         funds={funds}
                         wallet={wallet}
                         market={market}
+                        showSerumWarning={showSerumWarning}
                         lockedAmount={0}
                         key={JSON.stringify([pair])}
                         marketPrice={price}
@@ -723,6 +732,7 @@ class SimpleTabs extends React.Component<any, any> {
                           orderMode={orderMode}
                           TIFMode={TIFMode}
                           trigger={trigger}
+                          showSerumWarning={showSerumWarning}
                           updateWrapperState={this.updateWrapperState}
                         />
                       </TerminalContainer>
@@ -732,6 +742,7 @@ class SimpleTabs extends React.Component<any, any> {
               )}
             </div>
           </TerminalMainGrid>
+          {showSerumWarning && <DisabledTradingBanner />}
         </CustomCard>
       </TerminalComponentsContainer>
     )
