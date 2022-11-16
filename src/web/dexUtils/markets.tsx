@@ -104,6 +104,12 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
         programId: FORK_DEX_PID,
         deprecated: false,
       },
+      {
+        name: 'SOL/USDC',
+        address: '2MqtAoWiQMcdbeezxFN9vmZui2axdhqMAtjFPRBDq1tB',
+        programId: FORK_DEX_PID,
+        deprecated: false,
+      },
     ].concat(MARKETS)
 // : MARKETS
 
