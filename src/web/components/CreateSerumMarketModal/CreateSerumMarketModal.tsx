@@ -317,6 +317,7 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
                       borderRadius="md"
                       variant="outline"
                       name="minOrderSize"
+                      placeholder="Lot size, in Base token, (e.g. 0.001)"
                       formatter={INPUT_FORMATTERS.DECIMAL}
                     />
                     {form.errors.minOrderSize && form.touched.minOrderSize && (
@@ -332,6 +333,7 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
                     </Label>
                     <FormInput
                       name="tickSize"
+                      placeholder='Price tick size, in Quote token (e.g. "0.001"))'
                       borderRadius="md"
                       variant="outline"
                       formatter={INPUT_FORMATTERS.DECIMAL}
