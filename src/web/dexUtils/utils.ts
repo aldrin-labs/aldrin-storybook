@@ -21,7 +21,7 @@ export const MSOL_MINT: string = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
 
 export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
-  : 'https://wallet.aldrin.com'
+  : 'https://develop.wallet.cryptocurrencies.ai/'
 
 export const CCAIListingTime = 1623333600
 
@@ -158,9 +158,7 @@ export function convertDataURIToBinary(base64: string) {
   return new Buffer(base64, 'base64')
 }
 
-export const stripInputNumber = (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
+export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
   let value = `${e.target.value}`
 
   // add 0 if first symbol is dot
