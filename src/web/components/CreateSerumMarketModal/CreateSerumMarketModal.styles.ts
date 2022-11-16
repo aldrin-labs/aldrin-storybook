@@ -4,7 +4,9 @@ import { FONT_SIZES } from '../../../variables/variables'
 import { Button } from '../Button'
 import { InputField } from '../Input'
 import { Append, InputContainer, InputEl } from '../Input/styles'
+import { FlexBlock } from '../Layout'
 import { ModalBody } from '../Modal/styles'
+import { InlineText } from '../Typography'
 
 export const Body = styled(ModalBody)`
   width: 750px;
@@ -28,7 +30,7 @@ export const Li = styled.li<{ $isActive: boolean; $color: string }>`
   padding: 6px 0;
   color: ${(props) =>
     props.theme.colors[props.$color] || props.theme.colors.white2};
-  font-weight: ${(props) => (props.$isActive ? 'bold' : 'normal')};
+  font-weight: 600;
 `
 
 export const Content = styled.div`
@@ -66,10 +68,20 @@ export const Step2Head = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.colors.border};
 `
 
-export const Step2Button = styled(Button)`
+export const BottomSectionBlock = styled(FlexBlock)`
+  margin-top: 12px;
+`
+
+export const ActionButton = styled(Button)`
+  height: 48px;
+  font-weight: 600;
+  font-size: 12px;
+  color: ${(props) => props.theme.colors.white1};
+  background: ${(props) => props.theme.colors.red1};
+
   flex: 1;
 
-  margin: 12px 12px 0;
+  margin: 0 12px 0;
 
   &:first-child {
     margin-left: 0;
@@ -80,6 +92,20 @@ export const Step2Button = styled(Button)`
   }
 `
 
+export const Step2CloseButton = styled(ActionButton)`
+  color: ${(props) => props.theme.colors.red1};
+  background: inherit;
+  border: 1px solid ${(props) => props.theme.colors.red1};
+`
+
 export const IconWrap = styled.div`
   margin-right: 12px;
+`
+
+export const BottomLinkContainer = styled(FlexBlock)`
+  margin-top: 12px;
+`
+
+export const InlineTextLink = styled(InlineText)`
+  text-decoration: none;
 `
