@@ -31,6 +31,10 @@ export const feeTiers = [
   { feeTier: 6, taker: 0.03, maker: 0, token: 'MSRM', balance: 1 },
 ]
 
+export const forkFeeTiers = [
+  { feeTier: 0, taker: 0.03, maker: -0.02, token: '', balance: '' },
+]
+
 export const combineFeeTiers = (feeTiers, feeAccounts) => {
   const userTier =
     feeAccounts && feeAccounts.length > 0 ? feeAccounts[0].feeTier : 0
