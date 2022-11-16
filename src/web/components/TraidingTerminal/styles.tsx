@@ -552,6 +552,7 @@ export const DisabledTradingBannerContainer = styled.div`
     & div {
       height: 6rem;
       padding: 12px;
+      margin: 12px 0;
     }
 
     & span {
