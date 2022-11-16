@@ -117,8 +117,11 @@ export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
   <Grid {...rest} />
 ))`
   height: calc(
-    100% - ${(props) => (props.marketType === 0 ? '3.4rem' : '5.2rem')}
+    100% - ${(props) => (props.showSerumWarning ? '10.4rem' : '3.4rem')}
   );
+
+  overflow-y: ${(props) => (props.showSerumWarning ? 'scroll' : 'auto')};
+
   @media (max-width: 600px) {
     height: 100%;
   }
