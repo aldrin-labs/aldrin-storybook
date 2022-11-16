@@ -198,7 +198,9 @@ export const Header = React.memo(
           }}
         />
         {addMarketModalOpen && (
-          <CreateSerumMarketModal onClose={() => setAddMarketModalOpen(true)} />
+          <CreateSerumMarketModal
+            onClose={() => setAddMarketModalOpen(false)}
+          />
         )}
       </>
     )

@@ -30,7 +30,6 @@ import { finishJoyride } from '@core/utils/joyride'
 // import { Grid, Hidden } from '@material-ui/core'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 
-import { CreateSerumMarketModal } from '../../components/CreateSerumMarketModal'
 import MarketBlock from './components/MarketBlock/MarketBlock'
 import { WarningPopup } from './components/WarningPopup'
 // import { CardsPanel } from './components'
