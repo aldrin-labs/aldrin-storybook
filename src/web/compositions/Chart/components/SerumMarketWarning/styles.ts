@@ -9,7 +9,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  background: #d26069;
+  background: ${(props) => props.theme.colors.red4};
 `
 
 const Emoji = styled.span`
@@ -18,7 +18,7 @@ const Emoji = styled.span`
 `
 
 const Text = styled.span`
-  color: #fff;
+  color: ${(props) => props.theme.colors.white1};
   font-size: 12px;
 
   @media (max-width: 600px) {
