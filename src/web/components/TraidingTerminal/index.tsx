@@ -24,6 +24,7 @@ import { formatNumberWithSpaces } from '../../dexUtils/utils'
 import { Button } from '../Button'
 import { INPUT_FORMATTERS } from '../Input'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
+import { DisabledTradingBanner } from '../TradingWrapper/components/DisabledTradingBanner'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
 import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
@@ -34,6 +35,7 @@ import {
   ConnectWalletButtonContainer,
   ConnectWalletDropdownContainer,
   Container,
+  DisabledTradingBannerContainer,
   SeparateInputTitle,
   SwitchersContainer,
   TerminalGridContainer,
@@ -942,6 +944,11 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 />
               </Grid>
             </ButtonBlock>
+          )}
+          {showSerumWarning && (
+            <DisabledTradingBannerContainer>
+              <DisabledTradingBanner />
+            </DisabledTradingBannerContainer>
           )}
         </TerminalGridContainer>
         <ConnectWalletPopup

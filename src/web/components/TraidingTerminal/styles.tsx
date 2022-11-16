@@ -542,3 +542,20 @@ export const StyledInputsContainer = styled.div`
     display: ${(props) => (props.mode === 'market' ? 'auto' : 'none')};
   }
 `
+
+export const DisabledTradingBannerContainer = styled.div`
+  display: none;
+
+  @media (max-width: 600px) {
+    display: block;
+
+    & div {
+      height: 6rem;
+      padding: 12px;
+    }
+
+    & span {
+      font-size: 9px;
+    }
+  }
+`

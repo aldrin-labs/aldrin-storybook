@@ -20,6 +20,10 @@ const Emoji = styled.span`
 const Text = styled.span`
   color: #fff;
   font-size: 12px;
+
+  @media (max-width: 600px) {
+    font-size: 8px;
+  }
 `
 
 export { Container, Emoji, Text }
