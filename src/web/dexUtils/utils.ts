@@ -158,9 +158,7 @@ export function convertDataURIToBinary(base64: string) {
   return new Buffer(base64, 'base64')
 }
 
-export const stripInputNumber = (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
+export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
   let value = `${e.target.value}`
 
   // add 0 if first symbol is dot

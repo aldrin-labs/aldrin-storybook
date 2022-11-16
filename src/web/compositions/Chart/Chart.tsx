@@ -18,7 +18,7 @@ import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withRegionCheck, withMarketUtilsHOC, withErrorFallback } from '@sb/hoc'
 import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { tokensToDelist } from '@core/config/dex'
+import { SERUM_DEX_PID, tokensToDelist } from '@core/config/dex'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
@@ -32,6 +32,7 @@ import { finishJoyride } from '@core/utils/joyride'
 
 import { CreateSerumMarketModal } from '../../components/CreateSerumMarketModal'
 import MarketBlock from './components/MarketBlock/MarketBlock'
+import { SerumMarketWarning } from './components/SerumMarketWarning/SerumMarketWarning'
 import { WarningPopup } from './components/WarningPopup'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
@@ -216,6 +217,7 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
+  const showSerumWarning = market && market.programId.equals(SERUM_DEX_PID)
 
   return (
     <MainContainer fullscreen={false}>
@@ -255,6 +257,7 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
+      {showSerumWarning && <SerumMarketWarning />}
       <MarketBlock
         terminalViewMode={terminalViewMode}
         updateTerminalViewMode={updateTerminalViewMode}
@@ -281,6 +284,7 @@ function ChartPageComponent(props: any) {
         selectedKey={{ hedgeMode: false }}
         activeExchange="serum"
         terminalViewMode={terminalViewMode}
+        showSerumWarning={showSerumWarning}
         updateTerminalViewMode={(mode) => {
           if (mode === 'smartOrderMode') {
             finishJoyride({

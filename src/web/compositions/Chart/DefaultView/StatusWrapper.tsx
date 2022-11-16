@@ -1,7 +1,9 @@
 import { isEqual } from 'lodash-es'
 import { useSnackbar } from 'notistack'
 import React from 'react'
+
 import { orderError } from '@core/utils/errorsConfig'
+
 import { DefaultView } from './DefaultView'
 
 const OrderStatusWrapper = (props) => {
@@ -109,6 +111,7 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
     prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup &&
+    prev.showSerumWarning === next.showSerumWarning &&
     prev.maxLeverage === next.maxLeverage &&
     prev.themeMode === next.themeMode &&
     prev.minPriceDigits === next.minPriceDigits &&

@@ -15,6 +15,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { WALLET_PROVIDERS, getMaxWithdrawAmount } from '@core/solana'
+import { RIN_PROVIDER_URL } from '@core/solana/wallets/contsants'
 
 import {
   useAccountInfo,
@@ -60,7 +61,7 @@ export const WalletProvider: React.FC = ({ children }) => {
 
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    RINProviderURL
+    RIN_PROVIDER_URL
   )
 
   const provider = useMemo(
