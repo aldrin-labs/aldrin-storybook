@@ -389,7 +389,7 @@ export const ListMarketButton = styled(Button)`
   height: 40px;
   margin-left: 16px;
   font-weight: 600;
-  color: ${(props) => props.theme.colors.white1};
+  color: #fff;
   background: ${(props) => props.theme.colors.red1};
   border: 1px solid ${(props) => props.theme.colors.red1};
 `

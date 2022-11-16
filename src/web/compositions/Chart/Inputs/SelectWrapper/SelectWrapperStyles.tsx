@@ -17,7 +17,7 @@ export const StyledGrid = styled(Grid)`
   z-index: 900;
   background: ${(props) => props.theme.colors.white5};
   min-width: ${(props) => (props.isAdvancedSelectorMode ? '160rem' : '90rem')};
-  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '73rem')};
+  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '61rem')};
   border-radius: 2rem;
   overflow: hidden;
   border: 0.1rem solid ${(props) => props.theme.colors.white4};
