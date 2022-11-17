@@ -143,17 +143,45 @@ export const CreateSerumMarketModal: React.FC<CreateSerumMarketModalProps> = (
         bt.getMintInfo(),
         qt.getMintInfo(),
       ])
+
+      const baseLotSize = Math.round(
+        10 ** baseTokenInfo.decimals * parseFloat(values.minOrderSize)
+      )
+
+      const quoteLotSize = Math.round(
+        parseFloat(values.minOrderSize) *
+          10 ** quoteTokeInfo.decimals *
+          parseFloat(values.tickSize)
+      )
+
+      if (baseLotSize < 1) {
+        notify({
+          message: 'Too small min order size.',
+          type: 'error',
+        })
+
+        return
+      }
+
+      if (quoteLotSize < 1) {
+        notify({
+          message: 'Too small min order size or tick size.',
+          type: 'error',
+        })
+
+        return
+      }
+
       const marketInfo = {
         baseMint: new PublicKey(values.baseTokenMintAddress),
         quoteMint: new PublicKey(values.quoteTokenMintAddress),
-        quoteLotSize:
-          parseFloat(values.tickSize) * 10 ** quoteTokeInfo.decimals,
-        baseLotSize:
-          parseFloat(values.minOrderSize) * 10 ** baseTokenInfo.decimals,
+        baseLotSize,
+        quoteLotSize,
         dexProgramId: FORK_DEX_PID,
         connection,
         wallet,
       }
+
       console.log('marketInfo', marketInfo)
       const market = await listMarket(marketInfo)
       if (market.result === 'success') {

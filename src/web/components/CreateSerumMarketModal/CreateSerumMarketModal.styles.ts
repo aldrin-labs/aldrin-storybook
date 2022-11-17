@@ -82,6 +82,7 @@ export const ActionButton = styled(Button)`
   flex: 1;
 
   margin: 0 12px 0;
+  line-height: 24px;
 
   &:first-child {
     margin-left: 0;

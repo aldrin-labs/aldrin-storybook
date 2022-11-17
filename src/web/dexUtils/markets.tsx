@@ -98,18 +98,6 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
         programId: DEX_PID,
         deprecated: false,
       },
-      {
-        address: new PublicKey('BB3YdFM34vvLZpUHSRK8defoJRwF3rtXoom7rtT8aUMk'),
-        name: 'RIN/USDC',
-        programId: FORK_DEX_PID,
-        deprecated: false,
-      },
-      {
-        name: 'SOL/USDC',
-        address: new PublicKey('2MqtAoWiQMcdbeezxFN9vmZui2axdhqMAtjFPRBDq1tB'),
-        programId: FORK_DEX_PID,
-        deprecated: false,
-      },
     ].concat(MARKETS)
 // : MARKETS
 
