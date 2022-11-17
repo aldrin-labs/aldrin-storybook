@@ -94,12 +94,12 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
   : [
       {
         address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-        name: 'RIN/USDC_deprecated',
+        name: 'RIN/USDC',
         programId: DEX_PID,
         deprecated: false,
       },
       {
-        address: new PublicKey('AGfZg4Q2DfH5gvfie51LEG6AkVx5mA1pVW7SBusNm6aK'),
+        address: new PublicKey('BB3YdFM34vvLZpUHSRK8defoJRwF3rtXoom7rtT8aUMk'),
         name: 'RIN/USDC',
         programId: FORK_DEX_PID,
         deprecated: false,
@@ -382,13 +382,33 @@ export function MarketProvider({ children }) {
   const connection = useConnection()
   const marketInfos = getMarketInfos(customMarkets)
 
-  // here we try to get non deprecated one
-  let marketInfo = marketInfos.find(
-    (market) => market.name === marketName && !market.deprecated
+  let marketsByName = marketInfos.filter(
+    (market) =>
+      market.name === marketName &&
+      !market.deprecated &&
+      !market.isCustomUserMarket
   )
 
-  if (!marketInfo) {
-    marketInfo = marketInfos.find((market) => market.name === marketName)
+  // here we try to get non deprecated one
+  let marketInfo = null
+
+  if (marketsByName.length === 0) {
+    marketsByName = marketInfos.filter((market) => market.name === marketName)
+  }
+
+  if (marketsByName.length === 1) {
+    // eslint-disable-next-line prefer-destructuring
+    marketInfo = marketsByName[0]
+  }
+
+  if (marketsByName.length > 1) {
+    const lastSelectedProgramId =
+      localStorage.getItem('last-selected-market-programId') ||
+      FORK_DEX_PID.toString()
+
+    marketInfo = marketsByName.find(
+      (market) => market.programId.toString() === lastSelectedProgramId
+    )
   }
 
   const [market, setMarket] = useState()
@@ -414,7 +434,6 @@ export function MarketProvider({ children }) {
       return
     }
 
-    // console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then((data) => {
         return setMarket(data)

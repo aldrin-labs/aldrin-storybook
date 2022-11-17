@@ -388,7 +388,7 @@ const SelectWrapper = (props: IProps) => {
     minPrice: null,
     precentageTradesDiff: -100,
     programId: DEX_PID,
-    symbol: 'RIN_USDC_deprecated',
+    symbol: 'RIN_USDC',
     tradesCount: null,
     tradesDiff: 0,
     volume: 0,

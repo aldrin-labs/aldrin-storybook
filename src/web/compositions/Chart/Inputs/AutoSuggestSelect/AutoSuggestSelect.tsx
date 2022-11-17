@@ -47,12 +47,20 @@ const IntegrationReactSelect = (props: IProps) => {
     setIsMenuOpen(false)
   }
 
-  const handleChange = ({ value }: { value: string }) => {
+  const handleChange = ({
+    value,
+    programId,
+  }: {
+    value: string
+    programId: string
+  }) => {
     const { history } = props
 
     if (!value) {
       return
     }
+
+    localStorage.setItem('last-selected-market-programId', programId)
 
     closeMenu()
     history.push(`/chart/spot/${value}`)
