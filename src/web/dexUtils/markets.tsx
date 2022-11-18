@@ -660,7 +660,6 @@ export function useOpenOrdersAccounts() {
       return null
     }
 
-    console.log('openOrdersAccount123', market)
     const openOrdersAccount = OpenOrders.fromAccountInfo(
       openOrdersPublicKey,
       openOrdersAccountInfo,
