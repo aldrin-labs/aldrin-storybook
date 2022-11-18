@@ -5,19 +5,25 @@ import useSwr from 'swr'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { DEX_PID } from '@core/config/dex'
+import { useMarket } from '../dexUtils/markets'
 
 export const useCurrentUserOpenOrders = (): [OpenOrders[], () => void] => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const { market } = useMarket()
 
-  const fetcher = useCallback(
-    () => OpenOrders.findForOwner(connection, wallet.publicKey, DEX_PID),
-    [wallet, connection]
-  )
+  const fetcher = useCallback(() => {
+    if (market && market._programId && wallet?.publicKey) {
+      return OpenOrders.findForOwner(
+        connection,
+        wallet.publicKey,
+        market._programId
+      )
+    }
+  }, [wallet, connection])
 
   const { data, mutate } = useSwr(
-    `open-orders-${wallet.publicKey?.toString()}`,
+    `open-orders-${market?._programId}${wallet.publicKey?.toString()}`,
     fetcher
   )
 

@@ -4,7 +4,7 @@ import { Connection } from '@solana/web3.js'
 import { MarketsMap } from '@sb/dexUtils/markets'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { DEX_PID } from '@core/config/dex'
+import { DEX_PID, FORK_DEX_PID } from '@core/config/dex'
 
 import { LoadedMarket } from './loadMarketsByNames'
 
@@ -24,15 +24,15 @@ export const loadOpenOrdersFromMarkets = async ({
 }): Promise<OpenOrdersMap> => {
   const openOrdersMap: OpenOrdersMap = new Map()
 
-  let openOrdersAccounts: OpenOrders[] = []
+  const openOrdersAccounts: OpenOrders[] = []
 
   // add to markets load
   if (wallet.publicKey) {
-    openOrdersAccounts = await OpenOrders.findForOwner(
-      connection,
-      wallet.publicKey,
-      DEX_PID
-    )
+    const [a, b] = await Promise.all([
+      await OpenOrders.findForOwner(connection, wallet.publicKey, DEX_PID),
+      await OpenOrders.findForOwner(connection, wallet.publicKey, FORK_DEX_PID),
+    ])
+    openOrdersAccounts.push(...a, ...b)
   }
 
   for (const [_, { address }] of allMarketsMap.entries()) {

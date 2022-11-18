@@ -1,5 +1,4 @@
 import { Grid, InputAdornment } from '@material-ui/core'
-import marketsList from 'aldrin-registry/src/markets.json'
 import dayjs from 'dayjs'
 import { sortBy, partition } from 'lodash-es'
 import React, { useState, useEffect, useCallback } from 'react'
@@ -31,8 +30,12 @@ import search from '@icons/search.svg'
 
 import 'react-virtualized/styles.css'
 
-import { toMap } from '@core/collection'
+import { useTheme } from 'styled-components'
 
+import { DEX_PID } from '../../../../../../../core/src/config/dex'
+import { FlexBlock } from '../../../../components/Layout'
+import { InlineText } from '../../../../components/Typography'
+import { useAllMarketsList } from '../../../../dexUtils/markets'
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
@@ -67,7 +70,6 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
   const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
   const [isFeedbackPopupOpen, setIsFeedbackPopupOpen] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
-
   const {
     data,
     toggleFavouriteMarket,
@@ -87,6 +89,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
     setSelectorMode,
     setCustomMarkets,
     getSerumMarketDataQueryRefetch,
+    onMarketCreateRequest,
     onTabChange,
     marketName,
   } = props
@@ -94,6 +97,7 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
   const isLoaded = isLoading === false
 
   const isAdvancedSelectorMode = selectorMode === 'advanced'
+  const t = useTheme()
 
   const changeChoosenMarketData = ({ symbol, marketAddress }) => {
     setChoosenMarketData({ symbol, marketAddress })
@@ -226,93 +230,114 @@ const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
   }, [favouriteMarkets])
 
   return (
-    <StyledGrid id={id} isAdvancedSelectorMode={isAdvancedSelectorMode}>
-      <TableHeader
-        tab={tab}
-        favouriteMarkets={favouriteMarkets}
-        tokenMap={tokenMap}
-        data={data}
-        onTabChange={onTabChange}
-        allMarketsMap={allMarketsMap}
-        isAdvancedSelectorMode={isAdvancedSelectorMode}
-        setSelectorMode={setSelectorMode}
-      />
-      <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
-        <StyledInput
-          placeholder="Search"
-          disableUnderline
-          value={searchValue}
-          onChange={onChangeSearch}
-          inputProps={{
-            style: {
-              color: theme.palette.grey.new,
-              fontSize: '16px',
-            },
-          }}
-          endAdornment={
-            <InputAdornment
-              style={{
-                width: '10%',
-                justifyContent: 'flex-end',
-                cursor: 'pointer',
-                color: theme.palette.grey.new,
-              }}
-              disableTypography
-              position="end"
-              autoComplete="off"
-            >
-              <SvgIcon src={search} width="1.5rem" height="auto" />
-            </InputAdornment>
-          }
+    <>
+      <StyledGrid id={id} isAdvancedSelectorMode={isAdvancedSelectorMode}>
+        <TableHeader
+          tab={tab}
+          favouriteMarkets={favouriteMarkets}
+          tokenMap={tokenMap}
+          data={data}
+          onTabChange={onTabChange}
+          allMarketsMap={allMarketsMap}
+          isAdvancedSelectorMode={isAdvancedSelectorMode}
+          setSelectorMode={setSelectorMode}
         />
-      </Grid>
-      <TableInner
-        selectorMode={selectorMode}
-        processedSelectData={displayedData}
-        isAdvancedSelectorMode={isAdvancedSelectorMode}
-        sort={_sort}
-        sortBy={sort.field}
-        sortDirection={sort.direction}
-        selectedPair={marketName?.replace('/', '_')}
-      />
-      <TableFooter container>
-        <Row
-          style={{
-            padding: '0 2rem',
-            height: '4rem',
-            fontFamily: 'Avenir Next Medium',
-            color: theme.palette.blue.serum,
-            alignItems: 'center',
-            fontSize: '1.5rem',
-            textTransform: 'none',
-            textDecoration: 'underline',
-          }}
-          onClick={async (e) => {
-            e.stopPropagation()
-            setIsFeedbackPopupOpen(true)
-          }}
-        >
-          Found an error in the catalog? Let us know!
-        </Row>
-      </TableFooter>
-      <WarningPopup />
-      <MintsPopup
-        symbol={choosenMarketData?.symbol}
-        marketAddress={choosenMarketData?.marketAddress}
-        open={isMintsPopupOpen}
-        onClose={() => setIsMintsPopupOpen(false)}
-      />
-      <MarketsFeedbackPopup
-        open={isFeedbackPopupOpen}
-        onClose={() => setIsFeedbackPopupOpen(false)}
-      />
-    </StyledGrid>
+        <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <StyledInput
+            placeholder="Search"
+            disableUnderline
+            value={searchValue}
+            onChange={onChangeSearch}
+            inputProps={{
+              style: {
+                color: theme.palette.grey.new,
+                fontSize: '16px',
+              },
+            }}
+            endAdornment={
+              <InputAdornment
+                style={{
+                  width: '10%',
+                  justifyContent: 'flex-end',
+                  cursor: 'pointer',
+                  color: theme.palette.grey.new,
+                }}
+                disableTypography
+                position="end"
+                autoComplete="off"
+              >
+                <SvgIcon src={search} width="1.5rem" height="auto" />
+              </InputAdornment>
+            }
+          />
+        </Grid>
+        <TableInner
+          selectorMode={selectorMode}
+          processedSelectData={displayedData}
+          isAdvancedSelectorMode={isAdvancedSelectorMode}
+          sort={_sort}
+          sortBy={sort.field}
+          sortDirection={sort.direction}
+          selectedPair={marketName?.replace('/', '_')}
+        />
+        <TableFooter container>
+          <Row
+            style={{
+              padding: '0 2rem',
+              height: '4rem',
+              fontFamily: 'Avenir Next Medium',
+              alignItems: 'center',
+              fontSize: '1.5rem',
+              textTransform: 'none',
+              flex: 1,
+            }}
+          >
+            <FlexBlock
+              style={{ width: '100%' }}
+              flex="1"
+              justifyContent="space-between"
+            >
+              <InlineText
+                style={{ textTransform: 'none' }}
+                color={tab === 'live' ? 'white1' : 'red0'}
+              >
+                {tab === 'live'
+                  ? // ? '?'
+                    'Want your market to be here'
+                  : 'Consider these markets to cancel your open orders only for your safety.'}
+              </InlineText>
+              {tab === 'live' && (
+                <InlineText
+                  onClick={() => onMarketCreateRequest()}
+                  style={{ textTransform: 'none' }}
+                  color="green0"
+                >
+                  List it!
+                </InlineText>
+              )}
+            </FlexBlock>
+          </Row>
+        </TableFooter>
+        <WarningPopup />
+        <MintsPopup
+          symbol={choosenMarketData?.symbol}
+          marketAddress={choosenMarketData?.marketAddress}
+          open={isMintsPopupOpen}
+          onClose={() => setIsMintsPopupOpen(false)}
+        />
+        <MarketsFeedbackPopup
+          open={isFeedbackPopupOpen}
+          onClose={() => setIsFeedbackPopupOpen(false)}
+        />
+      </StyledGrid>
+    </>
   )
 }
 
 const SelectWrapper = (props: IProps) => {
   const [searchValue, setSearchValue] = useState('')
-  const [tab, setTab] = useState<SelectTabType>('all')
+  const [tab, setTab] = useState<SelectTabType>('live')
+  const markets = useAllMarketsList()
 
   const [selectorMode, setSelectorMode] = useLocalStorageState(
     'selectorMode',
@@ -342,19 +367,33 @@ const SelectWrapper = (props: IProps) => {
     setSearchValue(e.target.value)
   }
 
-  const markets = toMap(marketsList, (market) => market.name)
-
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
-  const filtredMarketsByExchange =
-    getSerumMarketDataQuery.getSerumMarketData.filter((el) => {
-      const isMarketDelisted =
-        markets.get(el.symbol.replace('_', '/'))?.delisted || false
-      return (
-        el.symbol &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !isMarketDelisted
-      )
+
+  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData
+    .filter((el) => {
+      return el.symbol && !Array.isArray(el.symbol.match(fiatRegexp))
     })
+    .map((_) => ({
+      ..._,
+      programId: _.programId || markets.get(_.symbol)?.programId?.toString(),
+    }))
+
+  filtredMarketsByExchange.push({
+    address: null,
+    closePrice: 0,
+    isCustomUserMarket: null,
+    isPrivateCustomMarket: null,
+    lastPriceDiff: 0,
+    maxPrice: null,
+    minPrice: null,
+    precentageTradesDiff: -100,
+    programId: DEX_PID,
+    symbol: 'RIN_USDC',
+    tradesCount: null,
+    tradesDiff: 0,
+    volume: 0,
+    volumeChange: 0,
+  })
 
   return (
     <SelectPairListComponent

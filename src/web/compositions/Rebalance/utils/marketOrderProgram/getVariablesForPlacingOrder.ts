@@ -5,7 +5,6 @@ import BN from 'bn.js'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { DEX_PID } from '@core/config/dex'
 
 export const getVariablesForPlacingOrder = async ({
   wallet,
@@ -46,7 +45,7 @@ export const getVariablesForPlacingOrder = async ({
     },
     pcWallet: tokenAccountB, // token address
     authority: wallet.publicKey,
-    dexProgram: DEX_PID,
+    dexProgram: market._programId,
     tokenProgram: TOKEN_PROGRAM_ID,
     rent: SYSVAR_RENT_PUBKEY,
   }

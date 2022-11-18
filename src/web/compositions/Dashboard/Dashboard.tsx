@@ -19,7 +19,7 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { DEX_PID } from '@core/config/dex'
+import { DEX_PID, FORK_DEX_PID } from '@core/config/dex'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
@@ -103,11 +103,16 @@ const Dashboard = ({
       setIsDataLoading(true)
 
       // load all open orders accounts by using users publicKey
-      const openOrdersAccounts = await OpenOrders.findForOwner(
-        serumConnection,
-        wallet.publicKey,
-        DEX_PID
-      )
+      const [a, b] = await Promise.all([
+        OpenOrders.findForOwner(serumConnection, wallet.publicKey, DEX_PID),
+        OpenOrders.findForOwner(
+          serumConnection,
+          wallet.publicKey,
+          FORK_DEX_PID
+        ),
+      ])
+
+      const openOrdersAccounts = [...a, ...b]
 
       const openOrdersAccountsMapByMarketId =
         getOpenOrdersAccountsMapByMarketId(openOrdersAccounts)

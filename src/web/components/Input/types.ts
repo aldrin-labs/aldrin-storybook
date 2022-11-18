@@ -1,6 +1,6 @@
 import { BORDER_RADIUS } from '@variables/variables'
 import { FieldValidator } from 'formik'
-import { ReactNode } from 'react'
+import { ReactChild, ReactNode } from 'react'
 
 import { VARIANTS } from './styles'
 
@@ -33,8 +33,8 @@ export interface InputCommon {
 
 export interface InputBase extends InputCommon {
   formatter?: (e: string, prevValue: string) => string
-  append?: ReactNode
-  prepend?: ReactNode
+  append?: ReactChild
+  prepend?: ReactChild
 }
 
 export interface OnChangeProps {
