@@ -22,7 +22,7 @@ const providers = process.env.RPC_PROVIDERS_ADDRESSES
 const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
 const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://solana-api.projectserum.com', weight: 2 },
+  { url: 'https://api.mainnet-beta.solana.com', weight: 2 },
 ])
 
 const context = {
