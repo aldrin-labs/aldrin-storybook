@@ -173,11 +173,9 @@ const MarketBlock = ({
         <Row>
           <Row align="flex-start" direction="column">
             <Title color={theme.colors.green3}>
-              You have to settle funds after each trade to transfer{' '}
+              Try out new Aldrin’s orderbook DEX.
             </Title>
-            <Title color={theme.colors.green3}>
-              funds from your trading account to your wallet account.
-            </Title>
+            <Title color={theme.colors.green3}>Learn More</Title>
           </Row>
           <ExclamationMark
             theme={theme}

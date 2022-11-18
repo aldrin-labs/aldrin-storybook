@@ -15,7 +15,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { OrderWithMarket } from '@sb/dexUtils/send'
 
 import { toMap } from '@core/collection'
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  DEX_PID,
+  FORK_DEX_PID,
+  getDexProgramIdByEndpoint,
+} from '@core/config/dex'
 import { AWESOME_MARKETS } from '@core/utils/awesomeMarkets/dictionaries'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
@@ -91,9 +95,7 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
       {
         address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
         name: 'RIN/USDC',
-        programId: new PublicKey(
-          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-        ),
+        programId: DEX_PID,
         deprecated: false,
       },
     ].concat(MARKETS)
@@ -368,13 +370,33 @@ export function MarketProvider({ children }) {
   const connection = useConnection()
   const marketInfos = getMarketInfos(customMarkets)
 
-  // here we try to get non deprecated one
-  let marketInfo = marketInfos.find(
-    (market) => market.name === marketName && !market.deprecated
+  let marketsByName = marketInfos.filter(
+    (market) =>
+      market.name === marketName &&
+      !market.deprecated &&
+      !market.isCustomUserMarket
   )
 
-  if (!marketInfo) {
-    marketInfo = marketInfos.find((market) => market.name === marketName)
+  // here we try to get non deprecated one
+  let marketInfo = null
+
+  if (marketsByName.length === 0) {
+    marketsByName = marketInfos.filter((market) => market.name === marketName)
+  }
+
+  if (marketsByName.length === 1) {
+    // eslint-disable-next-line prefer-destructuring
+    marketInfo = marketsByName[0]
+  }
+
+  if (marketsByName.length > 1) {
+    const lastSelectedProgramId =
+      localStorage.getItem('last-selected-market-programId') ||
+      FORK_DEX_PID.toString()
+
+    marketInfo = marketsByName.find(
+      (market) => market.programId.toString() === lastSelectedProgramId
+    )
   }
 
   const [market, setMarket] = useState()
@@ -400,7 +422,6 @@ export function MarketProvider({ children }) {
       return
     }
 
-    // console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then((data) => {
         return setMarket(data)
@@ -437,7 +458,8 @@ export function MarketProvider({ children }) {
 }
 
 export function useMarket() {
-  return useContext(MarketContext)
+  const ctx = useContext(MarketContext)
+  return ctx
 }
 
 export function useMarkPrice() {
@@ -638,10 +660,11 @@ export function useOpenOrdersAccounts() {
       return null
     }
 
+    console.log('openOrdersAccount123', market)
     const openOrdersAccount = OpenOrders.fromAccountInfo(
       openOrdersPublicKey,
       openOrdersAccountInfo,
-      DEX_PID
+      market._programId
     )
 
     // for using several openOrdersAccoutns we'll need to update this method
@@ -665,6 +688,7 @@ export function useOpenOrdersAccounts() {
 export function useAllOpenOrdersAccounts() {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+  const { market } = useMarket()
 
   async function getOpenOrdersAccounts() {
     if (!connected) {
@@ -674,7 +698,7 @@ export function useAllOpenOrdersAccounts() {
     const openOrdersAccounts = await OpenOrders.findForOwner(
       connection,
       wallet.publicKey,
-      DEX_PID
+      market._programId
     )
 
     return openOrdersAccounts

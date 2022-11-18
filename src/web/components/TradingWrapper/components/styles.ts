@@ -20,7 +20,7 @@ const Emoji = styled.span`
 `
 
 const Text = styled.span`
-  color: ${(props) => props.theme.colors.white1};
+  color: #fff;
   font-size: 12px;
 `
 

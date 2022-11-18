@@ -8,6 +8,7 @@ import { OrderParams } from '@project-serum/serum/lib/market'
 import {
   Account,
   Connection,
+  Keypair,
   PublicKey,
   SystemProgram,
   Transaction,
@@ -17,7 +18,6 @@ import BN from 'bn.js'
 import {
   AmendOrderParams,
   PlaceOrder,
-  SignTransactionsParams,
   ValidateOrderParams,
   WalletAdapter,
   SendSignedTransactionResult,
@@ -27,6 +27,7 @@ import {
 import {
   createAssociatedTokenAccountTransaction,
   mergeTransactions,
+  walletAdapterToWallet,
 } from '@core/solana'
 
 import { getCache } from './fetch-loop'
@@ -35,8 +36,8 @@ import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 import { notify } from './notifications'
 import { getNotificationText } from './serum'
 import {
-  sendSignedSignleTransaction,
   signAndSendSingleTransaction,
+  signAndSendTransactions,
 } from './transactions'
 import { getDecimalCount, isCCAITradingEnabled } from './utils'
 
@@ -46,13 +47,11 @@ export async function cancelOrder(params: CancelOrderParams) {
     throw new Error(`cancelOrders: no publicKey for wallet: ${wallet}`)
   }
   const { publicKey } = wallet
-  const transaction = market.makeMatchOrdersTransaction(5)
 
+  const transaction = new Transaction()
   transaction.add(
     market.makeCancelOrderInstruction(connection, publicKey, order)
   )
-
-  transaction.add(market.makeMatchOrdersTransaction(5))
 
   return signAndSendSingleTransaction({
     transaction,
@@ -258,7 +257,6 @@ export async function amendOrder(params: AmendOrderParams) {
   if (!wallet.publicKey) {
     throw new Error(`Wallet does not have public key: ${wallet}`)
   }
-  const transaction = market.makeMatchOrdersTransaction(5)
   transaction.add(
     market.makeCancelOrderInstruction(connection, wallet.publicKey, order)
   )
@@ -490,7 +488,6 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
       : { openOrdersAccount }),
   }
 
-  transaction.add(market.makeMatchOrdersTransaction(5))
   const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({
     quoteMintAddress: market.quoteMintAddress,
     supportsReferralFees: market.supportsReferralFees,
@@ -506,7 +503,6 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
   console.log('placeOrder rest', rest)
 
   transaction.add(placeOrderTx)
-  transaction.add(market.makeMatchOrdersTransaction(5))
 
   console.log('placeOrder transaction after add', transaction)
 
@@ -557,29 +553,6 @@ export async function placeOrder(data: PlaceOrder) {
   })
 }
 
-export async function signTransactions({
-  transactionsAndSigners,
-  wallet,
-  connection,
-}: SignTransactionsParams) {
-  if (!wallet.publicKey) {
-    throw new Error(`No key for wallet: ${wallet}`)
-  }
-  const { publicKey } = wallet
-  const { blockhash } = await connection.getRecentBlockhash('max')
-  transactionsAndSigners.forEach(({ transaction, signers = [] }) => {
-    transaction.recentBlockhash = blockhash
-    transaction.setSigners(publicKey, ...signers.map((s) => s.publicKey))
-    if (signers?.length > 0) {
-      transaction.partialSign(...signers)
-    }
-  })
-  return wallet.signAllTransactions(
-    transactionsAndSigners.map(({ transaction }) => transaction),
-    true
-  )
-}
-
 export async function listMarket({
   connection,
   wallet,
@@ -597,13 +570,13 @@ export async function listMarket({
   quoteLotSize: number
   dexProgramId: PublicKey
 }) {
-  const market = new Account()
-  const requestQueue = new Account()
-  const eventQueue = new Account()
-  const bids = new Account()
-  const asks = new Account()
-  const baseVault = new Account()
-  const quoteVault = new Account()
+  const market = Keypair.generate()
+  const requestQueue = Keypair.generate()
+  const eventQueue = Keypair.generate()
+  const bids = Keypair.generate()
+  const asks = Keypair.generate()
+  const baseVault = Keypair.generate()
+  const quoteVault = Keypair.generate()
   const feeRateBps = 0
   const quoteDustThreshold = new BN(100)
 
@@ -716,7 +689,9 @@ export async function listMarket({
     })
   )
 
-  const signedTransactions = await signTransactions({
+  const authWallet = walletAdapterToWallet(wallet)
+
+  const result = await signAndSendTransactions({
     transactionsAndSigners: [
       { transaction: tx1, signers: [baseVault, quoteVault] },
       {
@@ -724,20 +699,11 @@ export async function listMarket({
         signers: [market, requestQueue, eventQueue, bids, asks],
       },
     ],
-    wallet,
+    wallet: authWallet,
     connection,
   })
 
-  await Promise.all(
-    signedTransactions.map((signedTransaction) =>
-      sendSignedSignleTransaction({
-        transaction: signedTransaction,
-        connection,
-      })
-    )
-  )
-
-  return market.publicKey
+  return { result, market: market.publicKey }
 }
 
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>

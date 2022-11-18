@@ -377,9 +377,19 @@ export const Left = styled.div`
 
 export const Right = styled.div`
   display: flex;
+  align-items: center;
 `
 
 export const WalletIconContainer = styled(Row)`
   margin-right: 0.3em;
   align-items: center;
+`
+
+export const ListMarketButton = styled(Button)`
+  height: 40px;
+  margin-left: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: ${(props) => props.theme.colors.red1};
+  border: 1px solid ${(props) => props.theme.colors.red1};
 `
