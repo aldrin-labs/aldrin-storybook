@@ -8,7 +8,7 @@ import { defaultOptions } from '@core/solana'
 const LookupJSON = require('./lookup.json')
 
 const MARKET_ORDER_PROGRAM_ADDRESS =
-  'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
+  '9sSEM2o6eYQbfZqQ4QX3WdKoYAuPTKQ6fjUrAMcaBk7'
 
 // This is custom Serum program to place market orders & settle & etc.
 export const loadMarketOrderProgram = ({
