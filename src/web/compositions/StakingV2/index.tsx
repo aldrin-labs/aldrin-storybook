@@ -149,6 +149,7 @@ const Block: React.FC<StakingPageProps> = (props) => {
     stakedPercentage,
     RINHarvest,
     mSolInfo,
+    rinStakingInfo: getStakingInfo,
     PLDTotalStaked,
     RPCTotalStaked,
     PU238TotalStaked,

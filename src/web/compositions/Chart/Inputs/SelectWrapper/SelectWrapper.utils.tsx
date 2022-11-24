@@ -398,7 +398,6 @@ export const combineSelectWrapperData = ({
       const mint = getTokenMintAddressByName(base)
 
       const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
-      const marketAddress = allMarketsMap?.get(item.symbol)?.address?.toBase58()
 
       const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || '--'
       const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || '--'
@@ -652,10 +651,13 @@ export const combineSelectWrapperData = ({
             >
               <TokenExternalLinks
                 tokenName={base}
-                marketAddress={marketAddress}
+                marketAddress={address}
                 onInfoClick={(e) => {
                   e.stopPropagation()
-                  changeChoosenMarketData({ symbol: marketName, marketAddress })
+                  changeChoosenMarketData({
+                    symbol: marketName,
+                    marketAddress: address,
+                  })
                   setIsMintsPopupOpen(true)
                 }}
                 marketPair={symbol}

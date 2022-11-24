@@ -62,9 +62,9 @@ export const prepareCell = (
     fees: {
       rendered: (
         <Text size="sm">
-          {volume.weeklyTradingVolume > 0
+          {volume.weeklyTradingVolume > 0 && feesInUSD > 0
             ? `$${stripByAmountAndFormat(feesInUSD, 2)}`
-            : '-'}
+            : '~$0'}
         </Text>
       ),
       rawValue: feesInUSD,
