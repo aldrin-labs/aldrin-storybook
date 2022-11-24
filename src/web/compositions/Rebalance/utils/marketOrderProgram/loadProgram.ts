@@ -3,12 +3,9 @@ import { Connection, PublicKey } from '@solana/web3.js'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { defaultOptions } from '@core/solana'
+import { defaultOptions, MARKET_ORDER_PROGRAM_ADDRESS } from '@core/solana'
 
 const LookupJSON = require('./lookup.json')
-
-const MARKET_ORDER_PROGRAM_ADDRESS =
-  'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
 
 // This is custom Serum program to place market orders & settle & etc.
 export const loadMarketOrderProgram = ({
