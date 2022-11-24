@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import React, { useState } from 'react'
 
 import { Button } from '@sb/components/Button'
@@ -137,11 +138,28 @@ export const TableRow = ({
               <DarkTooltip
                 title={
                   <InlineText color="white2">
-                    <p>
-                      Estimation for growth of your deposit over a year
-                      projected on current farming rewards and past 7d trading
-                      activity.
-                    </p>
+                    {staking.token === 'RIN' ? (
+                      <>
+                        <p>Averaged APY: {staking?.averageAPY}%</p>
+                        <p>
+                          APY from{' '}
+                          {dayjs(staking?.currentPeriodStartsAt).format(
+                            'DD MMM, YYYY'
+                          )}{' '}
+                          to{' '}
+                          {dayjs(staking?.currentPeriodEndsAt).format(
+                            'DD MMM, YYYY'
+                          )}
+                          : {staking.apy}%
+                        </p>
+                      </>
+                    ) : (
+                      <p>
+                        Estimation for growth of your deposit over a year
+                        projected on current farming rewards and past 7d trading
+                        activity.
+                      </p>
+                    )}
                   </InlineText>
                 }
               >

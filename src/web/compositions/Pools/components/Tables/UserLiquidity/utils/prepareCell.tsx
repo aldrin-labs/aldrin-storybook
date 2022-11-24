@@ -82,7 +82,7 @@ export const prepareCell = (
     feesEarned: {
       rendered: (
         <Text size="sm">
-          {feesUsd > 0 ? `$${stripByAmountAndFormat(feesUsd, 4)}` : '-'}
+          {feesUsd > 0 ? `$${stripByAmountAndFormat(feesUsd, 4)}` : '~0$'}
         </Text>
       ),
 

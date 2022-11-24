@@ -3,7 +3,6 @@ import React, { useMemo, useCallback } from 'react'
 import { SvgIcon } from '@sb/components'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-
 import ExpandTableIcon from '@icons/expandIcon.svg'
 import SqueezeTableIcon from '@icons/squeezeIcon.svg'
 
@@ -72,7 +71,7 @@ const TableHeader = ({
           isSelected={tab === 'live'}
           onClick={() => onTabChange('live')}
         >
-          Live{' '}
+          Aldrin{' '}
           <span
             style={{
               color: tab === 'live' ? '#fbf2f2' : '#96999C',
@@ -85,7 +84,7 @@ const TableHeader = ({
           isSelected={tab === 'deprecated'}
           onClick={() => onTabChange('deprecated')}
         >
-          Deprecated{' '}
+          Serum (Deprecated){' '}
           <span
             style={{
               color: tab === 'deprecated' ? '#fbf2f2' : '#96999C',

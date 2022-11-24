@@ -229,9 +229,6 @@ const TopBar = ({ theme }) => {
   const { endpoint, setEndpoint } = useConnectionConfig()
 
   const isCCAIActive = providerUrl === CCAIProviderURL
-  const isSolletActive = providerUrl === 'https://www.sollet.io'
-  const isSolletExtensionActive =
-    providerUrl === 'https://www.sollet.io/extension'
   const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
   const isSolongWallet = providerUrl === 'https://solongwallet.com'
 
@@ -265,10 +262,6 @@ const TopBar = ({ theme }) => {
                   </span>{' '}
                   &nbsp; by Aldrin.com
                 </>
-              ) : isSolletActive ? (
-                'Sollet Wallet'
-              ) : isSolletExtensionActive ? (
-                'Sollet Extension Wallet'
               ) : isMathWalletActive ? (
                 'Math Wallet'
               ) : isSolongWallet ? (

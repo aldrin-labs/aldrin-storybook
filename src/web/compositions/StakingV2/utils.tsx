@@ -11,12 +11,14 @@ import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { DexTokensPrices } from '../Pools/index.types'
+import { StakingInfo } from './types'
 
 export const getStakingsData = ({
   farm,
   stakedPercentage,
   RINHarvest,
   mSolInfo,
+  rinStakingInfo,
   PLDTotalStaked,
   RPCTotalStaked,
   PU238TotalStaked,
@@ -29,6 +31,7 @@ export const getStakingsData = ({
   stakedPercentage: number
   RINHarvest: Harvest
   mSolInfo: { stats: MarinadeStats }
+  rinStakingInfo: StakingInfo
   PLDTotalStaked: number
   RPCTotalStaked: number
   PU238TotalStaked: number
@@ -47,7 +50,10 @@ export const getStakingsData = ({
         removeDecimals(farm?.stakeVaultTokenAmount, farm?.stakeVaultDecimals) *
         (dexTokensPricesMap.get('RIN')?.price || 0),
       additionalInfo: `${stripDigitPlaces(stakedPercentage, 2) || 0}%`,
-      apy: stripDigitPlaces(RINHarvest?.apy, 2) || 0,
+      apy: stripDigitPlaces(rinStakingInfo?.rinCurrentAPY, 2) || 0,
+      averageAPY: stripDigitPlaces(rinStakingInfo?.rinAPY, 2) || 0,
+      currentPeriodStartsAt: rinStakingInfo?.currentPeriodStartsAt,
+      currentPeriodEndsAt: rinStakingInfo?.currentPeriodEndsAt,
       columnName: '% of circ. supply',
       socials: {
         twitter: tokensMap.get('RIN')?.twitterLink,
@@ -69,8 +75,7 @@ export const getStakingsData = ({
       columnName: 'Marketcap',
       socials: {
         twitter: tokensMap.get('stSOL')?.twitterLink,
-        coinmarketcap:
-          'https://coinmarketcap.com/ru/currencies/lido-for-solana/',
+        coinmarketcap: 'https://coinmarketcap.com/currencies/lido-for-solana/',
         discord: 'https://discord.com/invite/vgdPfhZ',
       },
     },
@@ -88,7 +93,7 @@ export const getStakingsData = ({
       columnName: 'Epoch',
       socials: {
         twitter: 'https://twitter.com/MarinadeFinance',
-        coinmarketcap: 'https://coinmarketcap.com/ru/currencies/marinade/',
+        coinmarketcap: 'https://coinmarketcap.com/currencies/marinade/',
         discord: 'https://discord.gg/6EtUf4Euu6',
       },
     },
@@ -106,8 +111,7 @@ export const getStakingsData = ({
       columnName: 'PLD Price',
       socials: {
         twitter: 'https://twitter.com/plutoniansgame',
-        coinmarketcap:
-          'https://coinmarketcap.com/ru/currencies/plutonians-tech/',
+        coinmarketcap: 'https://coinmarketcap.com/currencies/plutonians-tech/',
         discord: 'https://discord.com/invite/6PnPAPupqR',
       },
     },
@@ -125,7 +129,7 @@ export const getStakingsData = ({
       columnName: 'RPC Price',
       socials: {
         twitter: 'https://twitter.com/plutoniansgame',
-        coinmarketcap: 'https://coinmarketcap.com/ru/currencies/plutonians/',
+        coinmarketcap: 'https://coinmarketcap.com/currencies/plutonians/',
         discord: 'https://discord.gg/6PnPAPupqR',
       },
     },
