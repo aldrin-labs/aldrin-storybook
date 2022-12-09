@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import Logo from '@sb/components/Logo'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 
+import { RIN_PROVIDER_URL } from '@core/solana/wallets/contsants'
+
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { CreateSerumMarketModal } from '../CreateSerumMarketModal'
 import { DropDown } from './Dropdown'
@@ -114,7 +116,7 @@ export const Header = React.memo(
                       $left
                       as="a"
                       target="_blank"
-                      href="https://wallet.aldrin.com"
+                      href={RIN_PROVIDER_URL}
                     >
                       <WalletIcon />
                       <span>Wallet</span>
