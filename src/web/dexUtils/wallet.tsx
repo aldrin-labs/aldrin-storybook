@@ -47,8 +47,9 @@ export interface WalletContextType {
 }
 const WALLET_PROVIDER_LS_KEY = 'walletProvider'
 
+const providerKeys = WALLET_PROVIDERS.map((_) => _.url)
 const storedWallet = localStorage.getItem(WALLET_PROVIDER_LS_KEY)
-if (storedWallet && storedWallet.includes('sollet')) {
+if (storedWallet && !providerKeys.includes(storedWallet)) {
   localStorage.removeItem(WALLET_PROVIDER_LS_KEY)
 }
 const WalletContext = React.createContext<WalletContextType | null>(null)
