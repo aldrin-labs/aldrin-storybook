@@ -50,9 +50,16 @@ const WALLET_PERSIST_KEY = 'walletConnectedUpdatedFinally'
 
 const providerKeys = WALLET_PROVIDERS.map((_) => _.url)
 const storedWallet = localStorage.getItem(WALLET_PROVIDER_LS_KEY)
-if (storedWallet && !providerKeys.includes(storedWallet)) {
-  localStorage.removeItem(WALLET_PROVIDER_LS_KEY)
-  localStorage.removeItem(WALLET_PERSIST_KEY)
+if (storedWallet) {
+  try {
+    const parsedValue = JSON.parse(storedWallet)
+    if (!providerKeys.includes(parsedValue)) {
+      localStorage.removeItem(WALLET_PROVIDER_LS_KEY)
+      localStorage.removeItem(WALLET_PERSIST_KEY)
+    }
+  } catch (e) {
+    console.warn('e', e)
+  }
 }
 const WalletContext = React.createContext<WalletContextType | null>(null)
 
