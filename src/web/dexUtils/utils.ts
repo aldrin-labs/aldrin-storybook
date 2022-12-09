@@ -1,7 +1,7 @@
 import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { MASTER_BUILD } from '@core/utils/config'
+import { RIN_PROVIDER_URL } from '@core/solana/wallets/contsants'
 import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 export function isValidPublicKey(key: PublicKeyInitData) {
@@ -19,9 +19,7 @@ export function isValidPublicKey(key: PublicKeyInitData) {
 export const RIN_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
 export const MSOL_MINT: string = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
 
-export const RINProviderURL = MASTER_BUILD
-  ? 'https://wallet.aldrin.com'
-  : 'https://develop.wallet.cryptocurrencies.ai/'
+export const RINProviderURL = RIN_PROVIDER_URL
 
 export const CCAIListingTime = 1623333600
 
