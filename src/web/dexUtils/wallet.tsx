@@ -45,7 +45,12 @@ export interface WalletContextType {
   setAutoConnect: (autoConnect: boolean) => void
   providerName: string
 }
+const WALLET_PROVIDER_LS_KEY = 'walletProvider'
 
+const storedWallet = localStorage.getItem(WALLET_PROVIDER_LS_KEY)
+if (storedWallet && storedWallet.includes('sollet')) {
+  localStorage.removeItem(WALLET_PROVIDER_LS_KEY)
+}
 const WalletContext = React.createContext<WalletContextType | null>(null)
 
 export const WalletProvider: React.FC = ({ children }) => {
@@ -60,7 +65,7 @@ export const WalletProvider: React.FC = ({ children }) => {
   const [autoConnect, setAutoConnect] = useState(connectedPersist)
 
   const [providerUrl, setProviderUrl] = useLocalStorageState(
-    'walletProvider',
+    WALLET_PROVIDER_LS_KEY,
     RIN_PROVIDER_URL
   )
 
