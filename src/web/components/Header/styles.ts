@@ -26,7 +26,7 @@ export const Wrapper = styled.header`
 export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: 76px;
+  height: 61px;
   background: ${(props) => props.theme.colors.header};
   padding: 0 24px;
   border-bottom-width: 1px;
