@@ -1,3 +1,4 @@
+import { BREAKPOINTS } from './../../../variables/variables';
 import {
   COLORS,
   BREAKPOINTS,
@@ -388,7 +389,7 @@ export const WalletIconContainer = styled(Row)`
 export const ListMarketButton = styled(Button)`
   display: none;
   
-  @media(min-width: 635px) {
+  @media(min-width: ${BREAKPOINTS.md}) {
     display: inline-block;
     height: 40px;
     margin-left: 16px;
