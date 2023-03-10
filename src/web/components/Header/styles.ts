@@ -1,3 +1,4 @@
+import { BREAKPOINTS } from './../../../variables/variables';
 import {
   COLORS,
   BREAKPOINTS,
@@ -26,7 +27,7 @@ export const Wrapper = styled.header`
 export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: 76px;
+  height: 61px;
   background: ${(props) => props.theme.colors.header};
   padding: 0 24px;
   border-bottom-width: 1px;
@@ -386,10 +387,15 @@ export const WalletIconContainer = styled(Row)`
 `
 
 export const ListMarketButton = styled(Button)`
-  height: 40px;
-  margin-left: 16px;
-  font-weight: 600;
-  color: #fff;
-  background: ${(props) => props.theme.colors.red1};
-  border: 1px solid ${(props) => props.theme.colors.red1};
+  display: none;
+  
+  @media(min-width: ${BREAKPOINTS.md}) {
+    display: inline-block;
+    height: 40px;
+    margin-left: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: ${(props) => props.theme.colors.red1};
+    border: 1px solid ${(props) => props.theme.colors.red1};
+  }
 `
