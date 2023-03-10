@@ -32,6 +32,7 @@ import {
 } from '@sb/dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { SRinNftRewardGroup } from '@core/solana'
@@ -54,6 +55,7 @@ import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
 import { ContentBlock } from '../Staking/styles'
+import { SpanContainer } from '../StakingV2/components/Popups/RinStaking/index.styles'
 import Plutonians from './assets/plutoniansMock.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
 import { RewardDescription } from './components/RewardsComponent/styles'
@@ -89,6 +91,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const params = useParams<{ symbol: string }>()
   const { symbol = 'PLD' } = params
   const staking = STAKINGS[symbol.toUpperCase()] || STAKINGS.PLD
+  const isRegionRestricted = useRegionRestriction()
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -340,10 +343,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     loading ||
     !(parseFloat(amount) > 0) ||
     !selectedTokenAccount ||
-    timeLeft > 0
+    timeLeft > 0 ||
+    isRegionRestricted
 
   const isUnstakeDisabled = loading || !selectedTokenAccount || timeLeft > 0
-
   // const timeProgresss = timePassed / lockDuration.toNumber()
 
   const estimateRewardsInStakeTokens =
@@ -706,20 +709,30 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       {stakeTokenName} and Claim Rewards
                     </Button>
                   ) : (
-                    <Button
-                      data-testid="plutonians-stake-submit-btn"
-                      onClick={stake}
-                      $width="xl"
-                      $fontSize="sm"
-                      disabled={isStakingDisabled}
-                      $loading={loading}
-                      style={{
-                        fontWeight: '600',
-                        padding: '1em',
-                      }}
+                    <DarkTooltip
+                      title={
+                        wallet.connected && isRegionRestricted
+                          ? "Sorry, Aldrin.com doesn't offer its services in your region."
+                          : ''
+                      }
                     >
-                      Stake
-                    </Button>
+                      <SpanContainer>
+                        <Button
+                          data-testid="plutonians-stake-submit-btn"
+                          onClick={stake}
+                          $width="xl"
+                          $fontSize="sm"
+                          disabled={isStakingDisabled}
+                          $loading={loading}
+                          style={{
+                            fontWeight: '600',
+                            padding: '1em',
+                          }}
+                        >
+                          Stake
+                        </Button>
+                      </SpanContainer>
+                    </DarkTooltip>
                   )}
                 </ConnectWalletWrapper>
               </FormContainer>
