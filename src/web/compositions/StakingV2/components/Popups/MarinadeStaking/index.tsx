@@ -6,6 +6,7 @@ import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import {
   notifyAboutStakeTransaction,
@@ -26,6 +27,7 @@ import {
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { formatNumbersForState, MSOL_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
@@ -37,6 +39,7 @@ import { AmountInput } from '../../Inputs'
 import { NumberWithLabel } from '../../NumberWithLabel/NumberWithLabel'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Container, Row, ModalContainer } from '../index.styles'
+import { SpanContainer } from '../RinStaking/index.styles'
 import { Switcher } from '../Switcher'
 import {
   AdditionalInfoRow,
@@ -57,6 +60,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
     refreshStakingInfo,
     socials,
   } = props
+  const isRegionRestricted = useRegionRestriction()
 
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -298,29 +302,42 @@ const Block: React.FC<StakingBlockProps> = (props) => {
           </Column>
 
           <Column height="auto" width="100%">
-            <Button
-              className="stake-btn"
-              onClick={() => {
-                if (!wallet.connected) {
-                  setIsConnectWalletPopupOpen(true)
-                } else if (isStakeModeOn) {
-                  stake()
-                } else {
-                  unstake()
-                }
-              }}
-              $variant={wallet.connected ? 'green' : 'violet'}
-              $width="xl"
-              $padding="xxxl"
-              $fontSize="sm"
-              disabled={wallet.connected && (!isValid || loading)}
+            <DarkTooltip
+              title={
+                wallet.connected && isRegionRestricted && isStakeModeOn
+                  ? "Sorry, Aldrin.com doesn't offer its services in your region."
+                  : ''
+              }
             >
-              {!wallet.connected ? (
-                'Connect Wallet to Stake mSOL'
-              ) : (
-                <>{isStakeModeOn ? 'Stake mSOL' : 'Unstake mSOL'}</>
-              )}
-            </Button>
+              <SpanContainer>
+                <Button
+                  className="stake-btn"
+                  onClick={() => {
+                    if (!wallet.connected) {
+                      setIsConnectWalletPopupOpen(true)
+                    } else if (isStakeModeOn) {
+                      stake()
+                    } else {
+                      unstake()
+                    }
+                  }}
+                  $variant={wallet.connected ? 'green' : 'violet'}
+                  $width="xl"
+                  $padding="xxxl"
+                  $fontSize="sm"
+                  disabled={
+                    (wallet.connected && (!isValid || loading)) ||
+                    (isStakeModeOn && isRegionRestricted)
+                  }
+                >
+                  {!wallet.connected ? (
+                    'Connect Wallet to Stake mSOL'
+                  ) : (
+                    <>{isStakeModeOn ? 'Stake mSOL' : 'Unstake mSOL'}</>
+                  )}
+                </Button>
+              </SpanContainer>
+            </DarkTooltip>
           </Column>
         </Column>
       </Modal>

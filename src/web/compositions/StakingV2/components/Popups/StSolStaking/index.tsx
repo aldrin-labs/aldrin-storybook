@@ -18,6 +18,7 @@ import {
 } from '@sb/dexUtils/transactions'
 import { formatNumbersForState } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useRegionRestriction } from '@sb/hooks/useRegionRestriction'
 
 import { walletAdapterToWallet } from '@core/solana'
 import { stripByAmount } from '@core/utils/numberUtils'
@@ -29,6 +30,7 @@ import { ConfirmUnstakeModal } from '../ConfirmUnstake'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Container, Row, ModalContainer } from '../index.styles'
 import { AdditionalInfoRow } from '../MarinadeStaking/index.styles'
+import { SpanContainer } from '../RinStaking/index.styles'
 import { Switcher } from '../Switcher/index'
 import {
   FirstInputContainer,
@@ -52,6 +54,7 @@ export const StSolStaking = ({
   lidoApy: number
   solidoSDK: any
 }) => {
+  const isRegionRestricted = useRegionRestriction()
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [isConfirmUnStakeModalOpen, setIsConfirmUnStakeModalOpen] =
     useState(false)
@@ -319,30 +322,43 @@ export const StSolStaking = ({
             </Column>
 
             <Column height="auto" width="100%">
-              <Button
-                className="stake-st-btn"
-                onClick={() => {
-                  if (!wallet.connected) {
-                    setIsConnectWalletPopupOpen(true)
-                  }
-                  if (isStakeModeOn) {
-                    stake()
-                  } else {
-                    setIsConfirmUnStakeModalOpen(true)
-                  }
-                }}
-                $variant={wallet.connected ? 'green' : 'violet'}
-                $width="xl"
-                $padding="xxxl"
-                $fontSize="sm"
-                disabled={wallet.connected && !isValid}
+              <DarkTooltip
+                title={
+                  wallet.connected && isRegionRestricted && isStakeModeOn
+                    ? "Sorry, Aldrin.com doesn't offer its services in your region."
+                    : ''
+                }
               >
-                {!wallet.connected ? (
-                  'Connect Wallet to Stake mSOL'
-                ) : (
-                  <>{isStakeModeOn ? 'Stake stSOL' : 'Unstake stSOL'}</>
-                )}
-              </Button>
+                <SpanContainer>
+                  <Button
+                    className="stake-st-btn"
+                    onClick={() => {
+                      if (!wallet.connected) {
+                        setIsConnectWalletPopupOpen(true)
+                      }
+                      if (isStakeModeOn) {
+                        stake()
+                      } else {
+                        setIsConfirmUnStakeModalOpen(true)
+                      }
+                    }}
+                    $variant={wallet.connected ? 'green' : 'violet'}
+                    $width="xl"
+                    $padding="xxxl"
+                    $fontSize="sm"
+                    disabled={
+                      (wallet.connected && !isValid) ||
+                      (isStakeModeOn && isRegionRestricted)
+                    }
+                  >
+                    {!wallet.connected ? (
+                      'Connect Wallet to Stake mSOL'
+                    ) : (
+                      <>{isStakeModeOn ? 'Stake stSOL' : 'Unstake stSOL'}</>
+                    )}
+                  </Button>
+                </SpanContainer>
+              </DarkTooltip>
             </Column>
           </Column>
         </Modal>
