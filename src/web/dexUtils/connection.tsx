@@ -17,12 +17,12 @@ export const ENDPOINTS = [
 
 const providers = process.env.RPC_PROVIDERS_ADDRESSES
   ? JSON.parse(process.env.RPC_PROVIDERS_ADDRESSES)
-  : [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }]
+  : [{ url: 'https://solana-mainnet.rpc.extrnode.com', weight: 20 }]
 
 const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
 const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://frontend-solana-api-1.aldrin.com', weight: 2 },
+  { url: 'https://solana-mainnet.rpc.extrnode.com', weight: 2 },
 ])
 
 const context = {
