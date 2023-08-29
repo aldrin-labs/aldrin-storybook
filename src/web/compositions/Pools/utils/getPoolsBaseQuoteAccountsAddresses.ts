@@ -8,7 +8,6 @@ export const getPoolsBaseQuoteAccountsAddresses = (
       acc.push(pool.tokenAccountA.toString())
       acc.push(pool.tokenAccountB.toString())
       acc.push(pool.lpTokenFreezeVault.toString())
-      acc.push(pool.poolToken.toString())
 
       return acc
     },
