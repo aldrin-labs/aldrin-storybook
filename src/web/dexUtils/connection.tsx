@@ -17,7 +17,12 @@ export const ENDPOINTS = [
 
 const providers = process.env.RPC_PROVIDERS_ADDRESSES
   ? JSON.parse(process.env.RPC_PROVIDERS_ADDRESSES)
-  : [{ url: 'https://solana-mainnet.rpc.extrnode.com', weight: 20 }]
+  : [
+      {
+        url: 'https://rpc.helius.xyz/?api-key=923b03cb-c57e-4942-a22d-05331e591fdf',
+        weight: 20,
+      },
+    ]
 
 const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
