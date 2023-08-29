@@ -1,11 +1,9 @@
-import { ApolloQueryResult } from 'apollo-client'
 import React, { useMemo, useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 
 import { FlexBlock } from '@sb/components/Layout'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
 import {
@@ -18,6 +16,7 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
+import { usePoolsInfo } from '@sb/dexUtils/pools/hooks/usePoolsInfo'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -26,14 +25,7 @@ import { withPublicKey } from '@sb/hoc/withPublicKey'
 import { toMap } from '@sb/utils'
 
 import { AUTHORIZED_POOLS } from '@core/config/dex'
-import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
-import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
-import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { fixCorruptedFarmingStates } from '@core/solana'
-import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
 
 import KudelskiLogo from '@icons/kudelski.svg'
 
@@ -58,8 +50,6 @@ import {
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
 
 interface TableSwitcherProps {
-  getPoolsInfoQueryRefetch: () => Promise<ApolloQueryResult<PoolsInfo>>
-  getPoolsInfoQuery: PoolsInfo
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
@@ -70,13 +60,24 @@ interface TableSwitcherProps {
 
 const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const {
-    getPoolsInfoQueryRefetch,
-    getPoolsInfoQuery: { getPoolsInfo: rawPools = [] },
-    getDexTokensPricesQuery: { getDexTokensPrices = [] },
-    getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
-    getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
-    getWeeklyAndDailyTradingVolumesForPoolsQuery,
+    getDexTokensPricesQuery: { getDexTokensPrices = [] } = {
+      getDexTokensPricesQuery: { getDexTokensPrices: [] },
+    },
+    getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] } = {
+      getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: [] },
+    },
+    getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] } = {
+      getFeesEarnedByPoolQuery: { getFeesEarnedByPool: [] },
+    },
+    getWeeklyAndDailyTradingVolumesForPoolsQuery = {
+      getWeeklyAndDailyTradingVolumesForPools: [],
+    },
   } = props
+
+  const [rawPools, getPoolsInfoQueryRefetch] = usePoolsInfo()
+
+  // console.debug('[usePoolsInfo] poolsInfo: ', rawPools)
+  // console.debug('[usePoolsInfo] refresh: ', refresh)
 
   const [searchValue, setSearchValue] = useState('')
   const [isAuditPopupOpen, setIsAuditPopupOpen] = useState(false)
@@ -378,59 +379,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   )
 }
 
-export const TableSwitcher = compose<TableSwitcherProps, any>(
-  withPublicKey,
-  queryRendererHoc({
-    query: getDexTokensPricesRequest,
-    name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: (props) => props.theme.colors.white1,
-  }),
-  queryRendererHoc({
-    name: 'getPoolsInfoQuery',
-    query: getPoolsInfoRequest,
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 60000 * getRandomInt(1, 2),
-    loaderColor: (props) => props.theme.colors.white1,
-  }),
-  queryRendererHoc({
-    query: getFeesEarnedByAccountRequest,
-    name: 'getFeesEarnedByAccountQuery',
-    variables: (props) => ({
-      account: props.wallet.publicKey?.toString() || '',
-    }),
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: (props) => props.theme.colors.white1,
-  }),
-  queryRendererHoc({
-    name: 'getFeesEarnedByPoolQuery',
-    query: getFeesEarnedByPoolRequest,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: (props) => props.theme.colors.white1,
-    // TODO: Comment before merge
-    variables: () => ({
-      timestampFrom: endOfHourTimestamp() - DAY,
-      timestampTo: endOfHourTimestamp(),
-    }),
-  }),
-  queryRendererHoc({
-    name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
-    query: getWeeklyAndDailyTradingVolumesForPoolsRequest,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: (props) => props.theme.colors.white1,
-    variables: () => ({
-      dailyTimestampTo: endOfHourTimestamp(),
-      dailyTimestampFrom: endOfHourTimestamp() - DAY,
-      weeklyTimestampTo: endOfHourTimestamp(),
-      weeklyTimestampFrom: endOfHourTimestamp() - DAY * 7,
-    }),
-  })
-)(TableSwitcherComponent)
+export const TableSwitcher = compose<TableSwitcherProps, any>(withPublicKey)(
+  TableSwitcherComponent
+)
