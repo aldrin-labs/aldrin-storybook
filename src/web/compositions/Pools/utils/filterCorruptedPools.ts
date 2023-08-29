@@ -1,8 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 
-import { RawPool } from './types'
-
-export const filterCorruptedPools = (pool: RawPool) => {
+export const filterCorruptedPools = (pool: any) => {
   const poolPubkeyAddress = pool.pubkey.toString()
 
   // this filters corrupted data
