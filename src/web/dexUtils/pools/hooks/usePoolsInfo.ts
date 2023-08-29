@@ -26,7 +26,7 @@ export const usePoolsInfo = (): [PoolsInfoType[], RefreshFunction] => {
   }, [])
 
   const pools = useSwr('use-pools-info-query', fetcher, {
-    refreshInterval: 60_000,
+    refreshInterval: 60_000 * 3,
   })
 
   return [pools.data || [], pools.mutate]
