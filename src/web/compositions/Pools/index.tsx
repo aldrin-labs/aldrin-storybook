@@ -3,8 +3,8 @@ import { useTheme } from 'styled-components'
 
 import { Block, BlockContent } from '@sb/components/Block'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
+import { WaningBanner as WarningBanner } from '@sb/components/WaningBanner'
 
-import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
 import { TableSwitcher } from './components/Tables/TablesSwitcher'
 import { TableSwitcherWrap } from './index.styles'
@@ -21,18 +21,17 @@ export const PoolsComponent: React.FC = () => {
   return (
     <Page>
       <WideContent>
-        {/* <WaningBanner bannerId="calcAccountsCreating">
-          Under maintenance, available to claim rewards may not be displayed
-          correctly.
-        </WaningBanner> */}
-        <RootRow data-testid="pools-charts-row" height="auto">
+        <WarningBanner bannerId="underMaintenance">
+          Under maintenance, pools info might not be displayed correctly.
+        </WarningBanner>
+        {/* <RootRow data-testid="pools-charts-row" height="auto">
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart data-testid="pools-tvl-chart" />
           </Cell>
           <Cell col={12} colLg={6}>
             <TradingVolumeChart data-testid="pools-volume-chart" />
           </Cell>
-        </RootRow>
+        </RootRow> */}
         <RootRow height="auto">
           <Cell col={12}>
             <Block>

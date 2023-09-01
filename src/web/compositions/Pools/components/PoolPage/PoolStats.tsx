@@ -58,9 +58,7 @@ export const PoolStats: React.FC<PoolStatsProps> = (props) => {
             title={`$${formatNumberToUSFormat(roundedValue.toFixed(2))}`}
           >
             <span>
-              {value > 0
-                ? `$${stripByAmountAndFormat(roundedValue, 2)}`
-                : '~0$'}
+              {value > 0 ? `$${stripByAmountAndFormat(roundedValue, 2)}` : '-'}
             </span>
           </DarkTooltip>
         </PoolStatsText>
