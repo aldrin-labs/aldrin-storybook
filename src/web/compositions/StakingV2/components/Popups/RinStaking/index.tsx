@@ -14,6 +14,7 @@ import {
   resolveStakingNotification,
   resolveUnstakingNotification,
 } from '@sb/compositions/RinStaking/components/utils'
+import { RIN_DECIMALS } from '@sb/compositions/StakingV2/config'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import {
   startFarmingV2,
@@ -77,20 +78,17 @@ export const RinStakingComp = ({
     useFarmersAccountInfo()
 
   const farm = farms?.get(FARMING_V2_TOKEN)
-
   const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
-
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
 
   const [loading, setLoading] = useState({
     stake: false,
     unstake: false,
   })
-
   const totalStaked = farmer?.totalStaked || '0'
   const totalStakedWithDecimals = removeDecimals(
     totalStaked,
-    farm?.stakeVaultDecimals
+    farm?.stakeVaultDecimals || RIN_DECIMALS
   )
 
   const rinHarvest = farm?.harvests.find(
@@ -256,12 +254,12 @@ export const RinStakingComp = ({
                     </InlineText>{' '}
                     <InlineText color="white2">RIN</InlineText>
                   </BigNumber>
-                  <StretchedBlock align="flex-end">
+                  {/* <StretchedBlock align="flex-end">
                     <InlineText size="sm">
                       <InlineText color="white2">$</InlineText>&nbsp;{' '}
                       {isBalanceShowing ? stakedInUsd : '***'}
                     </InlineText>{' '}
-                  </StretchedBlock>
+                  </StretchedBlock> */}
                 </BlockContentStretched>
               </Block>
 
@@ -297,14 +295,14 @@ export const RinStakingComp = ({
                     <InlineText color="white2">RIN</InlineText>
                   </BigNumber>
                   <StretchedBlock align="flex-end">
-                    <InlineText size="sm">
+                    {/* <InlineText size="sm">
                       <InlineText color="white2">$</InlineText>&nbsp;{' '}
                       {isBalanceShowing
                         ? stripByAmountAndFormat(
                             compoundedRewardsWithputDecimals * tokenPrice
                           )
                         : '***'}
-                    </InlineText>
+                    </InlineText> */}
                     <NumberWithLabel
                       value={stripDigitPlaces(rinHarvest?.apy, 2)}
                       label="APY"
