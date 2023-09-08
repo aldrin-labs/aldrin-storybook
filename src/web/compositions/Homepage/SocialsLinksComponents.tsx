@@ -4,7 +4,7 @@ import { StyledLink } from './styles'
 
 export const socialLinks = {
   telegram: 'https://t.me/Aldrin_Exchange',
-  twitter: 'https://twitter.com/Aldrin_Exchange',
+  twitter: 'https://twitter.com/aldrin_labs',
   discord: 'https://discord.gg/4VZyNxT2WU',
   medium: 'https://blog.aldrin.com',
   youtube: 'https://www.youtube.com/channel/UCyUM72zWism4-LdA2J4bwew',
