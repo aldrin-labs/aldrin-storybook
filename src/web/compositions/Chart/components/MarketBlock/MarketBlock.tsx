@@ -18,10 +18,8 @@ import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
 import MarketStats from '../MarketStats/MarketStats'
 import {
-  ExclamationMark,
   MarketStatsContainer,
   MobileMarketStatsContainer,
-  Title,
 } from './MarketBlock.styles'
 
 const selectStyles = (theme) => ({
@@ -171,18 +169,18 @@ const MarketBlock = ({
           </Row>
         </Row>
         <Row>
-          <Row align="flex-start" direction="column">
+          {/* <Row align="flex-start" direction="column">
             <Title color={theme.colors.green3}>
               Try out new Aldrin’s orderbook DEX.
             </Title>
             <Title color={theme.colors.green3}>Learn More</Title>
-          </Row>
-          <ExclamationMark
+          </Row> */}
+          {/* <ExclamationMark
             theme={theme}
             margin="0 0 0 2rem"
             fontSize="5rem"
             color={theme.colors.green3}
-          />
+          /> */}
         </Row>
         <MintsPopup
           symbol={marketName}

@@ -1,12 +1,10 @@
 import { withTheme } from '@material-ui/styles'
 import React, { useEffect, useState } from 'react'
-import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import Tour from 'reactour'
 import { compose } from 'recompose'
 
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   FinishBtn,
   tourConfig,
@@ -19,18 +17,12 @@ import { withRegionCheck, withMarketUtilsHOC, withErrorFallback } from '@sb/hoc'
 import { withPublicKey } from '@sb/hoc/withPublicKey'
 
 import { SERUM_DEX_PID, tokensToDelist } from '@core/config/dex'
-import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
-import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
-import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
-import { finishJoyride } from '@core/utils/joyride'
 // import Joyride from 'react-joyride'
 // import { Grid, Hidden } from '@material-ui/core'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 
-import { CreateSerumMarketModal } from '../../components/CreateSerumMarketModal'
 import MarketBlock from './components/MarketBlock/MarketBlock'
 import { SerumMarketWarning } from './components/SerumMarketWarning/SerumMarketWarning'
 import { WarningPopup } from './components/WarningPopup'
@@ -78,7 +70,7 @@ function ChartPageComponent(props: any) {
     marketType,
     selectedPair,
     authenticated,
-    changeChartLayoutMutation,
+    changeChartLayoutMutation = () => {},
     setCustomMarkets,
     getUserCustomMarketsQuery = { getUserCustomMarkets: [] },
     location,
@@ -193,11 +185,11 @@ function ChartPageComponent(props: any) {
   }, [selectedPair])
 
   const closeChartPagePopup = () => {
-    finishJoyride({
-      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
-      getTooltipSettings,
-      name: 'chartPagePopup',
-    })
+    // finishJoyride({
+    //   updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+    //   getTooltipSettings,
+    //   name: 'chartPagePopup',
+    // })
   }
 
   const { market } = useMarket()
@@ -287,12 +279,12 @@ function ChartPageComponent(props: any) {
         showSerumWarning={showSerumWarning}
         updateTerminalViewMode={(mode) => {
           if (mode === 'smartOrderMode') {
-            finishJoyride({
-              updateTooltipSettingsMutation:
-                props.updateTooltipSettingsMutation,
-              getTooltipSettings,
-              name: 'chartPagePopup',
-            })
+            // finishJoyride({
+            //   updateTooltipSettingsMutation:
+            //     props.updateTooltipSettingsMutation,
+            //   getTooltipSettings,
+            //   name: 'chartPagePopup',
+            // })
           }
 
           updateTerminalViewMode(mode)
@@ -357,7 +349,7 @@ export default compose(
   withTheme(),
   withPublicKey,
   withRouter,
-  withRegionCheck,
+  withRegionCheck
   // withAuth,
   // queryRendererHoc({
   //   skip: (props: any) => !props.authenticated,
@@ -369,14 +361,14 @@ export default compose(
   //     marketType: 1, // hardcode here to get only futures marketIds'
   //   },
   // }),
-  queryRendererHoc({
-    query: getUserCustomMarkets,
-    name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-and-network',
-    variables: (props) => ({
-      publicKey: props.publicKey,
-    }),
-  }),
+  // queryRendererHoc({
+  //   query: getUserCustomMarkets,
+  //   name: 'getUserCustomMarketsQuery',
+  //   fetchPolicy: 'cache-and-network',
+  //   variables: (props) => ({
+  //     publicKey: props.publicKey,
+  //   }),
+  // })
   // queryRendererHoc({
   //   skip: (props: any) => !props.authenticated,
   //   query: GET_TOOLTIP_SETTINGS,
@@ -395,16 +387,16 @@ export default compose(
   //     marketType: props.marketType,
   //   }),
   // }),
-  queryRendererHoc({
-    query: getChartLayout,
-    name: 'getChartLayoutQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-  }),
-  graphql(updateTooltipSettings, {
-    name: 'updateTooltipSettingsMutation',
-  }),
-  graphql(changeChartLayout, {
-    name: 'changeChartLayoutMutation',
-  })
+  // queryRendererHoc({
+  //   query: getChartLayout,
+  //   name: 'getChartLayoutQuery',
+  //   fetchPolicy: 'cache-and-network',
+  //   withoutLoading: true,
+  // })
+  // graphql(updateTooltipSettings, {
+  //   name: 'updateTooltipSettingsMutation',
+  // }),
+  // graphql(changeChartLayout, {
+  //   name: 'changeChartLayoutMutation',
+  // })
 )(ChartPage)
