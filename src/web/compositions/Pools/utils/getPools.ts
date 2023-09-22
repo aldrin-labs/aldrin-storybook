@@ -4,6 +4,7 @@ import { AldrinConnection, ProgramsMultiton } from '@core/solana'
 
 import { ACCOUNT_DATA_SIZE_MAP_BY_PROGRAM_ID } from './config'
 import { filterCorruptedPools } from './filterCorruptedPools'
+import { getFarmingStateDataMap } from './getFarmingStateDataMap'
 import { RawPool } from './types'
 
 export const getPools = async (
@@ -24,11 +25,19 @@ export const getPools = async (
       filters: [{ dataSize: dataSizes.Pool }],
     }
   )
+
   const providerId = 'Aldrin'
+
+  const farmingStateDataMap = await getFarmingStateDataMap(
+    program,
+    connection,
+    programId
+  )
 
   const pools = tokenSwapOwnedAccounts.map((pool) => {
     const data = Buffer.from(pool.account.data)
     const poolData = program.coder.accounts.decode('Pool', data)
+    const farmingData = farmingStateDataMap[pool.pubkey.toString()]
 
     return {
       pubkey: pool.pubkey,
@@ -47,6 +56,7 @@ export const getPools = async (
       feePoolTokenAccount: poolData.feePoolTokenAccount,
       curve: poolData.curve,
       extra: pool,
+      ...(farmingData ? { farmingData } : {}),
     }
   })
 
