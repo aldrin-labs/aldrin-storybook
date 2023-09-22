@@ -1,4 +1,4 @@
-import { orderBy, keyBy } from 'lodash-es'
+import { keyBy } from 'lodash-es'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -14,10 +14,7 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 import {
   Container,
@@ -83,33 +80,27 @@ export const SelectCoinPopup = ({
       })
     : mints
 
-  const sortedMints = orderBy(
-    filteredMints
-      .map((mint) => {
-        const { name, symbol } = tokenInfos.get(mint) || {
-          name: '',
-          symbol: getTokenNameByMintAddress(mint),
-        }
+  const sortedMints = filteredMints.map((mint) => {
+    const { name, symbol } = tokenInfos.get(mint) || {
+      name: '',
+      symbol: getTokenNameByMintAddress(mint),
+    }
 
-        const userToken = userTokensDataMap[mint]
-        const price = pricesMap.get(getTokenNameByMintAddress(mint)) || 0
+    const userToken = userTokensDataMap[mint]
+    const price = pricesMap.get(getTokenNameByMintAddress(mint)) || 0
 
-        const topMint = topTradingMints.indexOf(mint)
+    const topMint = topTradingMints.indexOf(mint)
 
-        return {
-          mint,
-          name,
-          symbol,
-          amount: userToken ? userToken.amount : 0,
-          price,
-          total: userToken ? userToken.amount * price : 0,
-          topMint: topMint > -1 ? topMint : topTradingMints.length,
-        }
-      })
-      .filter((token) => !!token.price),
-    ['total', 'topMint'],
-    ['desc', 'asc']
-  )
+    return {
+      mint,
+      name,
+      symbol,
+      amount: userToken ? userToken.amount : 0,
+      price,
+      total: userToken ? userToken.amount * price : 0,
+      topMint: topMint > -1 ? topMint : topTradingMints.length,
+    }
+  })
 
   const selectMint = (mint: string) => {
     const isSeveralCoinsWithSameAddress =
@@ -184,7 +175,7 @@ export const SelectCoinPopup = ({
               {connected && (
                 <Row direction="column" align="flex-end" wrap="nowrap">
                   <InlineText size="esm" color="white" weight={600}>
-                    ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
+                    {/* ${formatNumberToUSFormat(stripDigitPlaces(total, 2))} */}
                   </InlineText>
                   <Row margin="0.5em 0 0 0">
                     <BalanceLabel size="esm" color="white1">

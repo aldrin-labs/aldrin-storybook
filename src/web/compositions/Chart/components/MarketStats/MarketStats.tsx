@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { DefaultTheme, useTheme } from 'styled-components'
 
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
@@ -10,7 +9,6 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { getRINCirculationSupply } from '@core/api'
-import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -78,7 +76,7 @@ export const generateDatesForRequest = () => ({
 const MarketStats: React.FC<IProps> = (props) => {
   const {
     marketDataByTickersQuery,
-    marketDataByTickersQueryRefetch,
+    marketDataByTickersQueryRefetch = () => {},
     symbol = ' _ ',
     marketType,
     isRINPair,
@@ -154,7 +152,8 @@ const MarketStats: React.FC<IProps> = (props) => {
 
   const [base, quote] = symbol.split('_')
 
-  const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
+  const prevClosePrice =
+    strippedLastPriceDiff === 0 ? 0 : strippedMarkPrice - strippedLastPriceDiff
 
   const priceChangePercentage = !prevClosePrice
     ? 0
@@ -176,7 +175,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               fontFamily: 'Avenir Next Demi',
             }}
           >
-            {markPrice === 0 ? '--' : formatNumberWithSpaces(strippedMarkPrice)}
+            {markPrice === 0 ? '-' : formatNumberWithSpaces(strippedMarkPrice)}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType}>
@@ -191,7 +190,9 @@ const MarketStats: React.FC<IProps> = (props) => {
                     : theme.colors.red3,
               }}
             >
-              {formatNumberWithSpaces(strippedLastPriceDiff)}
+              {strippedLastPriceDiff === 0
+                ? '-'
+                : formatNumberWithSpaces(strippedLastPriceDiff)}
             </PanelCardValue>
             <PanelCardSubValue
               data-testid="market-stats-24h-change-percentage"
@@ -202,8 +203,8 @@ const MarketStats: React.FC<IProps> = (props) => {
                     : theme.colors.red3,
               }}
             >
-              {!priceChangePercentage
-                ? '--'
+              {priceChangePercentage === 0
+                ? '-'
                 : `${sign24hChange}${formatNumberWithSpaces(
                     stripDigitPlaces(+priceChangePercentage)
                   )}%`}
@@ -214,20 +215,32 @@ const MarketStats: React.FC<IProps> = (props) => {
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24h high</PanelCardTitle>
           <PanelCardValue data-testid="market-stats-24h-high">
-            {formatNumberWithSpaces(stripDigitPlaces(maxPrice, pricePrecision))}
+            {maxPrice === 0
+              ? '-'
+              : formatNumberWithSpaces(
+                  stripDigitPlaces(maxPrice, pricePrecision)
+                )}
           </PanelCardValue>
         </PanelCard>
 
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24h low</PanelCardTitle>
           <PanelCardValue data-testid="market-stats-24h-low">
-            {formatNumberWithSpaces(stripDigitPlaces(minPrice, pricePrecision))}
+            {minPrice === 0
+              ? '-'
+              : formatNumberWithSpaces(
+                  stripDigitPlaces(minPrice, pricePrecision)
+                )}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24hr volume</PanelCardTitle>
           <PanelCardValue data-testid="market-stats-24h-volume">
-            {formatNumberWithSpaces(stripDigitPlaces(volume, 2))} {quote}
+            {volume === 0
+              ? '-'
+              : `${formatNumberWithSpaces(
+                  stripDigitPlaces(volume, 2)
+                )} ${quote}}`}
           </PanelCardValue>
         </PanelCard>
         {isRINPair && (
@@ -283,19 +296,18 @@ const MarketStats: React.FC<IProps> = (props) => {
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    query: marketDataByTickers,
-    name: 'marketDataByTickersQuery',
-    variables: (props: IProps) => ({
-      symbol: props.symbol,
-      exchange: 'serum',
-      marketType: props.marketType,
-      ...generateDatesForRequest(),
-    }),
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: true,
-    withoutLoading: true,
-  })
-)(MarketStats)
+export default compose()(MarketStats)
+// queryRendererHoc({
+//   query: marketDataByTickers,
+//   name: 'marketDataByTickersQuery',
+//   variables: (props: IProps) => ({
+//     symbol: props.symbol,
+//     exchange: 'serum',
+//     marketType: props.marketType,
+//     ...generateDatesForRequest(),
+//   }),
+//   fetchPolicy: 'cache-and-network',
+//   withOutSpinner: true,
+//   withTableLoader: true,
+//   withoutLoading: true,
+// })

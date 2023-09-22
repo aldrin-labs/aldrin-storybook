@@ -1,9 +1,5 @@
 import React from 'react'
 
-import QueryRenderer from '@sb/components/QueryRenderer'
-
-import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
-
 import { TradeHistoryWrapper } from '../Chart.styles'
 import { TradeHistoryTable } from '../Tables/Tables'
 
@@ -34,7 +30,29 @@ export const TradeHistory = ({
           show: showTableOnMobile === 'TRADE',
         }}
       >
-        <QueryRenderer
+        <TradeHistoryTable
+          {...{
+            updateTerminalPriceFromOrderbook,
+            showTableOnMobile,
+            isPairDataLoading,
+            activeExchange,
+            minPriceDigits,
+            pricePrecision,
+            quantityPrecision,
+            changeTable,
+            chartProps,
+            sizeDigits,
+            marketType,
+            exchange,
+            theme,
+            symbol,
+            quote,
+            pair,
+            data: { marketTickers: [] },
+          }}
+        />
+
+        {/* <QueryRenderer
           component={TradeHistoryTable}
           withOutSpinner
           query={MARKET_QUERY}
@@ -57,9 +75,9 @@ export const TradeHistory = ({
             theme,
             updateTerminalPriceFromOrderbook,
             key: 'tradeyistory_table_query_render',
-          }}
-          // isDataLoading={isPairDataLoading}
-        />
+          }} */}
+        {/* // isDataLoading={isPairDataLoading} */}
+        {/* /> */}
       </TradeHistoryWrapper>
     </>
   )

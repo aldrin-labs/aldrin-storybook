@@ -45,14 +45,29 @@ export interface WalletContextType {
   setAutoConnect: (autoConnect: boolean) => void
   providerName: string
 }
+const WALLET_PROVIDER_LS_KEY = 'walletProvider'
+const WALLET_PERSIST_KEY = 'walletConnectedUpdatedFinally'
 
+const providerKeys = WALLET_PROVIDERS.map((_) => _.url)
+const storedWallet = localStorage.getItem(WALLET_PROVIDER_LS_KEY)
+if (storedWallet) {
+  try {
+    const parsedValue = JSON.parse(storedWallet)
+    if (!providerKeys.includes(parsedValue)) {
+      localStorage.removeItem(WALLET_PROVIDER_LS_KEY)
+      localStorage.removeItem(WALLET_PERSIST_KEY)
+    }
+  } catch (e) {
+    console.warn('e', e)
+  }
+}
 const WalletContext = React.createContext<WalletContextType | null>(null)
 
 export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
   const [connectedPersist, setConnectedPersist] = useLocalStorageState(
-    'walletConnectedUpdatedFinally',
+    WALLET_PERSIST_KEY,
     false
   )
 
@@ -60,7 +75,7 @@ export const WalletProvider: React.FC = ({ children }) => {
   const [autoConnect, setAutoConnect] = useState(connectedPersist)
 
   const [providerUrl, setProviderUrl] = useLocalStorageState(
-    'walletProvider',
+    WALLET_PROVIDER_LS_KEY,
     RIN_PROVIDER_URL
   )
 
@@ -80,8 +95,6 @@ export const WalletProvider: React.FC = ({ children }) => {
     }
     return undefined
   }, [provider, endpoint])
-
-  console.log('wallet:', wallet)
 
   const connectWalletHash = useMemo(
     () => window.location.hash,

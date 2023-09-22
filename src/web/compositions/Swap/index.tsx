@@ -4,18 +4,16 @@ import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
 import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { INPUT_FORMATTERS } from '@sb/components/Input'
 import { PieTimer } from '@sb/components/PieTimer'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Toast } from '@sb/components/Toast/Toast'
 import { InlineText } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
   getTokenMintAddressByName,
@@ -23,17 +21,14 @@ import {
 } from '@sb/dexUtils/markets'
 import { callToast } from '@sb/dexUtils/notifications'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
+import { usePoolsInfo } from '@sb/dexUtils/pools/hooks/usePoolsInfo'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { toMap } from '@sb/utils'
 
-import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { walletAdapterToWallet, getTokenDataByMint } from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
@@ -42,7 +37,6 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import {
   numberWithOneDotRegexp,
   removeDecimalsFromBN,
@@ -82,15 +76,9 @@ import {
 } from './utils'
 
 const SwapPage = ({
-  getPoolsInfoQuery,
   getDexTokensPricesQuery,
-  getTradingVolumeForAllPoolsQuery,
 }: {
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  getTradingVolumeForAllPoolsQuery: {
-    getTradingVolumeForAllPools: { pool: string; tradingVolume: number }[]
-  }
 }) => {
   const theme = useTheme()
   const { wallet } = useWallet()
@@ -101,18 +89,10 @@ const SwapPage = ({
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
-  const { getPoolsInfo: pools } = getPoolsInfoQuery
-  const poolsMap = toMap(pools, (pool) => pool.swapToken)
-
-  const { getTradingVolumeForAllPools: poolsTradingVolume = [] } =
-    getTradingVolumeForAllPoolsQuery || { getTradingVolumeForAllPools: [] }
+  const [pools] = usePoolsInfo()
 
   // separate getting top pools
-
-  const topPoolsByTradingVolume = [...poolsTradingVolume]
-    .sort((a, b) => b.tradingVolume - a.tradingVolume)
-    .map((poolWithVolume) => poolsMap.get(poolWithVolume.pool))
-    .filter(notEmpty)
+  const topPoolsByTradingVolume = pools.filter(notEmpty)
 
   const topTradingPairs = topPoolsByTradingVolume.map((pool) => {
     const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
@@ -1070,27 +1050,4 @@ const SwapPage = ({
 }
 
 // @ts-ignore
-export default compose(
-  queryRendererHoc({
-    name: 'getPoolsInfoQuery',
-    query: getPoolsInfo,
-    fetchPolicy: 'cache-and-network',
-  }),
-  queryRendererHoc({
-    query: getDexTokensPricesRequest,
-    name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000,
-  }),
-  queryRendererHoc({
-    name: 'getTradingVolumeForAllPoolsQuery',
-    query: getTradingVolumeForAllPools,
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
-    variables: () => ({
-      timestampTo: endOfHourTimestamp(),
-      timestampFrom: endOfHourTimestamp() - DAY,
-    }),
-  })
-)(SwapPage)
+export default SwapPage

@@ -30,6 +30,7 @@ export const UnstakeContainer = ({
   const wallet = useWallet()
   const isMaxAmount = unstakeAmount === stripByAmount(maxAmount)
   const amountToUnstake = isMaxAmount ? +maxAmount : unstakeAmount
+
   return (
     <InputsContainer margin="0">
       <FirstInputContainer>
