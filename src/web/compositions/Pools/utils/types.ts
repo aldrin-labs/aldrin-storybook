@@ -17,6 +17,34 @@ export interface FarmingState {
   feesDistributed?: boolean
 }
 
+export interface FarmingStateRaw {
+  tokensUnlocked: BN
+  tokensPerPeriod: BN
+  tokensTotal: BN
+  periodLength: BN
+  noWithdrawalTime: BN
+  vestingType: number
+  vestingPeriod: BN
+  startTime: BN
+  currentTime: BN
+  pool: PublicKey
+  farmingTokenVault: PublicKey
+  farmingSnapshots: PublicKey
+  farmingPubKey: PublicKey
+}
+
+export interface FarmingTokenMintsMap {
+  [key: string]: { mint: string; decimals: number }
+}
+export interface FarmingStateWithMintsRaw extends FarmingStateRaw {
+  farmingTokenMint: string
+  farmingTokenMintDecimals: number
+}
+
+export interface FarmingStateDataMap {
+  [key: string]: FarmingStateWithMintsRaw[]
+}
+
 export type RawPool = {
   pubkey: PublicKey
   programId: PublicKey
@@ -35,6 +63,7 @@ export type RawPool = {
     ownerWithdrawFeeNumerator: BN
     ownerWithdrawFeeDenominator: BN
   }
+  farmingData?: FarmingStateWithMintsRaw[] | undefined
   curveType?: any
   lpTokenFreezeVault: PublicKey
   initializerAccount: PublicKey

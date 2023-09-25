@@ -81,6 +81,11 @@ export const getPoolsInfo = async (
 
       const curve = pool.curve && pool.curve.toString()
 
+      const isFarmingForPoolExists =
+        pool.farmingData &&
+        Array.isArray(pool.farmingData) &&
+        pool.farmingData.length
+
       const data = {
         programId,
         name: `${mintA}_${mintB}`,
@@ -133,7 +138,29 @@ export const getPoolsInfo = async (
         curve,
         curveType,
 
-        farming: null,
+        ...(isFarmingForPoolExists
+          ? {
+              farming: (pool.farmingData ?? []).map((el) => {
+                return {
+                  farmingState: el.farmingPubKey.toString(),
+                  tokensUnlocked: el.tokensUnlocked.toString(),
+                  tokensPerPeriod: el.tokensPerPeriod.toString(),
+                  tokensTotal: el.tokensTotal.toString(),
+                  periodLength: el.periodLength.toString(),
+                  noWithdrawalTime: el.noWithdrawalTime.toString(),
+                  vestingType: el.vestingType,
+                  vestingPeriod: el.vestingPeriod.toString(),
+                  startTime: el.startTime.toString(),
+                  currentTime: el.currentTime.toString(),
+                  pool: el.pool.toString(),
+                  farmingTokenVault: el.farmingTokenVault.toString(),
+                  farmingTokenMint: el.farmingTokenMint,
+                  farmingTokenMintDecimals: el.farmingTokenMintDecimals,
+                  farmingSnapshots: el.farmingSnapshots.toString(),
+                }
+              }),
+            }
+          : { farming: null }),
 
         initializerAccount: initializerAccount.toString(),
         feePoolTokenAccount,

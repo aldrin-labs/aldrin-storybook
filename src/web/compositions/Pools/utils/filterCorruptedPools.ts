@@ -15,9 +15,9 @@ export const filterCorruptedPools = (pool: any) => {
     pool.mintB.equals(emptyPublicKey) ||
     pool.poolSigner.equals(emptyPublicKey)
   ) {
-    console.log(
-      `[filterPools] WARNING: Pool ${poolPubkeyAddress} has wrong shape of data, filtering it`
-    )
+    // console.log(
+    // `[filterPools] WARNING: Pool ${poolPubkeyAddress} has wrong shape of data, filtering it`
+    // )
     // TODO: Add metric here
 
     return false
