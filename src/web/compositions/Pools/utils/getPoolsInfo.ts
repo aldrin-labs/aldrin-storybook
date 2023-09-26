@@ -146,7 +146,7 @@ export const getPoolsInfo = async (
                   tokensUnlocked: el.tokensUnlocked.toString(),
                   tokensPerPeriod: el.tokensPerPeriod.toString(),
                   tokensTotal: el.tokensTotal.toString(),
-                  periodLength: el.periodLength.toString(),
+                  periodLength: parseInt(el.periodLength.toString(), 10),
                   noWithdrawalTime: el.noWithdrawalTime.toString(),
                   vestingType: el.vestingType,
                   vestingPeriod: el.vestingPeriod.toString(),
