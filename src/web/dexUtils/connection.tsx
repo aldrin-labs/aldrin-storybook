@@ -27,7 +27,10 @@ const providers = process.env.RPC_PROVIDERS_ADDRESSES
 const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
 const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://solana-mainnet.rpc.extrnode.com', weight: 2 },
+  {
+    url: 'https://solana-mainnet.rpc.extrnode.com/0b168b32-7c4d-4268-b738-6fc3c4af9d76',
+    weight: 2,
+  },
 ])
 
 const context = {
