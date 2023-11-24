@@ -50,7 +50,7 @@ const jss = create(jssPreset())
 // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 
-const version = `13-fix-amm-pools-page-staked-lp-fix-26-09-2023`
+const version = `14-fix-rpc-24-11-2023`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
