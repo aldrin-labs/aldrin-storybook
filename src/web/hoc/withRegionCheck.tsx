@@ -4,7 +4,7 @@ import { Redirect } from '@sb/components/Redirect'
 
 import { Metrics } from '@core/utils/metrics'
 
-const restrictedContriesCodes = ['US']
+const restrictedContriesCodes: string[] = []
 
 export const getRegionData = async () => {
   try {
