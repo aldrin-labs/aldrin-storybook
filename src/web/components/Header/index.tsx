@@ -25,6 +25,7 @@ import {
   MoreIcon,
   MigrationToolIcon,
 } from './MenuIcons'
+import { RinBalance } from './RinBalance'
 import {
   Wrapper,
   Container,
@@ -51,7 +52,7 @@ export const Header = React.memo(
           <Container>
             <Left>
               <Logo />
-              {/* <RinBalance /> */}
+              <RinBalance />
               <MainLinksWrap>
                 <MainLinksBlock>
                   <NavLink

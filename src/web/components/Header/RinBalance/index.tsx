@@ -2,14 +2,12 @@ import React, { useState } from 'react'
 import { compose } from 'recompose'
 
 import { RewardsModal } from '@sb/components/Header/Rewards/RewardsModal'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { RIN_DECIMALS } from '@sb/compositions/StakingV2/config'
 import { useFarmersAccountInfo, useFarmInfo } from '@sb/dexUtils/farming'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
 import { withPublicKey } from '@sb/hoc'
 
 import { toMap } from '@core/collection'
-import { getStakingInfo as getStakingInfoQuery } from '@core/graphql/queries/staking/getStakingInfo'
 import { FARMING_V2_TOKEN, RIN_MINT } from '@core/solana'
 import { removeDecimals } from '@core/utils/helpers'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
@@ -39,7 +37,9 @@ const RinBalanceContent = ({ children }) => {
 
 const RinBalanceComponent: React.FC<WithStakingInfo> = (props) => {
   const {
-    getStakingInfoQuery: { getStakingInfo },
+    getStakingInfoQuery: { getStakingInfo } = {
+      getStakingInfo: { farming: [] },
+    },
   } = props
 
   const stakingDataMap = toMap(getStakingInfo?.farming || [], (farming) =>
@@ -73,15 +73,15 @@ const RinBalanceComponent: React.FC<WithStakingInfo> = (props) => {
 }
 
 export const RinBalance: any = compose(
-  withPublicKey,
-  queryRendererHoc({
-    query: getStakingInfoQuery,
-    name: 'getStakingInfoQuery',
-    fetchPolicy: 'cache-and-network',
-    variables: (props) => ({
-      farmerPubkey: props.publicKey,
-    }),
-    withoutLoading: true,
-    pollInterval: 60000,
-  })
+  withPublicKey
+  // queryRendererHoc({
+  //   query: getStakingInfoGCLQuery,
+  //   name: 'getStakingInfoQuery',
+  //   fetchPolicy: 'cache-and-network',
+  //   variables: (props) => ({
+  //     farmerPubkey: props.publicKey,
+  //   }),
+  //   withoutLoading: true,
+  //   pollInterval: 60000,
+  // })
 )(RinBalanceComponent)
