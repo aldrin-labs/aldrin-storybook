@@ -3,7 +3,6 @@ import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
 
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
@@ -13,7 +12,6 @@ import { RIN_MINT } from '@sb/dexUtils/utils'
 import { useUserVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { withdrawVestingInstruction, walletAdapterToWallet } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimateTime } from '@core/utils/dateUtils'
@@ -35,14 +33,19 @@ export const AVAILABLE_TO_CLAIM_THRESHOLD = 0.1
 
 const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const {
-    getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
+    getDexTokensPricesQuery: { getDexTokensPrices } = {
+      getDexTokensPrices: { prices: [] },
+    },
   } = props
 
-  const rinPrice = prices.find((p) => p.symbol === 'RIN')?.price || 0
+  const rinPrice =
+    getDexTokensPrices?.prices?.find((p) => p.symbol === 'RIN')?.price || 0
 
   const { wallet } = useWallet()
   const connection = useConnection()
   const [data, reloadVesting] = useUserVestings()
+
+  // console.debug('useUserVestings: data: ', data)
 
   const rinAccount = useAssociatedTokenAccount(RIN_MINT)
   if (!data) {
@@ -220,10 +223,12 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   )
 }
 
-export const Rewards = queryRendererHoc({
-  query: getDexTokensPrices,
-  name: 'getDexTokensPricesQuery',
-  fetchPolicy: 'cache-and-network',
-  withoutLoading: true,
-  pollInterval: 60000,
-})(RewardsBlock)
+// export const Rewards = queryRendererHoc({
+//   query: getDexTokensPrices,
+//   name: 'getDexTokensPricesQuery',
+//   fetchPolicy: 'cache-and-network',
+//   withoutLoading: true,
+//   pollInterval: 60000,
+// })(RewardsBlock)
+
+export const Rewards = RewardsBlock

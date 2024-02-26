@@ -50,7 +50,7 @@ const jss = create(jssPreset())
 // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 
-const version = `15-disable-region-restriction`
+const version = `16-fix-vesting-menu`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {

@@ -20,7 +20,10 @@ export const useUserVestings = (): [
     if (!wallet.publicKey) {
       return []
     }
-    const data = await connection
+
+    // console.debug('wallet.publicKey: ', wallet.publicKey.toString())
+
+    const rawData = await connection
       .getConnection()
       .getProgramAccounts(vestingAddress, {
         filters: [
@@ -33,16 +36,24 @@ export const useUserVestings = (): [
         ],
       })
 
-    return data
-      .map((d) => {
-        const decoded = VESTING_LAYOUT.decode(d.account.data)
+    const decodedData = rawData.map((d) => {
+      const decoded = VESTING_LAYOUT.decode(d.account.data)
 
-        return {
-          ...decoded,
-          vesting: d.pubkey,
-        }
-      })
-      .filter((vesting) => vesting.createdTs > 0 && vesting.outstanding.gtn(0))
+      return {
+        ...decoded,
+        vesting: d.pubkey,
+      }
+    })
+    const filtredData = decodedData.filter(
+      (vesting) => vesting.createdTs > 0 && vesting.outstanding.gtn(0)
+    )
+
+    // console.debug('rawData: ', rawData)
+    // console.debug('decodedData: ', decodedData)
+    // console.debug('filtredData: ', filtredData)
+    // console.debug('json:', JSON.stringify(decodedData[0]))
+
+    return filtredData
   }
   const { data, mutate } = useSWR(
     `user-vestings-${wallet.publicKey}`,
