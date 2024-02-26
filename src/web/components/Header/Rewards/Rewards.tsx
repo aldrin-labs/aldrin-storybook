@@ -45,7 +45,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const connection = useConnection()
   const [data, reloadVesting] = useUserVestings()
 
-  console.debug('useUserVestings: data: ', data)
+  // console.debug('useUserVestings: data: ', data)
 
   const rinAccount = useAssociatedTokenAccount(RIN_MINT)
   if (!data) {
