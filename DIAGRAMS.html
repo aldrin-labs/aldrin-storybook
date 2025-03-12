@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aldrin Storybook - Visual Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #0E02EC;
+        }
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            margin: 20px 0;
+        }
+        .description {
+            margin-bottom: 15px;
+        }
+        .note {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aldrin Storybook - Visual Diagrams</h1>
+    
+    <p>This document provides visual representations of the Aldrin Storybook component library structure, component relationships, and data flow.</p>
+
+    <div class="diagram-container">
+        <h2>Project Structure</h2>
+        <div class="description">
+            This diagram illustrates the high-level structure of the Aldrin Storybook project, showing the main directories and their relationships.
+        </div>
+        <div class="mermaid">
+            graph TD
+                A[Aldrin Storybook] --> B[src]
+                A --> C[Configuration Files]
+                B --> D[web]
+                B --> E[mobile]
+                B --> F[icons]
+                B --> G[utils]
+                B --> H[variables]
+                B --> I[webhooks]
+                D --> J[components]
+                D --> K[compositions]
+                D --> L[hooks]
+                D --> M[hoc]
+                D --> N[utils]
+                D --> O[styles]
+                D --> P[types]
+                D --> Q[dexUtils]
+                D --> R[config]
+                D --> S[AMMAudit]
+                D --> T[images]
+                D --> U[fonts]
+                E --> V[stories]
+                C --> W[babel.config.js]
+                C --> X[package.json]
+                C --> Y[index.js]
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Component Architecture</h2>
+        <div class="description">
+            This diagram shows the architectural layers of the component library, from basic components to compositions to applications.
+        </div>
+        <div class="mermaid">
+            graph BT
+                A[Basic Components] --> B[Compositions]
+                B --> C[Applications]
+                D[Design System] --> A
+                E[Shared Resources] --> A
+                F[Hooks & Utilities] --> A
+                F --> B
+                G[TypeScript Types] --> A
+                G --> B
+                H[Styling] --> A
+                H --> B
+                
+                subgraph "Basic Components"
+                    A1[Button]
+                    A2[Input]
+                    A3[Modal]
+                    A4[Loading]
+                    A5[TokenIcon]
+                    A6[Chart]
+                    A7[Table]
+                end
+                
+                subgraph "Compositions"
+                    B1[Swap]
+                    B2[Staking]
+                    B3[Dashboard]
+                    B4[Chart]
+                    B5[Pools]
+                end
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Component Relationships - Swap Feature</h2>
+        <div class="description">
+            This diagram illustrates how components are composed together to create the Swap feature.
+        </div>
+        <div class="mermaid">
+            graph TD
+                A[Swap Composition] --> B[TokenSelector]
+                A --> C[AmountInput]
+                A --> D[SwapButton]
+                A --> E[PriceInfo]
+                
+                B --> F[TokenIcon]
+                B --> G[Dropdown]
+                B --> H[SearchInput]
+                
+                C --> I[Input]
+                C --> J[MaxButton]
+                C --> K[ValidationMessage]
+                
+                D --> L[Button]
+                D --> M[Loading]
+                
+                E --> N[PriceChart]
+                E --> O[PriceChange]
+                
+                style A fill:#0E02EC,color:#fff
+                style B fill:#53DF11,color:#fff
+                style C fill:#53DF11,color:#fff
+                style D fill:#53DF11,color:#fff
+                style E fill:#53DF11,color:#fff
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Component Relationships - Staking Feature</h2>
+        <div class="description">
+            This diagram illustrates how components are composed together to create the Staking feature.
+        </div>
+        <div class="mermaid">
+            graph TD
+                A[Staking Composition] --> B[StakingInfo]
+                A --> C[StakeForm]
+                A --> D[StakingActions]
+                A --> E[RewardsInfo]
+                
+                B --> F[Chart]
+                B --> G[TokenIcon]
+                B --> H[InfoBlocks]
+                
+                C --> I[Input]
+                C --> J[Slider]
+                C --> K[ValidationMessage]
+                
+                D --> L[Button]
+                D --> M[Modal]
+                D --> N[Loading]
+                
+                E --> O[RewardsTable]
+                E --> P[ClaimButton]
+                
+                style A fill:#0E02EC,color:#fff
+                style B fill:#53DF11,color:#fff
+                style C fill:#53DF11,color:#fff
+                style D fill:#53DF11,color:#fff
+                style E fill:#53DF11,color:#fff
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Component Data Flow</h2>
+        <div class="description">
+            This diagram shows how data flows through a typical component in the Aldrin Storybook.
+        </div>
+        <div class="mermaid">
+            graph LR
+                A[Props] --> B[Component]
+                B --> C[State]
+                C --> B
+                B --> D[Render]
+                E[Events] --> B
+                B --> F[Side Effects]
+                F --> G[API Calls]
+                G --> C
+                
+                style B fill:#0E02EC,color:#fff
+                style C fill:#53DF11,color:#fff
+                style D fill:#F29C38,color:#fff
+                style F fill:#F69894,color:#fff
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Design System</h2>
+        <div class="description">
+            This diagram illustrates the design system components and their relationships.
+        </div>
+        <div class="mermaid">
+            graph TD
+                A[Design System] --> B[Colors]
+                A --> C[Typography]
+                A --> D[Spacing]
+                A --> E[Border Radius]
+                A --> F[Breakpoints]
+                
+                B --> B1[Primary: #0E02EC]
+                B --> B2[Success: #53DF11]
+                B --> B3[Error: #F69894]
+                B --> B4[Warning: #F29C38]
+                
+                C --> C1[Font Families]
+                C --> C2[Font Sizes]
+                C --> C3[Font Weights]
+                
+                D --> D1[Padding]
+                D --> D2[Margin]
+                
+                E --> E1[xs: 2px]
+                E --> E2[sm: 4px]
+                E --> E3[md: 8px]
+                E --> E4[lg: 16px]
+                E --> E5[xl: 32px]
+                
+                F --> F1[xs: 480px]
+                F --> F2[sm: 540px]
+                F --> F3[md: 768px]
+                F --> F4[lg: 1024px]
+                F --> F5[xl: 1200px]
+                
+                style A fill:#0E02EC,color:#fff
+                style B fill:#53DF11,color:#fff
+                style C fill:#53DF11,color:#fff
+                style D fill:#53DF11,color:#fff
+                style E fill:#53DF11,color:#fff
+                style F fill:#53DF11,color:#fff
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Development Workflow</h2>
+        <div class="description">
+            This diagram illustrates the typical development workflow for creating and testing components.
+        </div>
+        <div class="mermaid">
+            graph LR
+                A[Create Component] --> B[Write Tests]
+                B --> C[Document in Storybook]
+                C --> D[Review & Refine]
+                D --> E[Export Component]
+                E --> F[Use in Application]
+                F --> G[Gather Feedback]
+                G --> D
+                
+                style A fill:#0E02EC,color:#fff
+                style C fill:#53DF11,color:#fff
+                style F fill:#F29C38,color:#fff
+        </div>
+    </div>
+
+    <div class="note">
+        <p><strong>Note:</strong> These diagrams are interactive. You can zoom, pan, and click on nodes for more information.</p>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>
